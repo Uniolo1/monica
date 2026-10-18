@@ -35,28 +35,26 @@ import (
 )
 
 func formatTabs(s string) string {
-	lines := strings.Split(s, "\n")
+	var result strings.Builder
+	column := 0
 
-	// complicated snippet that expands '\t' with 8 characters
-	for i, line := range lines {
-		width := 0
-		for _, r := range line {
-			if r == '\t' {
-				width += 8 - (width % 8)
-			} else {
-				width++
-			}
+	for _, r := range s {
+		switch r {
+		case '\t':
+			spaces := 6 - (column % 6)
+			result.WriteString(strings.Repeat(" ", spaces))
+			column += spaces
+		case '\n':
+			result.WriteRune(r)
+			column = 0
+		default:
+			result.WriteRune(r)
+			column++
 		}
-
-		padding := 8 - (width % 8)
-		if padding != 8 {
-			line += strings.Repeat(" ", padding)
-		}
-
-		lines[i] = strings.ReplaceAll(line, "\t", "        ")
 	}
 
-	return strings.Join(lines, "\n")
+	return result.String()
+
 }
 
 func getDefinition(query string) string {
