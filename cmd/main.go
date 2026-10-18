@@ -57,11 +57,14 @@ func main() {
 	// data thingy - currently unused
 	var data lightning.PluginDataStorage
 
+	platforms := 0
+
 	// add discord stuff
 	discord_bot_token := os.Getenv("DISCORD_BOT_TOKEN")
 	if discord_bot_token != "" {
 		println("Adding Discord bot...")
-		// add plugin
+		platforms++
+
 		bot.AddPluginType("discord", discord.New)
 		bot.UsePluginType(
 			"discord",
@@ -76,6 +79,8 @@ func main() {
 	// add IRC stuff
 	if os.Getenv("DO_IRC") != "" && os.Getenv("DO_IRC") != "false" {
 		println("Adding IRC bot...")
+		platforms++
+
 		bot.AddPluginType("irc", irc.New)
 		bot.UsePluginType(
 			"irc",
@@ -95,6 +100,11 @@ func main() {
 			},
 			data,
 		)
+	}
+
+	if platforms == 0 {
+		println("Bot was not configured or no platform was specified!")
+		os.Exit(1)
 	}
 
 	println("Started! ^C to stop...")
