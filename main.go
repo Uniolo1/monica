@@ -38,7 +38,7 @@ import (
 )
 
 func ping_command(opts *lightning.CommandOptions) {
-	opts.Reply(&lightning.Message{Content: "pong!"}, false)
+	opts.Reply(&lightning.Message{Content: "pong!"}, true)
 }
 
 func addCommands(bot *lightning.Bot) {
