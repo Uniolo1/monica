@@ -3,7 +3,7 @@
 version = 1
 
 [[annotations]]
-path = ["go.sum", "UNLICENSE", "example.env"]
+path = ["go.sum", "UNLICENSE", "example.env", "ngircd-test.conf"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "NONE"
 SPDX-License-Identifier = "Unlicense"
