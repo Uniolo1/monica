@@ -50,21 +50,23 @@ func main() {
 		},
 	})
 
-	bot.AddPluginType("discord", discord.New)
+	// data thingy - currently unused
+	var data lightning.PluginDataStorage
 
 	discord_bot_token := os.Getenv("DISCORD_BOT_TOKEN")
-	if discord_bot_token == "" {
-		panic("DISCORD_BOT_TOKEN is not set")
+	if discord_bot_token != "" {
+		println("Adding Discord bot...")
+		// add plugin
+		bot.AddPluginType("discord", discord.New)
+		bot.UsePluginType(
+			"discord",
+			"discord",
+			map[string]string{
+				"token": discord_bot_token,
+			},
+			data,
+		)
 	}
-
-	bot.UsePluginType(
-		"discord",
-		"discord",
-		map[string]string{
-			"token": discord_bot_token,
-		},
-		nil, // we don't store any data...
-	)
 
 	println("Started! ^C to stop...")
 
