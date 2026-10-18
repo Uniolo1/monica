@@ -75,7 +75,7 @@ func getDefinition(query string) string {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Sprintf("Got status code: ;%d' when looking up definition!", resp.StatusCode)
+		return fmt.Sprintf("Got HTTP status code '%d' when looking up definition!", resp.StatusCode)
 	}
 
 	var data []struct {
