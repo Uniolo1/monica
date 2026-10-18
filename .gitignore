@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: NONE
+# SPDX-License-Identifier: Unlicense
+
+# output
+out
+
+# Was briefly experimenting with xmake - keeping for posterity
+.xmake
+build
+.DS_Store
