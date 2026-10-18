@@ -108,4 +108,6 @@ func addCommands(bot *lightning.Bot) {
 		Description: "Returns the output of 'fortune'",
 		Executor:    fortune_command,
 	})
+
+	addGenCommands(bot)
 }
