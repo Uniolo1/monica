@@ -23,39 +23,55 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-mod commands;
-use poise::serenity_prelude as serenity;
+package main
 
-#[tokio::main]
-async fn main() {
-    // load from dotenv
-    let _ = dotenvy::dotenv();
+import (
+	"os"
+	"os/signal"
+	"syscall"
 
-    // init some config variables
-    let token =
-        std::env::var("DISCORD_TOKEN").expect("missing 'DISCORD_TOKEN' environment variable");
-    let intents = serenity::GatewayIntents::non_privileged();
+	"github.com/joho/godotenv"
 
-    // setup commands
-    let framework = poise::Framework::builder()
-        .options(poise::FrameworkOptions {
-            commands: vec![
-                // put each command here
-                commands::ping(),
-                commands::define(),
-            ],
-            ..Default::default()
-        })
-        .setup(|ctx, _ready, framework| {
-            Box::pin(async move {
-                poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                Ok(commands::Data {})
-            })
-        })
-        .build();
+	"codeberg.org/jersey/lightning/pkg/lightning"
+	"codeberg.org/jersey/lightning/pkg/platforms/discord"
+)
 
-    let client = serenity::ClientBuilder::new(token, intents)
-        .framework(framework)
-        .await;
-    client.unwrap().start().await.unwrap();
+func main() {
+	// load environment from .env
+	_ = godotenv.Load()
+
+	bot := lightning.NewBot("!")
+
+	bot.AddCommand(lightning.Command{
+		Name:        "ping",
+		Description: "ping-pong",
+		Executor: func(opts *lightning.CommandOptions) {
+			opts.Reply(&lightning.Message{Content: "pong!"}, false)
+		},
+	})
+
+	bot.AddPluginType("discord", discord.New)
+
+	discord_bot_token := os.Getenv("DISCORD_BOT_TOKEN")
+	if discord_bot_token == "" {
+		panic("DISCORD_BOT_TOKEN is not set")
+	}
+
+	bot.UsePluginType(
+		"discord",
+		"discord",
+		map[string]string{
+			"token": discord_bot_token,
+		},
+		nil, // we don't store any data...
+	)
+
+	println("Started! ^C to stop...")
+
+	quitChannel := make(chan os.Signal, 1)
+	signal.Notify(quitChannel, os.Interrupt, syscall.SIGTERM)
+	<-quitChannel
+
+	// '\n' is necessary so '^C' appears on it's own line
+	println("\nStopped!")
 }
