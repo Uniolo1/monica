@@ -8,6 +8,7 @@ go 1.26.9
 require (
 	codeberg.org/jersey/lightning v0.9.6
 	github.com/joho/godotenv v1.5.1
+	github.com/maja42/goval v1.6.0
 )
 
 require (
