@@ -31,8 +31,7 @@ import (
 
 func about_command(opts *lightning.CommandOptions) {
 	// the about text
-	about_text := "Monica - a small little bot\n" +
-		"https://github.com/uniolo1/monica"
+	about_text := "Monica - https://github.com/uniolo1/monica"
 
 	opts.Reply(&lightning.Message{Content: about_text}, false)
 }
