@@ -9,3 +9,8 @@ CompileFlags:
                 - -pedantic
                 - -Wall
                 - -Wextra
+                
+                # some libraries
+                - -ldiscord
+                - -lcurl
+                - -lpthread
