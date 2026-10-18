@@ -14,6 +14,9 @@
 *.so
 *.test
 
+# debug artifacts
+__debug*
+
 # workspace and IDE stuff
 go.work
 go.work.sum

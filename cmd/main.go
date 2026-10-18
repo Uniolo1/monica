@@ -26,6 +26,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -40,7 +41,8 @@ import (
 func main() {
 	// load configuration (environment)
 	_ = godotenv.Load("/etc/monica.env")
-	_ = godotenv.Load("~/.config/monica/monica.env")
+	_ = godotenv.Load(fmt.Sprintf("%s/.config/monica/monica.env"), os.Getenv("HOME"))    // Not *that* big of a deal if os.Getenv returns ""
+	_ = godotenv.Load(fmt.Sprintf("%s/monica/monica.env"), os.Getenv("XDG_CONFIG_HOME")) // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	_ = godotenv.Load(".env")
 
 	prefix := "!"

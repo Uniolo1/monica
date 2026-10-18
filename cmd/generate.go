@@ -23,7 +23,7 @@ func rand_item(list []string) string {
 		slog.Error("'rand_item' got an empty list as input")
 		return "Error: list was empty!"
 	}
-	return list[rand.Intn(len(list))]
+	return strings.Clone(list[rand.Intn(len(list))])
 }
 
 var DEFAULT_INSULTS = []string{
