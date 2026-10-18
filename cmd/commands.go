@@ -44,7 +44,12 @@ func ping_command(opts *lightning.CommandOptions) {
 }
 
 func define_command(opts *lightning.CommandOptions) {
-	opts.Reply(&lightning.Message{Content: formatTabs(getDefinition(opts.Arguments["word"]))}, false)
+	arg := opts.Arguments["word"]
+	if arg == "" {
+		opts.Reply(&lightning.Message{Content: "No definition provided!"}, false)
+	} else {
+		opts.Reply(&lightning.Message{Content: formatTabs(getDefinition(arg))}, false)
+	}
 }
 
 func fortune_command(opts *lightning.CommandOptions) {
