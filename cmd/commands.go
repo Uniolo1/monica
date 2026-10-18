@@ -26,6 +26,9 @@
 package main
 
 import (
+	"fmt"
+	"os/exec"
+
 	"codeberg.org/jersey/lightning/pkg/lightning"
 )
 
@@ -42,6 +45,15 @@ func ping_command(opts *lightning.CommandOptions) {
 
 func define_command(opts *lightning.CommandOptions) {
 	opts.Reply(&lightning.Message{Content: formatTabs(getDefinition(opts.Arguments["word"]))}, false)
+}
+
+func fortune_command(opts *lightning.CommandOptions) {
+	out, err := exec.Command("fortune").Output()
+	if err != nil {
+		opts.Reply(&lightning.Message{Content: fmt.Sprintf("Error: %s", err)}, false)
+	} else {
+		opts.Reply(&lightning.Message{Content: string(out)}, false)
+	}
 }
 
 func addCommands(bot *lightning.Bot) {
@@ -65,5 +77,11 @@ func addCommands(bot *lightning.Bot) {
 			Description: "Word to search",
 		}},
 		Executor: define_command,
+	})
+
+	bot.AddCommand(lightning.Command{
+		Name:        "fortune",
+		Description: "Returns the output of 'fortune'",
+		Executor:    fortune_command,
 	})
 }
