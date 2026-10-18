@@ -9,21 +9,24 @@ import (
 	"codeberg.org/jersey/lightning/pkg/lightning"
 )
 
-func load_from_env_or_list(envname string, defaults []string) []string {
+// NOTE: we return a pointer here inorder to fix a NULL-pointer bug (go is supposed to be memory safe BTW)
+// Interestingly enough, switching to using a pointer fixed a NULL-pointer bug
+func load_from_env_or_list(envname string, defaults []string) *[]string {
 	env := os.Getenv(envname)
 	if env == "" {
-		return defaults
+		return &defaults
 	} else {
-		return strings.Split(env, ":")
+		ret := strings.Split(env, ":")
+		return &ret
 	}
 }
 
-func rand_item(list []string) string {
-	if len(list) == 0 {
+func rand_item(list *[]string) string {
+	if list == nil || len(*list) == 0 {
 		slog.Error("'rand_item' got an empty list as input")
 		return "Error: list was empty!"
 	}
-	return strings.Clone(list[rand.Intn(len(list))])
+	return (*list)[rand.Intn(len(*list))]
 }
 
 var DEFAULT_INSULTS = []string{
