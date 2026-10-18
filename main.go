@@ -42,6 +42,30 @@ import (
 	"codeberg.org/jersey/lightning/pkg/platforms/irc"
 )
 
+func formatTabs(s string) string {
+	lines := strings.Split(s, "\n")
+
+	for i, line := range lines {
+		width := 0
+		for _, r := range line {
+			if r == '\t' {
+				width += 8 - (width % 8)
+			} else {
+				width++
+			}
+		}
+
+		padding := 8 - (width % 8)
+		if padding != 8 {
+			line += strings.Repeat(" ", padding)
+		}
+
+		lines[i] = strings.ReplaceAll(line, "\t", "        ")
+	}
+
+	return strings.Join(lines, "\n")
+}
+
 func getDefinition(query string) string {
 	client := &http.Client{
 		Timeout: 10 * time.Second,
@@ -80,7 +104,7 @@ func ping_command(opts *lightning.CommandOptions) {
 }
 
 func define_command(opts *lightning.CommandOptions) {
-	opts.Reply(&lightning.Message{Content: getDefinition(opts.Arguments["word"])}, false)
+	opts.Reply(&lightning.Message{Content: formatTabs(getDefinition(opts.Arguments["word"]))}, false)
 }
 
 func addCommands(bot *lightning.Bot) {
