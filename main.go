@@ -37,8 +37,22 @@ import (
 	"codeberg.org/jersey/lightning/pkg/platforms/irc"
 )
 
+func ping_command(opts *lightning.CommandOptions) {
+	opts.Reply(&lightning.Message{Content: "pong!"}, false)
+}
+
+func addCommands(bot *lightning.Bot) {
+	bot.AddCommand(lightning.Command{
+		Name:        "ping",
+		Description: "ping-pong",
+		Executor:    ping_command,
+	})
+}
+
 func main() {
-	// load environment from .env
+	// load configuration (environment)
+	_ = godotenv.Load("/etc/monica.env")
+	_ = godotenv.Load("~/.config/monica/monica.env")
 	_ = godotenv.Load(".env")
 
 	prefix := "!"
@@ -50,14 +64,7 @@ func main() {
 	}
 
 	bot := lightning.NewBot(prefix)
-
-	bot.AddCommand(lightning.Command{
-		Name:        "ping",
-		Description: "ping-pong",
-		Executor: func(opts *lightning.CommandOptions) {
-			opts.Reply(&lightning.Message{Content: "pong!"}, false)
-		},
-	})
+	addCommands(bot)
 
 	// data thingy - currently unused
 	var data lightning.PluginDataStorage
