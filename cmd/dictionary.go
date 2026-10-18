@@ -27,6 +27,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -36,6 +37,7 @@ import (
 func formatTabs(s string) string {
 	lines := strings.Split(s, "\n")
 
+	// complicated snippet that expands '\t' with 8 characters
 	for i, line := range lines {
 		width := 0
 		for _, r := range line {
@@ -62,17 +64,18 @@ func getDefinition(query string) string {
 		Timeout: 10 * time.Second,
 	}
 
+	// I use datamuse because it does not require an API key - and it's free!
 	apiURL := "https://api.datamuse.com/words?sp=" +
 		url.QueryEscape(query) + "&md=d"
 
 	resp, err := client.Get(apiURL)
 	if err != nil {
-		return "Dictionary is down"
+		return fmt.Sprintf("ERROR: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "Dictionary is down"
+		return fmt.Sprintf("Got status code: ;%d' when looking up definition!", resp.StatusCode)
 	}
 
 	var data []struct {
@@ -80,11 +83,11 @@ func getDefinition(query string) string {
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		return "Dictionary is down"
+		return fmt.Sprintf("ERROR: %s", err.Error())
 	}
 
 	if len(data) == 0 || len(data[0].Defs) == 0 {
-		return "No definition found"
+		return "No definition was found!"
 	}
 
 	return strings.Join(data[0].Defs, "\n")
