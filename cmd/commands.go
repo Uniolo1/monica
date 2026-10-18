@@ -70,6 +70,15 @@ func fortune_command(opts *lightning.CommandOptions) {
 	}
 }
 
+func uwuify_command(opts *lightning.CommandOptions) {
+	arg := opts.Arguments["input"]
+	if arg == "" {
+		opts.Reply(&lightning.Message{Content: "No text provided!"}, false)
+	} else {
+		opts.Reply(&lightning.Message{Content: uwuify(arg)}, false)
+	}
+}
+
 func addCommands(bot *lightning.Bot) {
 	bot.AddCommand(lightning.Command{
 		Name:        "about",
@@ -107,6 +116,16 @@ func addCommands(bot *lightning.Bot) {
 		Name:        "fortune",
 		Description: "Returns the output of 'fortune'",
 		Executor:    fortune_command,
+	})
+
+	bot.AddCommand(lightning.Command{
+		Name:        "uwuify",
+		Description: "Uwuifies text",
+		Arguments: []lightning.CommandArgument{{
+			Name:        "input",
+			Description: "Text to uwuify",
+		}},
+		Executor: uwuify_command,
 	})
 
 	addConversationMessageGenerationCommands(bot)

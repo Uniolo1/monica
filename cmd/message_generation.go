@@ -65,6 +65,9 @@ var DEFAULT_FLIRTS = []string{
 	"Heyy",
 	"Are you open source? Cuz' I want to fork your heart!", // this one is high-risk I would say... meh... they all are
 
+	// An acquaintance of mine (Zachary) recommended I add this... keeping it as a comment
+	// "Stawp! I am not a tsundere!",
+
 	// everything below ths comment were flirts I found online - https://bestlifeonline.com/flirty-texts/
 	"Hey, stranger. Stop being a stranger.",
 	"Wanna trade secrets?",
