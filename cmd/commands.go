@@ -109,5 +109,5 @@ func addCommands(bot *lightning.Bot) {
 		Executor:    fortune_command,
 	})
 
-	addGenCommands(bot)
+	addConversationMessageGenerationCommands(bot)
 }

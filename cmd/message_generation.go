@@ -77,13 +77,13 @@ var DEFAULT_FLIRTS = []string{
 }
 
 func flirt_command(opts *lightning.CommandOptions) {
-	// FYI if you need a bot to flirt successfully, you are cooked!
+	// FYI if you need a bot to flirt successfully, you are completely and utterly cooked.
 
 	flirts := load_from_env_or_list("FLIRTS", DEFAULT_FLIRTS)
 	opts.Reply(&lightning.Message{Content: rand_item(flirts)}, false)
 }
 
-func addGenCommands(bot *lightning.Bot) {
+func addConversationMessageGenerationCommands(bot *lightning.Bot) {
 	bot.AddCommand(lightning.Command{
 		Name:        "insult",
 		Description: "Generate an insult",
