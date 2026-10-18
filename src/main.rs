@@ -23,18 +23,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+mod commands;
 use poise::serenity_prelude as serenity;
-
-struct Data {} // user data stuff
-type Error = Box<dyn std::error::Error + Send + Sync>;
-type Context<'a> = poise::Context<'a, Data, Error>;
-
-#[poise::command(slash_command, prefix_command)]
-async fn ping(ctx: Context<'_>) -> Result<(), Error> {
-    let response = "pong!";
-    ctx.say(response).await?;
-    Ok(())
-}
 
 #[tokio::main]
 async fn main() {
@@ -49,13 +39,17 @@ async fn main() {
     // setup commands
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![ping()],
+            commands: vec![
+                // put each command here
+                commands::ping(),
+                commands::define(),
+            ],
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                Ok(Data {})
+                Ok(commands::Data {})
             })
         })
         .build();
