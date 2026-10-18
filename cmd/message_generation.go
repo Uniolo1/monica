@@ -10,7 +10,7 @@ import (
 )
 
 // NOTE: we return a pointer here inorder to fix a NULL-pointer bug (go is supposed to be memory safe BTW)
-// Interestingly enough, switching to using a pointer fixed a NULL-pointer bug
+// Interestingly enough, adding a pointer fixed a NULL-pointer bug
 func load_from_env_or_list(envname string, defaults []string) *[]string {
 	env := os.Getenv(envname)
 	if env == "" {
