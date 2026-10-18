@@ -5,6 +5,16 @@ SPDX-License-Identifier: Unlicense
 # Monica
 A small little bot that works on Discord, and IRC
 
+To run it, simply run:
+```sh
+go run ./cmd
+```
+
+To compile it, simply run:
+```sh
+go build -o monica ./cmd
+```
+
 ## FAQ
 
 #### Why is this bot configured entirely through environment variables?
