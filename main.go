@@ -34,6 +34,7 @@ import (
 
 	"codeberg.org/jersey/lightning/pkg/lightning"
 	"codeberg.org/jersey/lightning/pkg/platforms/discord"
+	"codeberg.org/jersey/lightning/pkg/platforms/irc"
 )
 
 func main() {
@@ -53,6 +54,7 @@ func main() {
 	// data thingy - currently unused
 	var data lightning.PluginDataStorage
 
+	// add discord stuff
 	discord_bot_token := os.Getenv("DISCORD_BOT_TOKEN")
 	if discord_bot_token != "" {
 		println("Adding Discord bot...")
@@ -63,6 +65,30 @@ func main() {
 			"discord",
 			map[string]string{
 				"token": discord_bot_token,
+			},
+			data,
+		)
+	}
+
+	// add IRC stuff
+	if os.Getenv("DO_IRC") != "" && os.Getenv("DO_IRC") != "false" {
+		println("Adding IRC bot...")
+		bot.AddPluginType("irc", irc.New)
+		bot.UsePluginType(
+			"irc",
+			"irc",
+			map[string]string{
+				// basic IRC config
+				"server": os.Getenv("IRC_SERVER"),
+				"nick":   os.Getenv("IRC_NICK"),
+				"tls":    os.Getenv("IRC_TLS"),
+
+				// SASL stuff
+				"sasl_user": os.Getenv("IRC_SASL_USER"),
+				"sasl_pass": os.Getenv("IRC_SASL_PASS"),
+
+				// any connect commands:
+				"connect_cmds": os.Getenv("IRC_COMMANDS_ONCONNECT"),
 			},
 			data,
 		)

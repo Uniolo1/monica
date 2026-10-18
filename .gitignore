@@ -3,6 +3,7 @@
 
 # .env - may contain sensitive data
 *.env
+!example.env
 
 # build artifacts
 /monica
