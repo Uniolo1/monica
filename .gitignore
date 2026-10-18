@@ -1,3 +1,20 @@
 # SPDX-FileCopyrightText: NONE
 # SPDX-License-Identifier: Unlicense
+
+# .env - may contain sensitive data
 *.env
+
+# build artifacts
+/monica
+*.exe
+*.dll
+*.o
+*.out
+*.so
+*.test
+
+# workspace and IDE stuff
+go.work
+go.work.sum
+.vscode/
+vscode/
