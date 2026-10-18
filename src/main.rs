@@ -1,10 +1,6 @@
 // SPDX-FileCopyrightText: NONE
 // SPDX-License-Identifier: Unlicense
 
-/* discord.h
- * Wrapper for discord-related functions
- */
-
 /*
  * This is free and unencumbered software released into the public domain.
  *
@@ -27,9 +23,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef DISCORD_H
-#define DISCORD_H
-
-int start_discord_bot(const char *token);
-
-#endif
+fn main() {
+    println!("Hello, world!");
+}
