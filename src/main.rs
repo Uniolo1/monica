@@ -23,6 +23,45 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-fn main() {
-    println!("Hello, world!");
+use poise::serenity_prelude as serenity;
+
+struct Data {} // user data stuff
+type Error = Box<dyn std::error::Error + Send + Sync>;
+type Context<'a> = poise::Context<'a, Data, Error>;
+
+#[poise::command(slash_command, prefix_command)]
+async fn ping(ctx: Context<'_>) -> Result<(), Error> {
+    let response = "pong!";
+    ctx.say(response).await?;
+    Ok(())
+}
+
+#[tokio::main]
+async fn main() {
+    // load from dotenv
+    let _ = dotenvy::dotenv();
+
+    // init some config variables
+    let token =
+        std::env::var("DISCORD_TOKEN").expect("missing 'DISCORD_TOKEN' environment variable");
+    let intents = serenity::GatewayIntents::non_privileged();
+
+    // setup commands
+    let framework = poise::Framework::builder()
+        .options(poise::FrameworkOptions {
+            commands: vec![ping()],
+            ..Default::default()
+        })
+        .setup(|ctx, _ready, framework| {
+            Box::pin(async move {
+                poise::builtins::register_globally(ctx, &framework.options().commands).await?;
+                Ok(Data {})
+            })
+        })
+        .build();
+
+    let client = serenity::ClientBuilder::new(token, intents)
+        .framework(framework)
+        .await;
+    client.unwrap().start().await.unwrap();
 }
