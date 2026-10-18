@@ -39,10 +39,14 @@ import (
 )
 
 func main() {
-	// load configuration (environment)
+	// load configuration from "/etc" first
 	_ = godotenv.Load("/etc/monica.env")
-	_ = godotenv.Load(fmt.Sprintf("%s/.config/monica/monica.env", os.Getenv("HOME")))    // Not *that* big of a deal if os.Getenv returns ""
-	_ = godotenv.Load(fmt.Sprintf("%s/monica/monica.env", os.Getenv("XDG_CONFIG_HOME"))) // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+	// Not *that* big of a deal if os.Getenv returns "" here
+	_ = godotenv.Load(fmt.Sprintf("%s/.config/monica/monica.env", os.Getenv("HOME")))
+	_ = godotenv.Load(fmt.Sprintf("%s/monica/monica.env", os.Getenv("XDG_CONFIG_HOME")))
+
+	// relative to the current directory (NOTE: overwrites env above)
 	_ = godotenv.Load(".env")
 
 	prefix := "!"
@@ -62,8 +66,7 @@ func main() {
 	platforms := 0
 
 	// add discord stuff
-	discord_bot_token := os.Getenv("DISCORD_BOT_TOKEN")
-	if discord_bot_token != "" {
+	if os.Getenv("DISCORD_BOT_TOKEN") != "" {
 		println("Adding Discord bot...")
 		platforms++
 
@@ -72,11 +75,14 @@ func main() {
 			"discord",
 			"discord",
 			map[string]string{
-				"token": discord_bot_token,
+				"token": os.Getenv("DISCORD_BOT_TOKEN"),
 			},
 			data,
 		)
 	}
+
+	// I would assume lightning handles the token securely
+	os.Unsetenv("DISCORD_BOT_TOKEN")
 
 	// add IRC stuff
 	if os.Getenv("DO_IRC") != "" && os.Getenv("DO_IRC") != "false" {
