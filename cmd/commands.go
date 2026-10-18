@@ -52,6 +52,15 @@ func define_command(opts *lightning.CommandOptions) {
 	}
 }
 
+func evaluate_command(opts *lightning.CommandOptions) {
+	arg := opts.Arguments["expression"]
+	if arg == "" {
+		opts.Reply(&lightning.Message{Content: "No definition provided!"}, false)
+	} else {
+		opts.Reply(&lightning.Message{Content: evaluate_input(arg)}, false)
+	}
+}
+
 func fortune_command(opts *lightning.CommandOptions) {
 	out, err := exec.Command("fortune").Output()
 	if err != nil {
@@ -82,6 +91,16 @@ func addCommands(bot *lightning.Bot) {
 			Description: "Word to search",
 		}},
 		Executor: define_command,
+	})
+
+	bot.AddCommand(lightning.Command{
+		Name:        "calc",
+		Description: "Calculate an expression",
+		Arguments: []lightning.CommandArgument{{
+			Name:        "expression",
+			Description: "Expression to evaluate",
+		}},
+		Executor: evaluate_command,
 	})
 
 	bot.AddCommand(lightning.Command{
