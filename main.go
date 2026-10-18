@@ -39,9 +39,17 @@ import (
 
 func main() {
 	// load environment from .env
-	_ = godotenv.Load()
+	_ = godotenv.Load(".env")
 
-	bot := lightning.NewBot("!")
+	prefix := "!"
+
+	// change prefix based on environment variable
+	prefix_env := os.Getenv("BOT_PREFIX")
+	if prefix_env != "" {
+		prefix = prefix_env
+	}
+
+	bot := lightning.NewBot(prefix)
 
 	bot.AddCommand(lightning.Command{
 		Name:        "ping",
