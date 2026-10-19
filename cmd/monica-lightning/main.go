@@ -26,12 +26,9 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
-
-	"github.com/joho/godotenv"
 
 	"codeberg.org/jersey/lightning/pkg/lightning"
 	"codeberg.org/jersey/lightning/pkg/platforms/discord"
@@ -39,6 +36,7 @@ import (
 
 	"github.com/uniolo1/monica/internal/abstractions"
 	"github.com/uniolo1/monica/internal/commands"
+	"github.com/uniolo1/monica/internal/helpers"
 )
 
 func adder(command abstractions.Command) error {
@@ -74,16 +72,7 @@ func adder(command abstractions.Command) error {
 var bot *lightning.Bot = nil
 
 func main() {
-	// load configuration from "/etc" first
-	_ = godotenv.Load("/etc/monica.env")
-
-	// Not *that* big of a deal if os.Getenv returns "" here
-	_ = godotenv.Load(fmt.Sprintf("%s/.config/monica/monica.env", os.Getenv("HOME")))
-	_ = godotenv.Load(fmt.Sprintf("%s/monica/monica.env", os.Getenv("XDG_CONFIG_HOME")))
-
-	// relative to the current directory (NOTE: overwrites env above)
-	_ = godotenv.Load(".env")
-
+	helpers.SetupEnv()
 	prefix := "!"
 
 	// change prefix based on environment variable
