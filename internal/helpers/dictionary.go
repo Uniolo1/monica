@@ -88,6 +88,6 @@ func GetDefinition(query string) string {
 		return "No definition was found!"
 	}
 
-	// [:3] limits definition to a max of 3, chosen because :3
-	return strings.Join(data[0].Defs[:3], "\n")
+	// [:5] limit's to max of 5... :3
+	return strings.Join(data[0].Defs[:5], "\n")
 }

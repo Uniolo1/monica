@@ -35,7 +35,7 @@ import (
 )
 
 // NOTE: we return a pointer here to fix a nil-pointer bug (go is supposed to be memory safe BTW)
-// Interestingly enough, adding a pointer fixed a nil-pointer bug - EDIT: Nope! Turns out lightning
+// Interestingly enough, adding a pointer fixed a nil-pointer bug - Nope! Turns out lightning
 // is (at the time of writing this) very buggy (with IRC)
 func load_from_env_or_list(envname string, defaults []string) *[]string {
 	env := os.Getenv(envname)
