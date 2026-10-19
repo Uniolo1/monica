@@ -34,7 +34,7 @@ import (
 	"codeberg.org/jersey/lightning/pkg/lightning"
 )
 
-// NOTE: we return a pointer here inorder to fix a NULL-pointer bug (go is supposed to be memory safe BTW)
+// NOTE: we return a pointer here to fix a NULL-pointer bug (go is supposed to be memory safe BTW)
 // Interestingly enough, adding a pointer fixed a NULL-pointer bug
 func load_from_env_or_list(envname string, defaults []string) *[]string {
 	env := os.Getenv(envname)
