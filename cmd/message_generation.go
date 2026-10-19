@@ -34,8 +34,8 @@ import (
 	"codeberg.org/jersey/lightning/pkg/lightning"
 )
 
-// NOTE: we return a pointer here to fix a NULL-pointer bug (go is supposed to be memory safe BTW)
-// Interestingly enough, adding a pointer fixed a NULL-pointer bug
+// NOTE: we return a pointer here to fix a nil-pointer bug (go is supposed to be memory safe BTW)
+// Interestingly enough, adding a pointer fixed a nil-pointer bug
 func load_from_env_or_list(envname string, defaults []string) *[]string {
 	env := os.Getenv(envname)
 	if env == "" {
@@ -88,7 +88,7 @@ func compliment_command(opts *lightning.CommandOptions) {
 
 var DEFAULT_FLIRTS = []string{
 	"Heyy",
-	"Are you open source? Cuz' I want to fork your heart!", // this one is high-risk I would say... meh... they all are
+	"Are you open source? Cuz' I want to fork your left atrium!", // this one is high-risk I would say... meh... they all are
 
 	// An acquaintance of mine (Zachary) recommended I add this... keeping it as a comment
 	// "Stawp! I am not a tsundere!",
