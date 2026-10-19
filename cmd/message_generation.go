@@ -111,6 +111,18 @@ func flirt_command(opts *lightning.CommandOptions) {
 	opts.Reply(&lightning.Message{Content: rand_item(flirts)}, false)
 }
 
+// doesn't fit with the others... putting it here anyways
+func ship_command(opts *lightning.CommandOptions) {
+	person_a := opts.Arguments["person_a"]
+	person_b := opts.Arguments["person_b"]
+	if person_a == "" || person_b == "" {
+		opts.Reply(&lightning.Message{Content: "Missing required 'person_a' and 'person_b' parameters!"}, false)
+	} else {
+		output := person_a[:len(person_a)/2] + person_b[len(person_b)/2:]
+		opts.Reply(&lightning.Message{Content: output}, false)
+	}
+}
+
 func addConversationMessageGenerationCommands(bot *lightning.Bot) {
 	bot.AddCommand(lightning.Command{
 		Name:        "insult",
@@ -128,5 +140,21 @@ func addConversationMessageGenerationCommands(bot *lightning.Bot) {
 		Name:        "flirt",
 		Description: "Generate a flirtatious compliment",
 		Executor:    flirt_command,
+	})
+
+	bot.AddCommand(lightning.Command{
+		Name:        "ship",
+		Description: "Ships 2 people!",
+		Arguments: []lightning.CommandArgument{
+			{
+				Name:        "person_a",
+				Description: "Person A",
+			},
+			{
+				Name:        "person_b",
+				Description: "Person B",
+			},
+		},
+		Executor: ship_command,
 	})
 }
