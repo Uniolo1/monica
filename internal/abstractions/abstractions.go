@@ -25,7 +25,10 @@
 
 package abstractions
 
-type Command_handler func(*Command_context) (string, bool)
+type Command_handler func(*Command_context) (
+	string, // the reply to the message
+	bool, // weather the message should be ephemeral (only shown to user that sent the command)
+)
 type Command_adder func(Command) error
 
 // the <sarcasm>infamously awesome</sarcasm> go enums!
