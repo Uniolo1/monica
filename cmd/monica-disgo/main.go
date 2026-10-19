@@ -35,6 +35,7 @@ import (
 	"github.com/disgoorg/disgo"
 	"github.com/disgoorg/disgo/bot"
 	"github.com/disgoorg/disgo/discord"
+	"github.com/disgoorg/disgo/events"
 	"github.com/disgoorg/disgo/handler"
 	"github.com/disgoorg/snowflake/v2"
 
@@ -105,7 +106,10 @@ func main() {
 	client, err := disgo.New(
 		os.Getenv("DISCORD_BOT_TOKEN"),
 		bot.WithDefaultGateway(),
-		bot.WithEventListeners(h),
+		bot.WithEventListeners(h), // slash commands
+		bot.WithEventListenerFunc(func(e *events.Ready) {
+			fmt.Println("Bot is connected as", e.User.Username)
+		}), // print username
 	)
 	if err != nil {
 		panic(err)
