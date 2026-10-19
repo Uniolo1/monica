@@ -19,13 +19,14 @@ To compile it, simply run:
 go build -o monica-lightning ./cmd/monica-lightning
 ```
 ### Discord (Disgo)
+The same as with IRC but with a slightly different path, run it with:
 ```sh
 go run ./cmd/monica-disgo
 ```
 
-To compile it, simply run:
+And compile it with:
 ```sh
-go build -o monica-lightning ./cmd/monica-disgo
+go build -o monica-disgo ./cmd/monica-disgo
 ```
 
 ## FAQ
