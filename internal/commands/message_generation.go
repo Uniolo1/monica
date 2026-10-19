@@ -31,7 +31,7 @@ import (
 	"os"
 	"strings"
 
-	"codeberg.org/jersey/lightning/pkg/lightning"
+	"github.com/uniolo1/monica/internal/abstractions"
 )
 
 // NOTE: we return a pointer here to fix a nil-pointer bug (go is supposed to be memory safe BTW)
@@ -54,79 +54,67 @@ func rand_item(list *[]string) string {
 	return (*list)[rand.Intn(len(*list))]
 }
 
-func insult_command(opts *lightning.CommandOptions) {
+func insult_command(args *abstractions.Command_context) (string, bool) {
 	insults := load_from_env_or_list("INSULTS", DEFAULT_INSULTS)
-	opts.Reply(&lightning.Message{Content: rand_item(insults)}, false)
+	return rand_item(insults), false
 }
 
-func compliment_command(opts *lightning.CommandOptions) {
+func compliment_command(args *abstractions.Command_context) (string, bool) {
 	compliments := load_from_env_or_list("COMPLIMENTS", DEFAULT_COMPLIMENTS)
-	opts.Reply(&lightning.Message{Content: rand_item(compliments)}, false)
+	return rand_item(compliments), false
 }
 
-func flirt_command(opts *lightning.CommandOptions) {
+func flirt_command(args *abstractions.Command_context) (string, bool) {
 	// FYI if you need a bot to flirt successfully, you are completely and utterly cooked.
 
 	flirts := load_from_env_or_list("FLIRTS", DEFAULT_FLIRTS)
-	opts.Reply(&lightning.Message{Content: rand_item(flirts)}, false)
+	return rand_item(flirts), false
 }
 
 // requested command
-func animegirl_command(opts *lightning.CommandOptions) {
+func animegirl_command(args *abstractions.Command_context) (string, bool) {
 	girls := load_from_env_or_list("ANIMEGIRLS", DEFAULT_ANIMEGIRL_GIFS)
-	opts.Reply(&lightning.Message{Content: rand_item(girls)}, false)
+	return rand_item(girls), false
 }
 
-// doesn't fit with the others... putting it here anyways
-func ship_command(opts *lightning.CommandOptions) {
-	person_a := opts.Arguments["person_a"]
-	person_b := opts.Arguments["person_b"]
-	if person_a == "" || person_b == "" {
-		opts.Reply(&lightning.Message{Content: "Missing required 'person_a' and 'person_b' parameters!"}, false)
-	} else {
-		output := person_a[:int(len(person_a)/2)] + person_b[int(len(person_b)/2):]
-		opts.Reply(&lightning.Message{Content: output}, false)
-	}
-}
+func addConversationMessageGenerationCommands(adder abstractions.Command_adder) error {
+	var err error
 
-func addConversationMessageGenerationCommands(bot *lightning.Bot) {
-	bot.AddCommand(lightning.Command{
+	err = adder(abstractions.Command{
 		Name:        "insult",
 		Description: "Generate an insult",
-		Executor:    insult_command,
+		Handler:     insult_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	bot.AddCommand(lightning.Command{
+	err = adder(abstractions.Command{
 		Name:        "compliment",
 		Description: "Generate a compliment",
-		Executor:    compliment_command,
+		Handler:     compliment_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	bot.AddCommand(lightning.Command{
+	err = adder(abstractions.Command{
 		Name:        "flirt",
 		Description: "Generate a flirtatious compliment",
-		Executor:    flirt_command,
+		Handler:     flirt_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	bot.AddCommand(lightning.Command{
+	err = adder(abstractions.Command{
 		Name:        "animegirl",
 		Description: "Retrieve a random gif of an anime girl!",
-		Executor:    animegirl_command,
+		Handler:     animegirl_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	bot.AddCommand(lightning.Command{
-		Name:        "ship",
-		Description: "Ships 2 people!",
-		Arguments: []lightning.CommandArgument{
-			{
-				Name:        "person_a",
-				Description: "Person A",
-			},
-			{
-				Name:        "person_b",
-				Description: "Person B",
-			},
-		},
-		Executor: ship_command,
-	})
+	return nil
 }

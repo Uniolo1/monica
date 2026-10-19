@@ -37,8 +37,29 @@ import (
 	"codeberg.org/jersey/lightning/pkg/platforms/discord"
 	"codeberg.org/jersey/lightning/pkg/platforms/irc"
 
+	"github.com/uniolo1/monica/internal/abstractions"
 	"github.com/uniolo1/monica/internal/commands"
 )
+
+func adder(command abstractions.Command) error {
+	executor := func(opts *lightning.CommandOptions) {
+		context := abstractions.Command_context{
+			Framework: "lightning",
+		}
+
+		reply, _ := command.Handler(&context)
+		opts.Reply(&lightning.Message{Content: reply}, false)
+	}
+
+	bot.AddCommand(lightning.Command{
+		Name:        command.Name,
+		Description: command.Description,
+		Executor:    executor,
+	})
+	return nil
+}
+
+var bot *lightning.Bot = nil
 
 func main() {
 	// load configuration from "/etc" first
@@ -59,8 +80,8 @@ func main() {
 		prefix = prefix_env
 	}
 
-	bot := lightning.NewBot(prefix)
-	commands.AddCommands(bot)
+	bot = lightning.NewBot(prefix)
+	commands.AddCommands(adder)
 
 	// data thingy - currently unused
 	var data lightning.PluginDataStorage

@@ -25,31 +25,32 @@
 
 package abstractions
 
-type command_argument_type int
-
-type command_handler func(command_context) (string, bool)
-type command_adder func(command_handler) error
+type Command_handler func(*Command_context) (string, bool)
+type Command_adder func(Command) error
 
 // the <sarcasm>infamously awesome</sarcasm> go enums!
+type Command_argument_type int
+
 const (
-	command_argument_type_string = iota
-	command_argument_type_int
+	Command_argument_type_string = iota
+	Command_argument_type_int
 )
 
-type command_arguments struct {
-	name        string
-	description string
-	arg_type    command_argument_type // NOTE: converted into a string (due to platform-specific considerations), must be converted back manually!
+type Command_arguments struct {
+	Name        string
+	Description string
+	Arg_type    Command_argument_type // NOTE: converted into a string (due to platform-specific considerations), must be converted back manually!
 }
 
-type command struct {
-	name        string
-	description string
-	arguments   []command_arguments
+type Command struct {
+	Name        string
+	Description string
+	Arguments   []Command_arguments
+	Handler     Command_handler
 }
 
 // what a command is given as its parameters
-type command_context struct {
-	arguments map[string]string
-	framework string // framework being used
+type Command_context struct {
+	Arguments map[string]string
+	Framework string // framework being used
 }

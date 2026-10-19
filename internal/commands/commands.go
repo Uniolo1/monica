@@ -30,109 +30,160 @@ import (
 	"os"
 	"os/exec"
 
-	"codeberg.org/jersey/lightning/pkg/lightning"
+	"github.com/uniolo1/monica/internal/abstractions"
 	"github.com/uniolo1/monica/internal/helpers"
 )
 
-func about_command(opts *lightning.CommandOptions) {
+func about_command(args *abstractions.Command_context) (string, bool) {
 	// the about text
-	about_text := "Monica - https://github.com/uniolo1/monica"
-
-	opts.Reply(&lightning.Message{Content: about_text}, false)
+	about_text := fmt.Sprintf("Monica (%s) - https://github.com/uniolo1/monica", args.Framework)
+	return about_text, false
 }
 
-func ping_command(opts *lightning.CommandOptions) {
-	opts.Reply(&lightning.Message{Content: "pong!"}, false)
+func ping_command(args *abstractions.Command_context) (string, bool) {
+	return "pong!", false
 }
 
-func define_command(opts *lightning.CommandOptions) {
-	arg := opts.Arguments["word"]
+func define_command(args *abstractions.Command_context) (string, bool) {
+	arg := args.Arguments["word"]
 	if arg == "" {
-		opts.Reply(&lightning.Message{Content: "No definition provided!"}, false)
+		return "No definition provided!", false
 	} else {
-		opts.Reply(&lightning.Message{Content: helpers.FormatTabs(helpers.GetDefinition(arg))}, false)
+		return helpers.FormatTabs(helpers.GetDefinition(arg)), false
 	}
 }
 
-func evaluate_command(opts *lightning.CommandOptions) {
+func evaluate_command(args *abstractions.Command_context) (string, bool) {
 	if os.Getenv("DISABLE_CALC") != "" && os.Getenv("DISABLE_CALC") != "false" {
-		opts.Reply(&lightning.Message{Content: "The calculator has been disabled!"}, false)
+		return "The calculator has been disabled!", false
 	} else {
-		arg := opts.Arguments["expression"]
+		arg := args.Arguments["expression"]
 		if arg == "" {
-			opts.Reply(&lightning.Message{Content: "No definition provided!"}, false)
+			return "No definition provided!", false
 		} else {
-			opts.Reply(&lightning.Message{Content: helpers.Evaluate_input(arg)}, false)
+			return helpers.Evaluate_input(arg), false
 		}
 	}
 }
 
-func fortune_command(opts *lightning.CommandOptions) {
+func fortune_command(args *abstractions.Command_context) (string, bool) {
 	out, err := exec.Command("fortune").Output()
 	if err != nil {
-		opts.Reply(&lightning.Message{Content: fmt.Sprintf("Error: %s", err)}, false)
+		return fmt.Sprintf("Error: %s", err), false
 	} else {
-		opts.Reply(&lightning.Message{Content: string(out)}, false)
+		return string(out), false
 	}
 }
 
-func uwuify_command(opts *lightning.CommandOptions) {
-	arg := opts.Arguments["input"]
+func uwuify_command(args *abstractions.Command_context) (string, bool) {
+	arg := args.Arguments["input"]
 	if arg == "" {
-		opts.Reply(&lightning.Message{Content: "No text provided!"}, false)
+		return "No text provided!", false
 	} else {
-		opts.Reply(&lightning.Message{Content: helpers.Uwuify(arg)}, false)
+		return helpers.Uwuify(arg), false
 	}
 }
 
-func AddCommands(bot *lightning.Bot) {
-	bot.AddCommand(lightning.Command{
+func ship_command(args *abstractions.Command_context) (string, bool) {
+	person_a := args.Arguments["person_a"]
+	person_b := args.Arguments["person_b"]
+	if person_a == "" || person_b == "" {
+		return "Missing required 'person_a' and 'person_b' parameters!", false
+	} else {
+		output := person_a[:int(len(person_a)/2)] + person_b[int(len(person_b)/2):]
+		return output, false
+	}
+}
+
+func AddCommands(adder abstractions.Command_adder) error {
+	var err error
+
+	err = adder(abstractions.Command{
 		Name:        "about",
 		Description: "Display's information about the bot",
-		Executor:    about_command,
+		Handler:     about_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	bot.AddCommand(lightning.Command{
+	err = adder(abstractions.Command{
 		Name:        "ping",
 		Description: "ping-pong",
-		Executor:    ping_command,
+		Handler:     ping_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	bot.AddCommand(lightning.Command{
+	err = adder(abstractions.Command{
 		Name:        "define",
-		Description: "Lookup a word",
-		Arguments: []lightning.CommandArgument{{
+		Description: "find the definition of a word",
+		Arguments: []abstractions.Command_arguments{{
 			Name:        "word",
-			Description: "Word to search",
+			Description: " Word to search",
+			Arg_type:    abstractions.Command_argument_type_string,
 		}},
-		Executor: define_command,
+		Handler: define_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	bot.AddCommand(lightning.Command{
+	err = adder(abstractions.Command{
 		Name:        "calc",
 		Description: "Calculate an expression",
-		Arguments: []lightning.CommandArgument{{
+		Arguments: []abstractions.Command_arguments{{
 			Name:        "expression",
 			Description: "Expression to evaluate",
+			Arg_type:    abstractions.Command_argument_type_string,
 		}},
-		Executor: evaluate_command,
+		Handler: evaluate_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	bot.AddCommand(lightning.Command{
+	err = adder(abstractions.Command{
 		Name:        "fortune",
 		Description: "Returns the output of 'fortune'",
-		Executor:    fortune_command,
+		Handler:     fortune_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	bot.AddCommand(lightning.Command{
+	err = adder(abstractions.Command{
 		Name:        "uwuify",
 		Description: "Uwuifies text",
-		Arguments: []lightning.CommandArgument{{
+		Arguments: []abstractions.Command_arguments{{
 			Name:        "input",
 			Description: "Text to uwuify",
+			Arg_type:    abstractions.Command_argument_type_string,
 		}},
-		Executor: uwuify_command,
+		Handler: uwuify_command,
 	})
+	if err != nil {
+		return err
+	}
 
-	addConversationMessageGenerationCommands(bot)
+	err = adder(abstractions.Command{
+		Name:        "ship",
+		Description: "Ships 2 people",
+		Arguments: []abstractions.Command_arguments{{
+			Name:        "person_a",
+			Description: "Person A",
+			Arg_type:    abstractions.Command_argument_type_string,
+		}, {
+			Name:        "person_b",
+			Description: "Person B",
+			Arg_type:    abstractions.Command_argument_type_string,
+		}},
+		Handler: ship_command,
+	})
+	if err != nil {
+		return err
+	}
+
+	return addConversationMessageGenerationCommands(adder)
 }
