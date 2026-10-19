@@ -108,4 +108,11 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/fate-grand-10",
 	"https://klipy.com/gifs/silent-witch-monica-everett-30", // _monica_ norton
 	"https://klipy.com/gifs/silent-witch-4",                 // ^^^^^^^^^^^^^^^
+
+	// From searching (via gif selector)
+	"https://klipy.com/gifs/embarrassed-shy-59",
+	"https://klipy.com/gifs/anime-girl-light-blue-hair-anime",
+	"https://klipy.com/gifs/anime-lily-1",
+	"https://klipy.com/gifs/reze-ok",
+	"https://klipy.com/gifs/anime-anime-girl-129",
 }
