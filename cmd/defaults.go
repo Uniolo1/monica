@@ -95,3 +95,18 @@ var DEFAULT_FLIRTS = []string{
 	"Nobody gets me like you do.",
 	"I have no idea what I would do without you.",
 }
+
+var DEFAULT_ANIMEGIRL_GIFS = []string{
+	// From my discord gif gallery - Uniolo
+	"https://tenor.com/view/alya-alisa-mikhailovna-kujou-alya-sometimes-hides-her-feelings-in-russian-anime-anime-dance-gif-1225141651010373452",
+	"https://tenor.com/view/rumia-fish-gif-rumia-fish-touhou-gif-23149573",
+	"https://tenor.com/view/rikachair-higurashichair-wigflewtopluto2-gif-20250473",
+	"https://tenor.com/view/bunny-gif-22123810",
+	"https://klipy.com/gifs/femtanyl-2",
+	"https://klipy.com/gifs/marin-kitagawa-33",
+	"https://klipy.com/gifs/anime-girl-711",
+	"https://klipy.com/gifs/osaka-spin-3",
+	"https://klipy.com/gifs/happy-blue-hair",
+	"https://klipy.com/gifs/fate-grand-10",
+	"https://klipy.com/gifs/silent-witch-monica-everett-30", // MONICA norton
+}

@@ -71,6 +71,12 @@ func flirt_command(opts *lightning.CommandOptions) {
 	opts.Reply(&lightning.Message{Content: rand_item(flirts)}, false)
 }
 
+// requested command
+func animegirl_command(opts *lightning.CommandOptions) {
+	girls := load_from_env_or_list("ANIMEGIRLS", DEFAULT_ANIMEGIRL_GIFS)
+	opts.Reply(&lightning.Message{Content: rand_item(girls)}, false)
+}
+
 // doesn't fit with the others... putting it here anyways
 func ship_command(opts *lightning.CommandOptions) {
 	person_a := opts.Arguments["person_a"]
@@ -100,6 +106,12 @@ func addConversationMessageGenerationCommands(bot *lightning.Bot) {
 		Name:        "flirt",
 		Description: "Generate a flirtatious compliment",
 		Executor:    flirt_command,
+	})
+
+	bot.AddCommand(lightning.Command{
+		Name:        "animegirl",
+		Description: "Retrieve a random gif of an anime girl!",
+		Executor:    animegirl_command,
 	})
 
 	bot.AddCommand(lightning.Command{
