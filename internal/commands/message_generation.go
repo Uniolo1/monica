@@ -55,17 +55,17 @@ func rand_item(list *[]string) string {
 	return (*list)[rand.Intn(len(*list))]
 }
 
-func insult_command(args *abstractions.Command_context) (string, bool) {
+func insultCommand(args *abstractions.CommandContext) (string, bool) {
 	insults := load_from_env_or_list("INSULTS", DEFAULT_INSULTS)
 	return rand_item(insults), true
 }
 
-func compliment_command(args *abstractions.Command_context) (string, bool) {
+func complimentCommand(args *abstractions.CommandContext) (string, bool) {
 	compliments := load_from_env_or_list("COMPLIMENTS", DEFAULT_COMPLIMENTS)
 	return rand_item(compliments), true
 }
 
-func flirt_command(args *abstractions.Command_context) (string, bool) {
+func flirtCommand(args *abstractions.CommandContext) (string, bool) {
 	// FYI if you need a bot to flirt successfully, you are completely and utterly cooked.
 
 	flirts := load_from_env_or_list("FLIRTS", DEFAULT_FLIRTS)
@@ -73,18 +73,18 @@ func flirt_command(args *abstractions.Command_context) (string, bool) {
 }
 
 // requested command
-func animegirl_command(args *abstractions.Command_context) (string, bool) {
+func animegirlCommand(args *abstractions.CommandContext) (string, bool) {
 	girls := load_from_env_or_list("ANIMEGIRLS", DEFAULT_ANIMEGIRL_GIFS)
 	return rand_item(girls), false
 }
 
-func addConversationMessageGenerationCommands(adder abstractions.Command_adder) error {
+func addConversationMessageGenerationCommands(adder abstractions.CommandAdder) error {
 	var err error
 
 	err = adder(abstractions.Command{
 		Name:        "insult",
 		Description: "Generate an insult",
-		Handler:     insult_command,
+		Handler:     insultCommand,
 	})
 	if err != nil {
 		return err
@@ -93,7 +93,7 @@ func addConversationMessageGenerationCommands(adder abstractions.Command_adder) 
 	err = adder(abstractions.Command{
 		Name:        "compliment",
 		Description: "Generate a compliment",
-		Handler:     compliment_command,
+		Handler:     complimentCommand,
 	})
 	if err != nil {
 		return err
@@ -102,7 +102,7 @@ func addConversationMessageGenerationCommands(adder abstractions.Command_adder) 
 	err = adder(abstractions.Command{
 		Name:        "flirt",
 		Description: "Generate a flirtatious compliment",
-		Handler:     flirt_command,
+		Handler:     flirtCommand,
 	})
 	if err != nil {
 		return err
@@ -111,7 +111,7 @@ func addConversationMessageGenerationCommands(adder abstractions.Command_adder) 
 	err = adder(abstractions.Command{
 		Name:        "animegirl",
 		Description: "Retrieve a random gif of an anime girl!",
-		Handler:     animegirl_command,
+		Handler:     animegirlCommand,
 	})
 	if err != nil {
 		return err

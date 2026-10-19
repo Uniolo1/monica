@@ -27,7 +27,7 @@ package helpers
 
 import "strings"
 
-func transfer_case(original, replacement string) string {
+func transferCase(original, replacement string) string {
 	// replacement is assumed to be lowercase
 
 	// if they are the same
@@ -56,17 +56,17 @@ func Uwuify(input string) string {
 		// NOTE smaller selection of words then in libuwu
 		switch strings.ToLower(word) {
 		case "love":
-			words[i] = transfer_case(word, "wuv")
+			words[i] = transferCase(word, "wuv")
 		case "loved":
-			words[i] = transfer_case(word, "wuved")
+			words[i] = transferCase(word, "wuved")
 		case "this":
-			words[i] = transfer_case(word, "dis")
+			words[i] = transferCase(word, "dis")
 		case "small":
-			words[i] = transfer_case(word, "smol")
+			words[i] = transferCase(word, "smol")
 		case "angry":
-			words[i] = transfer_case(word, "angi")
+			words[i] = transferCase(word, "angi")
 		case "boy":
-			words[i] = transfer_case(word, "boi")
+			words[i] = transferCase(word, "boi")
 		default:
 			result := []rune(word)
 

@@ -25,11 +25,11 @@
 
 package abstractions
 
-type Command_handler func(*Command_context) (
+type CommandHandler func(*CommandContext) (
 	string, // the reply to the message
 	bool, // weather the message should be ephemeral (only shown to user that sent the command)
 )
-type Command_adder func(Command) error
+type CommandAdder func(Command) error
 
 // the <sarcasm>infamously awesome</sarcasm> go enums!
 type Command_argument_type int
@@ -39,7 +39,7 @@ const (
 	Command_argument_type_int
 )
 
-type Command_arguments struct {
+type CommandArguments struct {
 	Name        string
 	Description string
 	Arg_type    Command_argument_type // NOTE: converted into a string (due to platform-specific considerations), must be converted back manually!
@@ -48,12 +48,12 @@ type Command_arguments struct {
 type Command struct {
 	Name        string
 	Description string
-	Arguments   []Command_arguments
-	Handler     Command_handler
+	Arguments   []CommandArguments
+	Handler     CommandHandler
 }
 
 // what a command is given as its parameters
-type Command_context struct {
+type CommandContext struct {
 	Arguments map[string]string
 	Framework string // framework being used
 }

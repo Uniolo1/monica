@@ -31,7 +31,7 @@ import (
 	"github.com/maja42/goval"
 )
 
-func Evaluate_input(input string) string {
+func EvaluatecCalculatorInput(input string) string {
 	eval := goval.NewEvaluator()
 
 	result, err := eval.Evaluate(input, nil, nil)

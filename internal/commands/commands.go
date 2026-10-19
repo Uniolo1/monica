@@ -34,17 +34,17 @@ import (
 	"github.com/uniolo1/monica/internal/helpers"
 )
 
-func about_command(args *abstractions.Command_context) (string, bool) {
+func aboutCommand(args *abstractions.CommandContext) (string, bool) {
 	// the about text
 	about_text := fmt.Sprintf("Monica (%s) - https://github.com/uniolo1/monica", args.Framework)
 	return about_text, false
 }
 
-func ping_command(args *abstractions.Command_context) (string, bool) {
+func pingCommand(args *abstractions.CommandContext) (string, bool) {
 	return "pong!", false
 }
 
-func define_command(args *abstractions.Command_context) (string, bool) {
+func defineCommand(args *abstractions.CommandContext) (string, bool) {
 	arg := args.Arguments["word"]
 	if arg == "" {
 		return "No definition provided!", true
@@ -53,7 +53,7 @@ func define_command(args *abstractions.Command_context) (string, bool) {
 	}
 }
 
-func evaluate_command(args *abstractions.Command_context) (string, bool) {
+func evaluateCommand(args *abstractions.CommandContext) (string, bool) {
 	if os.Getenv("DISABLE_CALC") != "" && os.Getenv("DISABLE_CALC") != "false" {
 		return "The calculator has been disabled!", false
 	} else {
@@ -61,12 +61,12 @@ func evaluate_command(args *abstractions.Command_context) (string, bool) {
 		if arg == "" {
 			return "No expression provided!", true
 		} else {
-			return helpers.Evaluate_input(arg), false
+			return helpers.EvaluatecCalculatorInput(arg), false
 		}
 	}
 }
 
-func fortune_command(args *abstractions.Command_context) (string, bool) {
+func fortuneCommand(args *abstractions.CommandContext) (string, bool) {
 	out, err := exec.Command("fortune").Output()
 	if err != nil {
 		return fmt.Sprintf("Error: %s", err), true
@@ -75,7 +75,7 @@ func fortune_command(args *abstractions.Command_context) (string, bool) {
 	}
 }
 
-func uwuify_command(args *abstractions.Command_context) (string, bool) {
+func uwuifyCommand(args *abstractions.CommandContext) (string, bool) {
 	arg := args.Arguments["input"]
 	if arg == "" {
 		return "No text provided!", true
@@ -84,7 +84,7 @@ func uwuify_command(args *abstractions.Command_context) (string, bool) {
 	}
 }
 
-func ship_command(args *abstractions.Command_context) (string, bool) {
+func shipCommand(args *abstractions.CommandContext) (string, bool) {
 	person_a := args.Arguments["person_a"]
 	person_b := args.Arguments["person_b"]
 	if person_a == "" || person_b == "" {
@@ -95,13 +95,13 @@ func ship_command(args *abstractions.Command_context) (string, bool) {
 	}
 }
 
-func AddCommands(adder abstractions.Command_adder) error {
+func AddCommands(adder abstractions.CommandAdder) error {
 	var err error
 
 	err = adder(abstractions.Command{
 		Name:        "about",
 		Description: "Display's information about the bot",
-		Handler:     about_command,
+		Handler:     aboutCommand,
 	})
 	if err != nil {
 		return err
@@ -110,7 +110,7 @@ func AddCommands(adder abstractions.Command_adder) error {
 	err = adder(abstractions.Command{
 		Name:        "ping",
 		Description: "ping-pong",
-		Handler:     ping_command,
+		Handler:     pingCommand,
 	})
 	if err != nil {
 		return err
@@ -119,12 +119,12 @@ func AddCommands(adder abstractions.Command_adder) error {
 	err = adder(abstractions.Command{
 		Name:        "define",
 		Description: "find the definition of a word",
-		Arguments: []abstractions.Command_arguments{{
+		Arguments: []abstractions.CommandArguments{{
 			Name:        "word",
 			Description: " Word to search",
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
-		Handler: define_command,
+		Handler: defineCommand,
 	})
 	if err != nil {
 		return err
@@ -133,12 +133,12 @@ func AddCommands(adder abstractions.Command_adder) error {
 	err = adder(abstractions.Command{
 		Name:        "calc",
 		Description: "Calculate an expression",
-		Arguments: []abstractions.Command_arguments{{
+		Arguments: []abstractions.CommandArguments{{
 			Name:        "expression",
 			Description: "Expression to evaluate",
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
-		Handler: evaluate_command,
+		Handler: evaluateCommand,
 	})
 	if err != nil {
 		return err
@@ -147,7 +147,7 @@ func AddCommands(adder abstractions.Command_adder) error {
 	err = adder(abstractions.Command{
 		Name:        "fortune",
 		Description: "Returns the output of 'fortune'",
-		Handler:     fortune_command,
+		Handler:     fortuneCommand,
 	})
 	if err != nil {
 		return err
@@ -156,12 +156,12 @@ func AddCommands(adder abstractions.Command_adder) error {
 	err = adder(abstractions.Command{
 		Name:        "uwuify",
 		Description: "Uwuifies text",
-		Arguments: []abstractions.Command_arguments{{
+		Arguments: []abstractions.CommandArguments{{
 			Name:        "input",
 			Description: "Text to uwuify",
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
-		Handler: uwuify_command,
+		Handler: uwuifyCommand,
 	})
 	if err != nil {
 		return err
@@ -170,7 +170,7 @@ func AddCommands(adder abstractions.Command_adder) error {
 	err = adder(abstractions.Command{
 		Name:        "ship",
 		Description: "Ships 2 people",
-		Arguments: []abstractions.Command_arguments{{
+		Arguments: []abstractions.CommandArguments{{
 			Name:        "person_a",
 			Description: "Person A",
 			Arg_type:    abstractions.Command_argument_type_string,
@@ -179,7 +179,7 @@ func AddCommands(adder abstractions.Command_adder) error {
 			Description: "Person B",
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
-		Handler: ship_command,
+		Handler: shipCommand,
 	})
 	if err != nil {
 		return err
