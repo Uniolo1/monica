@@ -27,6 +27,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 
 	"codeberg.org/jersey/lightning/pkg/lightning"
@@ -53,11 +54,15 @@ func define_command(opts *lightning.CommandOptions) {
 }
 
 func evaluate_command(opts *lightning.CommandOptions) {
-	arg := opts.Arguments["expression"]
-	if arg == "" {
-		opts.Reply(&lightning.Message{Content: "No definition provided!"}, false)
+	if os.Getenv("DISABLE_CALC") != "" && os.Getenv("DISABLE_CALC") != "false" {
+		opts.Reply(&lightning.Message{Content: "The calculator has been disabled!"}, false)
 	} else {
-		opts.Reply(&lightning.Message{Content: evaluate_input(arg)}, false)
+		arg := opts.Arguments["expression"]
+		if arg == "" {
+			opts.Reply(&lightning.Message{Content: "No definition provided!"}, false)
+		} else {
+			opts.Reply(&lightning.Message{Content: evaluate_input(arg)}, false)
+		}
 	}
 }
 
