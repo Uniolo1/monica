@@ -31,6 +31,7 @@ import (
 	"os/exec"
 
 	"codeberg.org/jersey/lightning/pkg/lightning"
+	"github.com/uniolo1/monica/internal/helpers"
 )
 
 func about_command(opts *lightning.CommandOptions) {
@@ -49,7 +50,7 @@ func define_command(opts *lightning.CommandOptions) {
 	if arg == "" {
 		opts.Reply(&lightning.Message{Content: "No definition provided!"}, false)
 	} else {
-		opts.Reply(&lightning.Message{Content: formatTabs(getDefinition(arg))}, false)
+		opts.Reply(&lightning.Message{Content: helpers.FormatTabs(helpers.GetDefinition(arg))}, false)
 	}
 }
 
@@ -61,7 +62,7 @@ func evaluate_command(opts *lightning.CommandOptions) {
 		if arg == "" {
 			opts.Reply(&lightning.Message{Content: "No definition provided!"}, false)
 		} else {
-			opts.Reply(&lightning.Message{Content: evaluate_input(arg)}, false)
+			opts.Reply(&lightning.Message{Content: helpers.Evaluate_input(arg)}, false)
 		}
 	}
 }
@@ -80,7 +81,7 @@ func uwuify_command(opts *lightning.CommandOptions) {
 	if arg == "" {
 		opts.Reply(&lightning.Message{Content: "No text provided!"}, false)
 	} else {
-		opts.Reply(&lightning.Message{Content: uwuify(arg)}, false)
+		opts.Reply(&lightning.Message{Content: helpers.Uwuify(arg)}, false)
 	}
 }
 

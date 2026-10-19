@@ -23,21 +23,71 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package commands
+package helpers
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"github.com/maja42/goval"
+	"net/http"
+	"net/url"
+	"strings"
+	"time"
 )
 
-func evaluate_input(input string) string {
-	eval := goval.NewEvaluator()
+func FormatTabs(s string) string {
+	var result strings.Builder
+	column := 0
 
-	result, err := eval.Evaluate(input, nil, nil)
-	if err != nil {
-		return fmt.Sprintf("Error: %s", err)
-	} else {
-		return fmt.Sprintf("%v", result)
+	for _, r := range s {
+		switch r {
+		case '\t':
+			spaces := 6 - (column % 6)
+			result.WriteString(strings.Repeat(" ", spaces))
+			column += spaces
+		case '\n':
+			result.WriteRune(r)
+			column = 0
+		default:
+			result.WriteRune(r)
+			column++
+		}
 	}
+
+	return result.String()
+
+}
+
+func GetDefinition(query string) string {
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	// I use datamuse because it does not require an API key - and it's free!
+	apiURL := "https://api.datamuse.com/words?sp=" +
+		url.QueryEscape(query) + "&md=d"
+
+	resp, err := client.Get(apiURL)
+	if err != nil {
+		return fmt.Sprintf("ERROR: %s", err.Error())
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Sprintf("Got HTTP status code '%d' when looking up definition!", resp.StatusCode)
+	}
+
+	var data []struct {
+		Defs []string `json:"defs"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return fmt.Sprintf("ERROR: %s", err.Error())
+	}
+
+	if len(data) == 0 || len(data[0].Defs) == 0 {
+		return "No definition was found!"
+	}
+
+	// [:3] limits definition to a max of 3, chosen because :3
+	return strings.Join(data[0].Defs[:3], "\n")
 }

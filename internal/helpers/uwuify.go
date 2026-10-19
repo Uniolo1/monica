@@ -23,7 +23,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package commands
+package helpers
 
 import "strings"
 
@@ -49,7 +49,7 @@ func transfer_case(original, replacement string) string {
 }
 
 // based on a C library I made - https://github.com/uniolo1/libuwu
-func uwuify(input string) string {
+func Uwuify(input string) string {
 	words := strings.Fields(input)
 
 	for i, word := range words {
