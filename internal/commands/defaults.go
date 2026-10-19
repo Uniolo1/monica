@@ -99,7 +99,6 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	// From my discord gif gallery - Uniolo
 	"https://tenor.com/view/alya-alisa-mikhailovna-kujou-alya-sometimes-hides-her-feelings-in-russian-anime-anime-dance-gif-1225141651010373452",
 	"https://tenor.com/view/rumia-fish-gif-rumia-fish-touhou-gif-23149573",
-	"https://tenor.com/view/rikachair-higurashichair-wigflewtopluto2-gif-20250473",
 	"https://tenor.com/view/bunny-gif-22123810",
 	"https://klipy.com/gifs/femtanyl-2",
 	"https://klipy.com/gifs/marin-kitagawa-33",
@@ -108,4 +107,5 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/happy-blue-hair",
 	"https://klipy.com/gifs/fate-grand-10",
 	"https://klipy.com/gifs/silent-witch-monica-everett-30", // _monica_ norton
+	"https://klipy.com/gifs/silent-witch-4",                 // ^^^^^^^^^^^^^^^
 }
