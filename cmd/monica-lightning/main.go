@@ -143,6 +143,11 @@ func main() {
 		)
 	}
 
+	// clear some sensitive environment variables
+	os.Unsetenv("IRC_SASL_USER")
+	os.Unsetenv("IRC_SASL_PASS")
+	os.Unsetenv("IRC_COMMANDS_ONCONNECT") // likely contains NickServ commands
+
 	if platforms == 0 {
 		println("Bot was not configured or no platform was specified!")
 		os.Exit(1)
