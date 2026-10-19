@@ -27,6 +27,16 @@ package main
 
 var DEFAULT_INSULTS = []string{
 	"You oxygen thief!",
+	"I hope both sides of your pillow are hot!",
+
+	// found these from: https://bestlifeonline.com/best-insults/
+	"You’re the reason God created the middle finger.",
+	"I’d rather change a baby’s diaper than have lunch with you.",
+	"You’re so ugly, even Stephen King would have nightmares about you.",
+	"You are proof God has a sense of humor.",
+	"Calling you an idiot would be an insult to all stupid people.",
+	"You fear success, but you really have nothing to worry about.",
+	"You have an entire life to be an idiot. Why not take today off?",
 
 	// everything below this comment is from the internet - https://psycatgames.com/magazine/conversation-starters/creative-insults/
 	"There’s some shit on your clothes. Oh, nope. That’s just you.",
