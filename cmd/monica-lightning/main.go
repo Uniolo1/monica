@@ -31,7 +31,6 @@ import (
 	"syscall"
 
 	"codeberg.org/jersey/lightning/pkg/lightning"
-	"codeberg.org/jersey/lightning/pkg/platforms/discord"
 	"codeberg.org/jersey/lightning/pkg/platforms/irc"
 
 	"github.com/uniolo1/monica/internal/abstractions"
@@ -94,25 +93,6 @@ func main() {
 	var data lightning.PluginDataStorage
 
 	platforms := 0
-
-	// add discord stuff
-	if os.Getenv("DISCORD_BOT_TOKEN") != "" {
-		println("Adding Discord bot...")
-		platforms++
-
-		bot.AddPluginType("discord", discord.New)
-		bot.UsePluginType(
-			"discord",
-			"discord",
-			map[string]string{
-				"token": os.Getenv("DISCORD_BOT_TOKEN"),
-			},
-			data,
-		)
-	}
-
-	// I would assume lightning handles the token securely
-	os.Unsetenv("DISCORD_BOT_TOKEN")
 
 	// add IRC stuff
 	if os.Getenv("DO_IRC") != "" && os.Getenv("DO_IRC") != "false" {
