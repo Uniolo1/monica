@@ -64,16 +64,16 @@ func adder(command abstractions.Command) error {
 			ArgumentGetter: get_args,
 		}
 
-		reply, _ := command.Handler(&context)
+		reply, ephemeral := command.Handler(&context)
 
-		// NOTE: we always pass 'false' here due to IRC concerns
 		return e.CreateMessage(discord.MessageCreate{
 			Content: reply,
-		})
+		}.WithEphemeral(ephemeral))
 	}
 
 	options := []discord.ApplicationCommandOption{}
 	for _, arg := range command.Arguments {
+		// TODO: Add int's when we add a command that uses them
 		options = append(options, discord.ApplicationCommandOptionString{
 			Name:        arg.Name,
 			Description: arg.Description,
@@ -85,6 +85,7 @@ func adder(command abstractions.Command) error {
 		Name:        command.Name,
 		Description: command.Description,
 		Options:     options,
+		NSFW:        &command.NSFW,
 	}
 
 	h.SlashCommand("/"+command.Name, executor)

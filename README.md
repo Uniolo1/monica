@@ -3,8 +3,12 @@ SPDX-FileCopyrightText: NONE
 SPDX-License-Identifier: Unlicense
 -->
 # Monica
-A small little bot that works on Discord, and IRC
+A small little bot that works on both Discord and IRC.
 
+## Platforms
+Each platform has it's own executable, though they both share most of the same code
+
+### IRC (Lightning)
 To run it, simply run:
 ```sh
 go run ./cmd/monica-lightning
@@ -13,6 +17,15 @@ go run ./cmd/monica-lightning
 To compile it, simply run:
 ```sh
 go build -o monica-lightning ./cmd/monica-lightning
+```
+### Discord (Disgo)
+```sh
+go run ./cmd/monica-disgo
+```
+
+To compile it, simply run:
+```sh
+go build -o monica-lightning ./cmd/monica-disgo
 ```
 
 ## FAQ

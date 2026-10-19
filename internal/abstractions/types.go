@@ -50,6 +50,7 @@ type CommandArguments struct {
 type Command struct {
 	Name        string
 	Description string
+	NSFW        bool // who knows might add one in the future, you never know
 	Arguments   []CommandArguments
 	Handler     CommandHandler
 }
