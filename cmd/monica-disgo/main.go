@@ -72,9 +72,19 @@ func adder(command abstractions.Command) error {
 		})
 	}
 
+	options := []discord.ApplicationCommandOption{}
+	for _, arg := range command.Arguments {
+		options = append(options, discord.ApplicationCommandOptionString{
+			Name:        arg.Name,
+			Description: arg.Description,
+			Required:    arg.Required,
+		})
+	}
+
 	newCommand := discord.SlashCommandCreate{
 		Name:        command.Name,
 		Description: command.Description,
+		Options:     options,
 	}
 
 	h.SlashCommand("/"+command.Name, executor)
