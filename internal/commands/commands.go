@@ -45,7 +45,7 @@ func pingCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func defineCommand(args *abstractions.CommandContext) (string, bool) {
-	arg := args.Arguments["word"]
+	arg := args.ArgumentGetter("word")
 	if arg == "" {
 		return "No definition provided!", true
 	} else {
@@ -57,7 +57,7 @@ func evaluateCommand(args *abstractions.CommandContext) (string, bool) {
 	if os.Getenv("DISABLE_CALC") != "" && os.Getenv("DISABLE_CALC") != "false" {
 		return "The calculator has been disabled!", false
 	} else {
-		arg := args.Arguments["expression"]
+		arg := args.ArgumentGetter("expression")
 		if arg == "" {
 			return "No expression provided!", true
 		} else {
@@ -76,7 +76,7 @@ func fortuneCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func uwuifyCommand(args *abstractions.CommandContext) (string, bool) {
-	arg := args.Arguments["input"]
+	arg := args.ArgumentGetter("input")
 	if arg == "" {
 		return "No text provided!", true
 	} else {
@@ -85,8 +85,8 @@ func uwuifyCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func shipCommand(args *abstractions.CommandContext) (string, bool) {
-	person_a := args.Arguments["person_a"]
-	person_b := args.Arguments["person_b"]
+	person_a := args.ArgumentGetter("person_a")
+	person_b := args.ArgumentGetter("person_b")
 	if person_a == "" || person_b == "" {
 		return "Missing required 'person_a' and 'person_b' parameters!", true
 	} else {
