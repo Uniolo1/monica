@@ -118,7 +118,7 @@ func ship_command(opts *lightning.CommandOptions) {
 	if person_a == "" || person_b == "" {
 		opts.Reply(&lightning.Message{Content: "Missing required 'person_a' and 'person_b' parameters!"}, false)
 	} else {
-		output := person_a[:len(person_a)/2] + person_b[len(person_b)/2:]
+		output := person_a[:int(len(person_a)/2)] + person_b[int(len(person_b)/2):]
 		opts.Reply(&lightning.Message{Content: output}, false)
 	}
 }
