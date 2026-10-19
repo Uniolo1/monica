@@ -15,6 +15,16 @@ var DEFAULT_INSULTS = []string{
 var DEFAULT_COMPLIMENTS = []string{
 	"Nice message!",
 
+	// AI suggestions (not code so it's *fine*)
+	"You give people room to be human.",
+	"You’re quietly extraordinary",
+	"You make the little things count.",
+	"You make people feel like they don't have to pretend around you.",
+	"You have a way of making the world feel a little less ordinary.",
+
+	// Aleis's suggestion
+	"You have a soul that reminds the lands of the falling rain again.",
+
 	// everything below this comment is from wikihow - https://www.wikihow.com/Unique-Compliments
 	// (wikihow sucks it had soo little)
 	"You could talk to a brick wall and make it feel heard.",
@@ -25,6 +35,17 @@ var DEFAULT_COMPLIMENTS = []string{
 var DEFAULT_FLIRTS = []string{
 	"Heyy",
 	"Are you open source? Cuz' I want to fork your left atrium!", // this one is high-risk I would say... meh... they all are
+
+	// The AI gave me some suggestions for flirting when I asked for compliments... guess that's what people use AI for
+	"You make eye contact feel like a dangerous game.",
+	"If distraction were a person, it would look exactly like you.",
+	"You make kindness look like a superpower.",
+	"You’re not everybody’s type. You’re everybody’s plot twist.",
+	"You’re the reason my screen time is so high.",
+	"Y'know I was having a productive day until you showed up.", // I edited this one slightly
+	"You’re a rare kind of beautiful.",
+	"Your energy is addictive.",
+	"You’re art with a pulse.",
 
 	// An acquaintance of mine (Zachary) recommended I add this... keeping it as a comment
 	// "Stawp! I am not a tsundere!",
