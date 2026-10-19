@@ -23,7 +23,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package main
+package commands
 
 import (
 	"fmt"
@@ -84,7 +84,7 @@ func uwuify_command(opts *lightning.CommandOptions) {
 	}
 }
 
-func addCommands(bot *lightning.Bot) {
+func AddCommands(bot *lightning.Bot) {
 	bot.AddCommand(lightning.Command{
 		Name:        "about",
 		Description: "Display's information about the bot",

@@ -36,6 +36,8 @@ import (
 	"codeberg.org/jersey/lightning/pkg/lightning"
 	"codeberg.org/jersey/lightning/pkg/platforms/discord"
 	"codeberg.org/jersey/lightning/pkg/platforms/irc"
+
+	"github.com/uniolo1/monica/internal/commands"
 )
 
 func main() {
@@ -58,7 +60,7 @@ func main() {
 	}
 
 	bot := lightning.NewBot(prefix)
-	addCommands(bot)
+	commands.AddCommands(bot)
 
 	// data thingy - currently unused
 	var data lightning.PluginDataStorage
