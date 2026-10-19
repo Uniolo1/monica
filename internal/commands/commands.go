@@ -122,6 +122,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		Arguments: []abstractions.CommandArguments{{
 			Name:        "word",
 			Description: " Word to search",
+			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
 		Handler: defineCommand,
@@ -136,6 +137,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		Arguments: []abstractions.CommandArguments{{
 			Name:        "expression",
 			Description: "Expression to evaluate",
+			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
 		Handler: evaluateCommand,
@@ -159,6 +161,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		Arguments: []abstractions.CommandArguments{{
 			Name:        "input",
 			Description: "Text to uwuify",
+			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
 		Handler: uwuifyCommand,
@@ -173,10 +176,12 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		Arguments: []abstractions.CommandArguments{{
 			Name:        "person_a",
 			Description: "Person A",
+			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
 		}, {
 			Name:        "person_b",
 			Description: "Person B",
+			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
 		Handler: shipCommand,

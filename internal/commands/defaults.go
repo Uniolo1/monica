@@ -107,5 +107,5 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/osaka-spin-3",
 	"https://klipy.com/gifs/happy-blue-hair",
 	"https://klipy.com/gifs/fate-grand-10",
-	"https://klipy.com/gifs/silent-witch-monica-everett-30", // MONICA norton
+	"https://klipy.com/gifs/silent-witch-monica-everett-30", // _monica_ norton
 }
