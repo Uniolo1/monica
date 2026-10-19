@@ -8,18 +8,8 @@ A small little bot that works on both Discord and IRC.
 ## Platforms
 Each platform has it's own executable, though they both share most of the same code
 
-### IRC (Lightning)
-To run it, simply run:
-```sh
-go run ./cmd/monica-lightning
-```
-
-To compile it, simply run:
-```sh
-go build -o monica-lightning ./cmd/monica-lightning
-```
 ### Discord (Disgo)
-The same as with IRC but with a slightly different path, run it with:
+To run it, simply run:
 ```sh
 go run ./cmd/monica-disgo
 ```
@@ -27,6 +17,20 @@ go run ./cmd/monica-disgo
 And compile it with:
 ```sh
 go build -o monica-disgo ./cmd/monica-disgo
+```
+
+### IRC (Lightning)
+> [!NOTE]
+> Due to issues with Lightning, it is planned on being dropped in favor of another IRC bot library
+
+The same as with Discord but with a slightly different path, run it with:
+```sh
+go run ./cmd/monica-lightning
+```
+
+And to compile it, run:
+```sh
+go build -o monica-lightning ./cmd/monica-lightning
 ```
 
 ## FAQ
