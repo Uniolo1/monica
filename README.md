@@ -38,3 +38,6 @@ Currently, the available commands are: `about`, `ping`, `define`, `calc`, `fortu
 
 #### Why is it called Monica?
 Whilst thinking of what to name it, I noticed a lot of my bots were named after Anime characters, and there is one person in a server I am in who is **obsessed** with Monica Norton from [The Silent Witch](https://wikipedia.org/wiki/Secrets_of_the_Silent_Witch), so I named it Monica!
+
+#### Why are all of the commands text-only?
+The purpose of this bot is to be highly extensible frontend-wise, as such, all of the commands are currently text-only because every chat platform worth using supports text!
