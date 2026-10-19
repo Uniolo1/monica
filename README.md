@@ -7,12 +7,12 @@ A small little bot that works on Discord, and IRC
 
 To run it, simply run:
 ```sh
-go run ./cmd
+go run ./cmd/monica-lightning
 ```
 
 To compile it, simply run:
 ```sh
-go build -o monica ./cmd
+go build -o monica-lightning ./cmd/monica-lightning
 ```
 
 ## FAQ
