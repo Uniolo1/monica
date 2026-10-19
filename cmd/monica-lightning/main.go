@@ -49,6 +49,8 @@ func adder(command abstractions.Command) error {
 		}
 
 		reply, _ := command.Handler(&context)
+
+		// NOTE: we always pass 'false' here due to IRC concerns
 		opts.Reply(&lightning.Message{Content: reply}, false)
 	}
 

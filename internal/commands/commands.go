@@ -47,7 +47,7 @@ func ping_command(args *abstractions.Command_context) (string, bool) {
 func define_command(args *abstractions.Command_context) (string, bool) {
 	arg := args.Arguments["word"]
 	if arg == "" {
-		return "No definition provided!", false
+		return "No definition provided!", true
 	} else {
 		return helpers.FormatTabs(helpers.GetDefinition(arg)), false
 	}
@@ -59,7 +59,7 @@ func evaluate_command(args *abstractions.Command_context) (string, bool) {
 	} else {
 		arg := args.Arguments["expression"]
 		if arg == "" {
-			return "No definition provided!", false
+			return "No expression provided!", true
 		} else {
 			return helpers.Evaluate_input(arg), false
 		}
@@ -69,7 +69,7 @@ func evaluate_command(args *abstractions.Command_context) (string, bool) {
 func fortune_command(args *abstractions.Command_context) (string, bool) {
 	out, err := exec.Command("fortune").Output()
 	if err != nil {
-		return fmt.Sprintf("Error: %s", err), false
+		return fmt.Sprintf("Error: %s", err), true
 	} else {
 		return string(out), false
 	}
@@ -78,7 +78,7 @@ func fortune_command(args *abstractions.Command_context) (string, bool) {
 func uwuify_command(args *abstractions.Command_context) (string, bool) {
 	arg := args.Arguments["input"]
 	if arg == "" {
-		return "No text provided!", false
+		return "No text provided!", true
 	} else {
 		return helpers.Uwuify(arg), false
 	}
@@ -88,7 +88,7 @@ func ship_command(args *abstractions.Command_context) (string, bool) {
 	person_a := args.Arguments["person_a"]
 	person_b := args.Arguments["person_b"]
 	if person_a == "" || person_b == "" {
-		return "Missing required 'person_a' and 'person_b' parameters!", false
+		return "Missing required 'person_a' and 'person_b' parameters!", true
 	} else {
 		output := person_a[:int(len(person_a)/2)] + person_b[int(len(person_b)/2):]
 		return output, false

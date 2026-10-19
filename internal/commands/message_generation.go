@@ -56,19 +56,19 @@ func rand_item(list *[]string) string {
 
 func insult_command(args *abstractions.Command_context) (string, bool) {
 	insults := load_from_env_or_list("INSULTS", DEFAULT_INSULTS)
-	return rand_item(insults), false
+	return rand_item(insults), true
 }
 
 func compliment_command(args *abstractions.Command_context) (string, bool) {
 	compliments := load_from_env_or_list("COMPLIMENTS", DEFAULT_COMPLIMENTS)
-	return rand_item(compliments), false
+	return rand_item(compliments), true
 }
 
 func flirt_command(args *abstractions.Command_context) (string, bool) {
 	// FYI if you need a bot to flirt successfully, you are completely and utterly cooked.
 
 	flirts := load_from_env_or_list("FLIRTS", DEFAULT_FLIRTS)
-	return rand_item(flirts), false
+	return rand_item(flirts), true
 }
 
 // requested command
