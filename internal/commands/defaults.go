@@ -115,4 +115,19 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/anime-lily-1",
 	"https://klipy.com/gifs/reze-ok",
 	"https://klipy.com/gifs/anime-anime-girl-129",
+	"https://klipy.com/gifs/yuki-13",
+	"https://klipy.com/gifs/chou-kaguya-hime-kaguya-hime-5",
+	"https://klipy.com/gifs/angry-anime-36",
+	"https://klipy.com/gifs/wink-anime-2",
+	"https://klipy.com/gifs/anim-11",
+	"https://klipy.com/gifs/alya-1", // good manga BTW
+	"https://klipy.com/gifs/kushima-kamome-3",
+	"https://klipy.com/gifs/wink-anime-wink",
+	"https://klipy.com/gifs/tokoyami-towa-novice",
+	"https://klipy.com/gifs/wink-smile-75",
+	"https://klipy.com/gifs/hyakkano-100-girlfriends-1", // good manga BTW (x2)
+	"https://klipy.com/gifs/hakari-hanazono-4",
+	"https://klipy.com/gifs/shizuka-yoshimoto-kimi-no-koto-ga-daidaidaidaidaisuki-na-100-nin-no-kanojo",
+	"https://klipy.com/gifs/chewzuka-cheeks",
+	"https://klipy.com/gifs/wink-neuro", // neuro-sama is not anime... but close enough
 }
