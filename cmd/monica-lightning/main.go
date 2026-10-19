@@ -45,15 +45,25 @@ func adder(command abstractions.Command) error {
 	executor := func(opts *lightning.CommandOptions) {
 		context := abstractions.Command_context{
 			Framework: "lightning",
+			Arguments: opts.Arguments,
 		}
 
 		reply, _ := command.Handler(&context)
 		opts.Reply(&lightning.Message{Content: reply}, false)
 	}
 
+	arguments := make([]lightning.CommandArgument, 0, len(command.Arguments))
+	for _, arg := range command.Arguments {
+		arguments = append(arguments, lightning.CommandArgument{
+			Name:        arg.Name,
+			Description: arg.Description,
+		})
+	}
+
 	bot.AddCommand(lightning.Command{
 		Name:        command.Name,
 		Description: command.Description,
+		Arguments:   arguments,
 		Executor:    executor,
 	})
 	return nil
