@@ -134,4 +134,13 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/shizuka-yoshimoto-kimi-no-koto-ga-daidaidaidaidaisuki-na-100-nin-no-kanojo",
 	"https://klipy.com/gifs/chewzuka-cheeks",
 	"https://klipy.com/gifs/wink-neuro", // neuro-sama is not anime... but close enough
+	"https://klipy.com/gifs/neko-cat-9",
+	"https://klipy.com/gifs/cat-girl-45",
+	"https://klipy.com/gifs/cat-girl-anime-cat-girl",
+	"https://klipy.com/gifs/neko-neko-niiiii-chibi",
+	"https://klipy.com/gifs/anime-ok-11",
+	"https://klipy.com/gifs/princess-connect-cat-girl",
+	"https://klipy.com/gifs/monika-15",
+	"https://klipy.com/gifs/anime-fran-22",
+	"https://klipy.com/gifs/catgirl-5",
 }
