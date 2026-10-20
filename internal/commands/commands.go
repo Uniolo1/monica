@@ -30,6 +30,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"time"
 
 	"github.com/uniolo1/monica/internal/abstractions"
 	"github.com/uniolo1/monica/internal/helpers"
@@ -107,11 +108,65 @@ func shipCommand(args *abstractions.CommandContext) (string, bool) {
 	person_a := args.ArgumentGetter("person_a", abstractions.Command_argument_type_string)
 	person_b := args.ArgumentGetter("person_b", abstractions.Command_argument_type_string)
 	if person_a == "" || person_b == "" {
-		return "Missing required 'person_a' and 'person_b' parameters!", true
+		return "Missing required 'person_a' and/or 'person_b' parameter(s)!", true
 	} else {
 		output := person_a[:int(len(person_a)/2)] + person_b[int(len(person_b)/2):]
 		return output, false
 	}
+}
+
+func convertTzCommand(args *abstractions.CommandContext) (string, bool) {
+	time_str := args.ArgumentGetter("time", abstractions.Command_argument_type_string)
+	from_tz := args.ArgumentGetter("from_tz", abstractions.Command_argument_type_string)
+	to_tz := args.ArgumentGetter("to_tz", abstractions.Command_argument_type_string)
+
+	if time_str == "" || from_tz == "" {
+		return "Some required parameters are missing, one of: 'time_str', or 'from_tz'!", true
+	}
+
+	from_loc, err := time.LoadLocation(from_tz)
+	if err != nil {
+		return "Invalid from_tz: " + err.Error(), true
+	}
+
+	to_loc, err := time.LoadLocation(to_tz)
+	if err != nil {
+		return "Invalid to_tz: " + err.Error(), true
+	}
+
+	layouts := []string{
+		time.RFC3339,
+		"2006-01-02 15:04:05",
+		"2006-01-02 15:04",
+		"2006-01-02",
+		"15:04:05",
+		"15:04",
+	}
+
+	var parsedTime time.Time
+	var layout string
+	var parseErr error
+
+	for _, candidate := range layouts {
+		parsedTime, parseErr = time.ParseInLocation(candidate, time_str, from_loc)
+		if parseErr == nil {
+			layout = candidate
+			break
+		}
+	}
+
+	if layout == "" {
+		return "Time is in an unrecognized format!", true
+	}
+
+	result := parsedTime.In(to_loc).Format(layout)
+
+	if to_tz == "" {
+		// append " UTC" to result it 'to_tz' is not specified
+		result += " UTC"
+	}
+	converted := result
+	return converted, false
 }
 
 func AddCommands(adder abstractions.CommandAdder) error {
@@ -165,6 +220,31 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
 		Handler: evaluateCommand,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "converttz",
+		Description: "Convert a the timezone of a time from 'from_tz' to 'to_tz'",
+		Arguments: []abstractions.CommandArguments{{
+			Name:        "time",
+			Description: "The time to convert",
+			Required:    true,
+			Arg_type:    abstractions.Command_argument_type_string,
+		}, {
+			Name:        "from_tz",
+			Description: "The timezone 'time' is currently in",
+			Required:    true,
+			Arg_type:    abstractions.Command_argument_type_string,
+		}, {
+			Name:        "to_tz",
+			Description: "The timezone you want 'time' to be in",
+			Required:    false,
+			Arg_type:    abstractions.Command_argument_type_string,
+		}},
+		Handler: convertTzCommand,
 	})
 	if err != nil {
 		return err
