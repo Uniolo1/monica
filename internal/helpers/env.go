@@ -28,6 +28,7 @@ package helpers
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -42,4 +43,9 @@ func SetupEnv() {
 
 	// relative to the current directory (NOTE: overwrites env above)
 	_ = godotenv.Load(".env")
+
+	// Happy Pride Month!
+	if time.Now().Month() == time.June {
+		fmt.Println("Happy Pride Month!")
+	}
 }
