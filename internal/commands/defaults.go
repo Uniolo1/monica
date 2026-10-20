@@ -108,6 +108,7 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/anime-girl-711",
 	"https://klipy.com/gifs/osaka-spin-3",
 	"https://klipy.com/gifs/happy-blue-hair",
+	"https://tenor.com/view/bocchi-the-rock-gif-15650315287216926532",
 	"https://klipy.com/gifs/fate-grand-10",
 	"https://klipy.com/gifs/silent-witch-monica-everett-30", // _monica_ norton
 	"https://klipy.com/gifs/silent-witch-4",                 // ^^^^^^^^^^^^^^^
