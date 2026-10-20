@@ -29,6 +29,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 
 	"github.com/uniolo1/monica/internal/abstractions"
 	"github.com/uniolo1/monica/internal/helpers"
@@ -49,7 +50,25 @@ func defineCommand(args *abstractions.CommandContext) (string, bool) {
 	if arg == "" {
 		return "No definition provided!", true
 	} else {
-		return helpers.FormatTabs(helpers.GetDefinition(arg)), false
+		var upper_limit int
+		upper_limit_arg := args.ArgumentGetter("limit")
+		if upper_limit_arg == "" {
+			upper_limit = 5 // default
+		} else {
+			n, err := strconv.Atoi(upper_limit_arg)
+			if err != nil {
+				return "Invalid 'limit'!", true
+			}
+
+			// set upper_limit to n
+			upper_limit = n
+		}
+
+		if upper_limit <= 0 {
+			return "Upper limit of dictionary items must be a minimum of 1!", true
+		}
+
+		return helpers.FormatTabs(helpers.GetDefinition(arg, upper_limit)), false
 	}
 }
 
@@ -124,6 +143,11 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Description: " Word to search",
 			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
+		}, {
+			Name:        "limit",
+			Description: "Maximum number of dictionary entries that are returned",
+			Required:    false,
+			Arg_type:    abstractions.Command_argument_type_int,
 		}},
 		Handler: defineCommand,
 	})

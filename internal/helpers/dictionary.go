@@ -57,7 +57,7 @@ func FormatTabs(s string) string {
 
 }
 
-func GetDefinition(query string) string {
+func GetDefinition(query string, upper_limit int) string {
 	client := &http.Client{
 		Timeout: 10 * time.Second,
 	}
@@ -88,6 +88,5 @@ func GetDefinition(query string) string {
 		return "No definition was found!"
 	}
 
-	// [:5] limit's to max of 5... :3
-	return strings.Join(data[0].Defs[:5], "\n")
+	return strings.Join(data[0].Defs[:upper_limit], "\n")
 }
