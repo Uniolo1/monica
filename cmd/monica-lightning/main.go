@@ -41,7 +41,7 @@ import (
 func adder(command abstractions.Command) error {
 	executor := func(opts *lightning.CommandOptions) {
 		// implement ArgumentGetter
-		get_args := func(input string) string {
+		get_args := func(input string, _ abstractions.Command_argument_type) string {
 			return opts.Arguments[input]
 		}
 

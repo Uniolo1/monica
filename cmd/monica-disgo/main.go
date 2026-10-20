@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 
 	"github.com/disgoorg/disgo"
@@ -50,13 +51,32 @@ var slash_commands []discord.ApplicationCommandCreate
 func adder(command abstractions.Command) error {
 	executor := func(data discord.SlashCommandInteractionData, e *handler.CommandEvent) error {
 		// implement ArgumentGetter
-		get_args := func(input string) string {
-			ret, is_found := data.OptString(input)
-			if is_found {
-				return ret
-			} else {
-				return ""
+		get_args := func(input string, argument_type abstractions.Command_argument_type) string {
+			switch argument_type {
+
+			// string
+			case abstractions.Command_argument_type_string:
+				ret, is_found := data.OptString(input)
+				if is_found {
+					return ret
+				} else {
+					return ""
+				}
+
+			// int
+			case abstractions.Command_argument_type_int:
+				ret, is_found := data.OptInt(input)
+				if is_found {
+					return strconv.Itoa(ret)
+				} else {
+					return ""
+				}
+
+			// default
+			default:
+				panic("Argument type not yet supported by disgo!")
 			}
+
 		}
 
 		// supply context
@@ -74,12 +94,28 @@ func adder(command abstractions.Command) error {
 
 	options := []discord.ApplicationCommandOption{}
 	for _, arg := range command.Arguments {
-		// TODO: Add int's when we add a command that uses them
-		options = append(options, discord.ApplicationCommandOptionString{
-			Name:        arg.Name,
-			Description: arg.Description,
-			Required:    arg.Required,
-		})
+		switch arg.Arg_type {
+
+		// int
+		case abstractions.Command_argument_type_int:
+			// TODO: Add int's when we add a command that uses them
+			options = append(options, discord.ApplicationCommandOptionInt{
+				Name:        arg.Name,
+				Description: arg.Description,
+				Required:    arg.Required,
+			})
+
+		// string
+		case abstractions.Command_argument_type_string:
+			fallthrough
+		default:
+			// TODO: Add int's when we add a command that uses them
+			options = append(options, discord.ApplicationCommandOptionString{
+				Name:        arg.Name,
+				Description: arg.Description,
+				Required:    arg.Required,
+			})
+		}
 	}
 
 	newCommand := discord.SlashCommandCreate{

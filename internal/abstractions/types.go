@@ -25,7 +25,7 @@
 
 package abstractions
 
-type CommandArgumentGetter func(string) string
+type CommandArgumentGetter func(string, Command_argument_type) string
 type CommandHandler func(*CommandContext) (
 	string, // the reply to the message
 	bool, // weather the message should be ephemeral (only shown to user that sent the command)
