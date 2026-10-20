@@ -84,6 +84,9 @@ var DEFAULT_FLIRTS = []string{
 	// An acquaintance of mine (Zachary) recommended I add this... keeping it as a comment
 	// "Stawp! I am not a tsundere!",
 
+	// Friend suggestion:
+	"Are you a triangle, because your acute",
+
 	// everything below ths comment were flirts I found online - https://bestlifeonline.com/flirty-texts/
 	"Hey, stranger. Stop being a stranger.",
 	"Wanna trade secrets?",

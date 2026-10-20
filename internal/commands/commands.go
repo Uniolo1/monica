@@ -140,7 +140,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		Description: "find the definition of a word",
 		Arguments: []abstractions.CommandArguments{{
 			Name:        "word",
-			Description: " Word to search",
+			Description: "Word to search",
 			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
 		}, {

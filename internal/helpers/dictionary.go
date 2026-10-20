@@ -88,5 +88,9 @@ func GetDefinition(query string, upper_limit int) string {
 		return "No definition was found!"
 	}
 
-	return strings.Join(data[0].Defs[:upper_limit], "\n")
+	definitions := data[0].Defs
+	if len(definitions) > upper_limit {
+		definitions = definitions[:upper_limit]
+	}
+	return strings.Join(definitions, "\n")
 }
