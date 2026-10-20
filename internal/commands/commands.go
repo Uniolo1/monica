@@ -95,6 +95,25 @@ func fortuneCommand(args *abstractions.CommandContext) (string, bool) {
 	}
 }
 
+func diceCommand(args *abstractions.CommandContext) (string, bool) {
+	arg := args.ArgumentGetter("input", abstractions.Command_argument_type_string)
+	if arg == "" {
+		arg = "5d6"
+	}
+
+	result, rolls, err := helpers.RollDice(arg)
+	if err != nil {
+		return fmt.Sprintf("Error: %s", err), true
+	}
+
+	var output string = fmt.Sprintf("%v:", result)
+	for _, i := range rolls {
+		output += fmt.Sprintf(" 🎲%v", i)
+	}
+
+	return output, false
+}
+
 func uwuifyCommand(args *abstractions.CommandContext) (string, bool) {
 	arg := args.ArgumentGetter("input", abstractions.Command_argument_type_string)
 	if arg == "" {
@@ -254,6 +273,21 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		Name:        "fortune",
 		Description: "Returns the output of 'fortune'",
 		Handler:     fortuneCommand,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "rtd",
+		Description: "Roll some dice!",
+		Arguments: []abstractions.CommandArguments{{
+			Name:        "input",
+			Description: "How many dice and how many sides (e.g. '5d6')",
+			Required:    false,
+			Arg_type:    abstractions.Command_argument_type_string,
+		}},
+		Handler: diceCommand,
 	})
 	if err != nil {
 		return err
