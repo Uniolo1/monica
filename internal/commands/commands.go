@@ -145,13 +145,12 @@ func meterCommand(args *abstractions.CommandContext) (string, bool) {
 		return "Missing required " + args.FormatCodeOrQuote("thing") + " and/or " + args.FormatCodeOrQuote("metric") + " parameter(s)!", true
 	} else {
 		// logic to get a seed - incorporate day of the month and hour
-		// Remain semi-deterministic, result only changes every hour
 		now := time.Now()
 		hash := sha256.Sum256([]byte(
 			thing + "\x00" +
 				metric + "\x00" +
-				strconv.Itoa(now.Day()) + "\x00" + // day of month
-				strconv.Itoa(now.Hour()), // hour of day
+				strconv.Itoa(now.Day()) + "\x00" +
+				strconv.Itoa(now.Hour()),
 		))
 
 		seed := int64(binary.BigEndian.Uint64(hash[:8]))
