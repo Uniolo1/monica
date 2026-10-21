@@ -62,7 +62,7 @@ func defineCommand(args *abstractions.CommandContext) (string, bool) {
 		} else {
 			n, err := strconv.Atoi(upper_limit_arg)
 			if err != nil {
-				return "Invalid 'limit'!", true
+				return "Invalid " + args.FormatCodeOrQuote("limit") + "!", true
 			}
 
 			// set upper_limit to n
@@ -131,7 +131,7 @@ func shipCommand(args *abstractions.CommandContext) (string, bool) {
 	person_a := args.ArgumentGetter("person_a", abstractions.Command_argument_type_string)
 	person_b := args.ArgumentGetter("person_b", abstractions.Command_argument_type_string)
 	if person_a == "" || person_b == "" {
-		return "Missing required 'person_a' and/or 'person_b' parameter(s)!", true
+		return "Missing required " + args.FormatCodeOrQuote("person_a") + " and/or " + args.FormatCodeOrQuote("person_b") + " parameter(s)!", true
 	} else {
 		output := person_a[:int(len(person_a)/2)] + person_b[int(len(person_b)/2):]
 		return output, false
@@ -142,7 +142,7 @@ func measureCommand(args *abstractions.CommandContext) (string, bool) {
 	thing := strings.ToLower(args.ArgumentGetter("thing", abstractions.Command_argument_type_string))
 	metric := strings.ToLower(args.ArgumentGetter("metric", abstractions.Command_argument_type_string))
 	if thing == "" || metric == "" {
-		return "Missing required 'thing' and/or 'metric' parameter(s)!", true
+		return "Missing required " + args.FormatCodeOrQuote("thing") + " and/or " + args.FormatCodeOrQuote("metric") + " parameter(s)!", true
 	} else {
 		// logic to get a seed
 		hash := sha256.Sum256([]byte(thing + "\x00" + metric))
@@ -159,17 +159,17 @@ func convertTzCommand(args *abstractions.CommandContext) (string, bool) {
 	to_tz := args.ArgumentGetter("to_tz", abstractions.Command_argument_type_string)
 
 	if time_str == "" || from_tz == "" {
-		return "Some required parameters are missing, one of: 'time_str', or 'from_tz'!", true
+		return "Some required parameters are missing, one of: " + args.FormatCodeOrQuote("time") + ", or " + args.FormatCodeOrQuote("from_tz") + "!", true
 	}
 
 	from_loc, err := time.LoadLocation(from_tz)
 	if err != nil {
-		return "Invalid from_tz: " + err.Error(), true
+		return "Invalid " + args.FormatCodeOrQuote("from_tz") + ": " + err.Error(), true
 	}
 
 	to_loc, err := time.LoadLocation(to_tz)
 	if err != nil {
-		return "Invalid to_tz: " + err.Error(), true
+		return "Invalid " + args.FormatCodeOrQuote("to_tz") + ": " + err.Error(), true
 	}
 
 	layouts := []string{

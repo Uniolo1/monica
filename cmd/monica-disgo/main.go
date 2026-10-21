@@ -48,6 +48,10 @@ import (
 var h *handler.Mux = nil
 var slash_commands []discord.ApplicationCommandCreate
 
+func formatFunctionThing(input string) string {
+	return "`" + input + "`"
+}
+
 func adder(command abstractions.Command) error {
 	executor := func(data discord.SlashCommandInteractionData, e *handler.CommandEvent) error {
 		// implement ArgumentGetter
@@ -81,8 +85,9 @@ func adder(command abstractions.Command) error {
 
 		// supply context
 		context := abstractions.CommandContext{
-			Framework:      "disgo",
-			ArgumentGetter: get_args,
+			Framework:         "disgo",
+			FormatCodeOrQuote: formatFunctionThing,
+			ArgumentGetter:    get_args,
 		}
 
 		reply, ephemeral := command.Handler(&context)

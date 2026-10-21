@@ -38,6 +38,10 @@ import (
 	"github.com/uniolo1/monica/internal/helpers"
 )
 
+func formatFunctionThing(input string) string {
+	return "'" + input + "'"
+}
+
 func adder(command abstractions.Command) error {
 	executor := func(opts *lightning.CommandOptions) {
 		// implement ArgumentGetter
@@ -47,8 +51,9 @@ func adder(command abstractions.Command) error {
 
 		// supply context
 		context := abstractions.CommandContext{
-			Framework:      "lightning",
-			ArgumentGetter: get_args,
+			Framework:         "lightning",
+			FormatCodeOrQuote: formatFunctionThing,
+			ArgumentGetter:    get_args,
 		}
 
 		reply, _ := command.Handler(&context)
