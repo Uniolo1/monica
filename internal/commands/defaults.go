@@ -143,4 +143,5 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/monika-15",
 	"https://klipy.com/gifs/anime-fran-22",
 	"https://klipy.com/gifs/catgirl-5",
+	"https://klipy.com/gifs/anime-sleepy-30",
 }
