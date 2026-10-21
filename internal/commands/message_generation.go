@@ -26,8 +26,10 @@
 package commands
 
 import (
+	cryptoRand "crypto/rand"
 	"log/slog"
-	"math/rand"
+	"math/big"
+	mathRand "math/rand"
 	"os"
 	"strings"
 
@@ -47,12 +49,24 @@ func load_from_env_or_list(envname string, defaults []string) *[]string {
 	}
 }
 
+func random_index(number_of_items int) int {
+	// try using go's cryptographically secure random number generator
+	index, err := cryptoRand.Int(cryptoRand.Reader, big.NewInt(int64(number_of_items)))
+	if err == nil {
+		return int(index.Int64())
+	}
+
+	// fallback to an insecure number generator
+	return mathRand.Intn(number_of_items)
+}
+
 func rand_item(list *[]string) string {
 	if list == nil || len(*list) == 0 {
 		slog.Error("'rand_item' got an empty list as input")
 		return "Error: list was empty!"
 	}
-	return (*list)[rand.Intn(len(*list))]
+	index := random_index(len(*list))
+	return (*list)[index]
 }
 
 func insultCommand(args *abstractions.CommandContext) (string, bool) {
