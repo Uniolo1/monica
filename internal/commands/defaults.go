@@ -165,6 +165,7 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/rem-re-zero-23",
 	"https://klipy.com/gifs/marina-takopis-original-sin",
 	"https://klipy.com/gifs/himouto-umaru-chan-transform",
+	"https://klipy.com/gifs/bocchi-the-rock-crying-1",
 
 	// gif's others send - 0x4007E53, 0x7ffdfb81.:
 	"https://klipy.com/gifs/silent-witch-chinmoku-no-majo-1",
