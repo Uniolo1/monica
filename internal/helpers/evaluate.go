@@ -73,7 +73,9 @@ func sqrt(args ...interface{}) (interface{}, error) {
 }
 
 var vars = map[string]interface{}{
-	"pi": math.Pi,
+	"pi":  math.Pi,
+	"e":   math.E,
+	"phi": math.Phi,
 }
 
 var functions = map[string]goval.ExpressionFunction{
