@@ -138,18 +138,28 @@ func shipCommand(args *abstractions.CommandContext) (string, bool) {
 	}
 }
 
-func measureCommand(args *abstractions.CommandContext) (string, bool) {
+func meterCommand(args *abstractions.CommandContext) (string, bool) {
 	thing := strings.ToLower(args.ArgumentGetter("thing", abstractions.Command_argument_type_string))
 	metric := strings.ToLower(args.ArgumentGetter("metric", abstractions.Command_argument_type_string))
 	if thing == "" || metric == "" {
 		return "Missing required " + args.FormatCodeOrQuote("thing") + " and/or " + args.FormatCodeOrQuote("metric") + " parameter(s)!", true
 	} else {
-		// logic to get a seed
-		hash := sha256.Sum256([]byte(thing + "\x00" + metric))
+		// logic to get a seed - incorporate day of the month and hour
+		// Remain semi-deterministic, result only changes every hour
+		now := time.Now()
+		hash := sha256.Sum256([]byte(
+			thing + "\x00" +
+				metric + "\x00" +
+				strconv.Itoa(now.Day()) + "\x00" + // day of month
+				strconv.Itoa(now.Hour()), // hour of day
+		))
+
 		seed := int64(binary.BigEndian.Uint64(hash[:8]))
+
+		// calculate the percent using said seed
 		percent := rand.New(rand.NewSource(seed)).Intn(101)
 
-		return fmt.Sprintf("%s's %s is %d%%", args.FormatCodeOrQuote(thing), args.FormatCodeOrQuote(metric), percent), false
+		return fmt.Sprintf("%s's %s is at %d%%", args.FormatCodeOrQuote(thing), args.FormatCodeOrQuote(metric), percent), false
 	}
 }
 
@@ -348,7 +358,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 	}
 
 	err = adder(abstractions.Command{
-		Name:        "measure",
+		Name:        "meter",
 		Description: "Measure thing's metric",
 		Arguments: []abstractions.CommandArguments{{
 			Name:        "thing",
@@ -361,7 +371,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
-		Handler: measureCommand,
+		Handler: meterCommand,
 	})
 	if err != nil {
 		return err
