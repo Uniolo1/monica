@@ -149,7 +149,7 @@ func measureCommand(args *abstractions.CommandContext) (string, bool) {
 		seed := int64(binary.BigEndian.Uint64(hash[:8]))
 		percent := rand.New(rand.NewSource(seed)).Intn(101)
 
-		return fmt.Sprintf("%d%%", percent), false
+		return fmt.Sprintf("%s's %s is %d%%", args.FormatCodeOrQuote(thing), args.FormatCodeOrQuote(metric), percent), false
 	}
 }
 
