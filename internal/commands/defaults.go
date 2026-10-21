@@ -144,4 +144,11 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/anime-fran-22",
 	"https://klipy.com/gifs/catgirl-5",
 	"https://klipy.com/gifs/anime-sleepy-30",
+
+	// gif's others send
+	"https://klipy.com/gifs/throw-rocks-cartoons",                          // The Arch Cat(tm)
+	"https://klipy.com/gifs/yama-no-susume-yukimura-aoi",                   // The Arch Cat(tm)
+	"https://klipy.com/gifs/yippie-yay-3",                                  // The Arch Cat(tm)
+	"https://klipy.com/gifs/rikka-takanashi-love-chunibyo-other-delusions", // The Arch Cat(tm)
+	"https://klipy.com/gifs/silent-witch-chinmoku-no-majo-1",               // 0x4007E53, 0x7ffdfb81.
 }
