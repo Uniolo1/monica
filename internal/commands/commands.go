@@ -26,10 +26,14 @@
 package commands
 
 import (
+	"crypto/sha256"
+	"encoding/binary"
 	"fmt"
+	"math/rand"
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/uniolo1/monica/internal/abstractions"
@@ -131,6 +135,21 @@ func shipCommand(args *abstractions.CommandContext) (string, bool) {
 	} else {
 		output := person_a[:int(len(person_a)/2)] + person_b[int(len(person_b)/2):]
 		return output, false
+	}
+}
+
+func measureCommand(args *abstractions.CommandContext) (string, bool) {
+	thing := strings.ToLower(args.ArgumentGetter("thing", abstractions.Command_argument_type_string))
+	metric := strings.ToLower(args.ArgumentGetter("metric", abstractions.Command_argument_type_string))
+	if thing == "" || metric == "" {
+		return "Missing required 'thing' and/or 'metric' parameter(s)!", true
+	} else {
+		// logic to get a seed
+		hash := sha256.Sum256([]byte(thing + "\x00" + metric))
+		seed := int64(binary.BigEndian.Uint64(hash[:8]))
+		percent := rand.New(rand.NewSource(seed)).Intn(101)
+
+		return fmt.Sprintf("%d%%", percent), false
 	}
 }
 
@@ -323,6 +342,26 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
 		Handler: shipCommand,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "measure",
+		Description: "Measure thing's metric",
+		Arguments: []abstractions.CommandArguments{{
+			Name:        "thing",
+			Description: "Thing to measure the thing of",
+			Required:    true,
+			Arg_type:    abstractions.Command_argument_type_string,
+		}, {
+			Name:        "metric",
+			Description: "Thing to measure",
+			Required:    true,
+			Arg_type:    abstractions.Command_argument_type_string,
+		}},
+		Handler: measureCommand,
 	})
 	if err != nil {
 		return err
