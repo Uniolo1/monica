@@ -144,11 +144,30 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/anime-fran-22",
 	"https://klipy.com/gifs/catgirl-5",
 	"https://klipy.com/gifs/anime-sleepy-30",
+	"https://klipy.com/gifs/mikasa-pudding-chibi-mikasa",
 
-	// gif's others send
-	"https://klipy.com/gifs/throw-rocks-cartoons",                          // The Arch Cat(tm)
-	"https://klipy.com/gifs/yama-no-susume-yukimura-aoi",                   // The Arch Cat(tm)
-	"https://klipy.com/gifs/yippie-yay-3",                                  // The Arch Cat(tm)
-	"https://klipy.com/gifs/rikka-takanashi-love-chunibyo-other-delusions", // The Arch Cat(tm)
-	"https://klipy.com/gifs/silent-witch-chinmoku-no-majo-1",               // 0x4007E53, 0x7ffdfb81.
+	// gif's others send - The Arch Cat(tm):
+	"https://klipy.com/gifs/throw-rocks-cartoons",
+	"https://klipy.com/gifs/yama-no-susume-yukimura-aoi",
+	"https://klipy.com/gifs/yippie-yay-3",
+	"https://klipy.com/gifs/rikka-takanashi-love-chunibyo-other-delusions",
+	"https://klipy.com/gifs/chou-kaguya-hime-kaguya-hime-3",
+	"https://klipy.com/gifs/rikka-takanashi-love-chunibyo-other-delusions",
+	"https://klipy.com/gifs/smile-cute-97",
+	"https://klipy.com/gifs/anime-girl-light-blue-hair-anime",
+	"https://klipy.com/gifs/cute-anime-142",
+	"https://klipy.com/gifs/anime-flex",
+	"https://klipy.com/gifs/bocchi-the-rock-ryo-yamada-15",
+	"https://klipy.com/gifs/kushima-kamome-14",
+	"https://klipy.com/gifs/onimai-oniichan-wa-oshimai-58",
+	"https://klipy.com/gifs/akira-kogami-1",
+	"https://klipy.com/gifs/osaka-looking-up",
+	"https://klipy.com/gifs/maka-soul-eater-11",
+	"https://klipy.com/gifs/witch-hat-atelier-richeh",
+	"https://klipy.com/gifs/rem-re-zero-23",
+	"https://klipy.com/gifs/marina-takopis-original-sin",
+	"https://klipy.com/gifs/himouto-umaru-chan-transform",
+
+	// gif's others send - 0x4007E53, 0x7ffdfb81.:
+	"https://klipy.com/gifs/silent-witch-chinmoku-no-majo-1",
 }
