@@ -39,7 +39,7 @@ import (
 // NOTE: we return a pointer here to fix a nil-pointer bug (go is supposed to be memory safe BTW)
 // Interestingly enough, adding a pointer fixed a nil-pointer bug - Nope! Turns out lightning
 // is (at the time of writing this) very buggy (with IRC)
-func load_from_env_or_list(envname string, defaults []string) *[]string {
+func loadFromEnvOrList(envname string, defaults []string) *[]string {
 	env := os.Getenv(envname)
 	if env == "" {
 		return &defaults
@@ -49,7 +49,7 @@ func load_from_env_or_list(envname string, defaults []string) *[]string {
 	}
 }
 
-func random_index(number_of_items int) int {
+func randomIndex(number_of_items int) int {
 	// try using go's cryptographically secure random number generator
 	index, err := cryptoRand.Int(cryptoRand.Reader, big.NewInt(int64(number_of_items)))
 	if err == nil {
@@ -60,36 +60,36 @@ func random_index(number_of_items int) int {
 	return mathRand.Intn(number_of_items)
 }
 
-func rand_item(list *[]string) string {
+func randItem(list *[]string) string {
 	if list == nil || len(*list) == 0 {
 		slog.Error("'rand_item' got an empty list as input")
 		return "Error: list was empty!"
 	}
-	index := random_index(len(*list))
+	index := randomIndex(len(*list))
 	return (*list)[index]
 }
 
 func insultCommand(args *abstractions.CommandContext) (string, bool) {
-	insults := load_from_env_or_list("INSULTS", DEFAULT_INSULTS)
-	return rand_item(insults), true
+	insults := loadFromEnvOrList("INSULTS", DEFAULT_INSULTS)
+	return randItem(insults), true
 }
 
 func complimentCommand(args *abstractions.CommandContext) (string, bool) {
-	compliments := load_from_env_or_list("COMPLIMENTS", DEFAULT_COMPLIMENTS)
-	return rand_item(compliments), true
+	compliments := loadFromEnvOrList("COMPLIMENTS", DEFAULT_COMPLIMENTS)
+	return randItem(compliments), true
 }
 
 func flirtCommand(args *abstractions.CommandContext) (string, bool) {
 	// FYI if you need a bot to flirt successfully, you are completely and utterly cooked.
 
-	flirts := load_from_env_or_list("FLIRTS", DEFAULT_FLIRTS)
-	return rand_item(flirts), true
+	flirts := loadFromEnvOrList("FLIRTS", DEFAULT_FLIRTS)
+	return randItem(flirts), true
 }
 
 // requested command
 func animegirlCommand(args *abstractions.CommandContext) (string, bool) {
-	girls := load_from_env_or_list("ANIMEGIRLS", DEFAULT_ANIMEGIRL_GIFS)
-	return rand_item(girls), false
+	girls := loadFromEnvOrList("ANIMEGIRLS", DEFAULT_ANIMEGIRL_GIFS)
+	return randItem(girls), false
 }
 
 func addConversationMessageGenerationCommands(adder abstractions.CommandAdder) error {
