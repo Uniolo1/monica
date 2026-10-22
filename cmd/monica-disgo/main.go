@@ -56,9 +56,20 @@ func formatFunctionThing(input string) string {
 func adder(command abstractions.Command) error {
 	executor := func(data discord.SlashCommandInteractionData, e *handler.CommandEvent) error {
 		if command.OwnerOnly {
-			return e.CreateMessage(discord.MessageCreate{
-				Content: "Owner-only commands are not yet implemented for disgo",
-			}.WithEphemeral(true))
+			owner_id := os.Getenv("DISCORD_OWNER_ID")
+			if owner_id == "" {
+				return e.CreateMessage(discord.MessageCreate{
+					Content: "`DISCORD_OWNER_ID` is unset!",
+				}.WithEphemeral(true))
+			}
+
+			if owner_id != e.Member().User.ID.String() {
+				return e.CreateMessage(discord.MessageCreate{
+					Content: "Only the owner can use this command!",
+				}.WithEphemeral(true))
+			}
+
+			// the user caller is the owner
 		}
 
 		// implement ArgumentGetter

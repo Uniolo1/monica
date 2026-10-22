@@ -32,7 +32,7 @@ import (
 	"github.com/uniolo1/monica/internal/abstractions"
 )
 
-func ownerGetnvCommand(args *abstractions.CommandContext) (string, bool) {
+func ownerGetenvCommand(args *abstractions.CommandContext) (string, bool) {
 	key := args.ArgumentGetter("key", abstractions.Command_argument_type_string)
 	if key == "" {
 		return "Missing required " + args.FormatCodeOrQuote("key") + " parameter!", true
@@ -46,7 +46,21 @@ func ownerGetnvCommand(args *abstractions.CommandContext) (string, bool) {
 	}
 }
 
-func ownerSetnvCommand(args *abstractions.CommandContext) (string, bool) {
+func ownerUnsetenvCommand(args *abstractions.CommandContext) (string, bool) {
+	key := args.ArgumentGetter("key", abstractions.Command_argument_type_string)
+	if key == "" {
+		return "Missing required " + args.FormatCodeOrQuote("key") + " parameter!", true
+	} else {
+		err := os.Unsetenv(key)
+		if err != nil {
+			return "Unable to unset " + args.FormatCodeOrQuote(key) + ", most likely not found!", true
+		} else {
+			return "Ok", true
+		}
+	}
+}
+
+func ownerSetenvCommand(args *abstractions.CommandContext) (string, bool) {
 	key := args.ArgumentGetter("key", abstractions.Command_argument_type_string)
 	value := args.ArgumentGetter("value", abstractions.Command_argument_type_string)
 	if key == "" || value == "" {
@@ -74,7 +88,23 @@ func addOwnerCommands(adder abstractions.CommandAdder) error {
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
 		OwnerOnly: true,
-		Handler:   ownerGetnvCommand,
+		Handler:   ownerGetenvCommand,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "owner unsetenv",
+		Description: "Owner-only command to unset an environment variable",
+		Arguments: []abstractions.CommandArguments{{
+			Name:        "key",
+			Description: "Name of the environment variable",
+			Required:    true,
+			Arg_type:    abstractions.Command_argument_type_string,
+		}},
+		OwnerOnly: true,
+		Handler:   ownerUnsetenvCommand,
 	})
 	if err != nil {
 		return err
@@ -95,7 +125,7 @@ func addOwnerCommands(adder abstractions.CommandAdder) error {
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
 		OwnerOnly: true,
-		Handler:   ownerSetnvCommand,
+		Handler:   ownerSetenvCommand,
 	})
 	if err != nil {
 		return err
