@@ -250,6 +250,25 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/tbhk-toiletboundhanako",
 	"https://klipy.com/gifs/yashiro-toilet-bound-hanako-kun",
 	"https://klipy.com/gifs/sakura-kinomoto-sakura-card-captor-1",
+	"https://klipy.com/gifs/rae-rae-taylor", // no clue who this or where its from
+	"https://klipy.com/gifs/rae-rae-taylor-1",
+	"https://klipy.com/gifs/alya-kujou", // good manga (probs already said that)
+	"https://klipy.com/gifs/firefly-alya",
+	"https://klipy.com/gifs/alya-5",
+	"https://klipy.com/gifs/alya-anime-1",
+	"https://klipy.com/gifs/-36094",
+	"https://klipy.com/gifs/alya-alisa",
+	"https://klipy.com/gifs/alya-alya-sometimes-hides-her-feelings-in-russian-2",
+	"https://klipy.com/gifs/holo-wisewolf", // great manga
+	"https://klipy.com/gifs/spice-and-wolf-spice-and-wolf-remake",
+	"https://klipy.com/gifs/spice-and-wolf-holo-7",
+	"https://klipy.com/gifs/holo-spice-and-wolf-9",
+	"https://klipy.com/gifs/holo-wolf",
+	"https://klipy.com/gifs/holo-spice-and-wolf-8",
+	"https://klipy.com/gifs/tatsumaki-phone", // great manga (and S1 anime)
+	"https://klipy.com/gifs/tatsumaki-1",
+	"https://klipy.com/gifs/tatsumaki-one-punch-man-8",
+	"https://klipy.com/gifs/tatsumaki-7",
 
 	// gif's others send - The Arch Cat(tm):
 	"https://klipy.com/gifs/throw-rocks-cartoons",
@@ -283,6 +302,7 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/to-love-ru-golden-darkness-1",
 	"https://klipy.com/gifs/marty1234-1",
 
-	// gif's others send - 0x4007E53, 0x7ffdfb81.:
+	// gif's others send - others:
 	"https://klipy.com/gifs/silent-witch-chinmoku-no-majo-1",
+	"https://klipy.com/gifs/everett-monica-silent-witch-18",
 }
