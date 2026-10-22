@@ -50,7 +50,7 @@ type CommandArguments struct {
 }
 
 type Command struct {
-	Name        string // NOTE: may have spaces in it, convert to '-' or '_' as needed
+	Name        string // NOTE: may have spaces in it, convert spaces to '-' or '_' as needed
 	Description string
 	NSFW        bool // who knows might add one in the future, you never know
 	OwnerOnly   bool // Platforms that don't implement this MUST not run any command with this flag
