@@ -145,6 +145,18 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/catgirl-5",
 	"https://klipy.com/gifs/anime-sleepy-30",
 	"https://klipy.com/gifs/mikasa-pudding-chibi-mikasa",
+	"https://klipy.com/gifs/konata-konata-happy",  // The Arch Cat posted it immediately after I searched it up lol
+	"https://klipy.com/gifs/lucky-star-thumbs-up", // TODO: watch lucky star
+	"https://klipy.com/gifs/lucky-star-intro",
+	"https://klipy.com/gifs/anime-tired-lucky-star",
+	"https://klipy.com/gifs/lucky-star-27",
+	"https://klipy.com/gifs/dancinha-charmy", // good anime
+	"https://klipy.com/gifs/black-clover-nero-3",
+	"https://klipy.com/gifs/black-clover-black-clover-movie-44",
+	"https://klipy.com/gifs/noelle-silva-black-clover-4",
+	"https://klipy.com/gifs/black-clover-noelle-4",
+	//"https://klipy.com/gifs/noelle-silva-black-clover", // not technically visible... ehh.... commenting it out
+	"https://klipy.com/gifs/black-clover-53",
 
 	// gif's others send - The Arch Cat(tm):
 	"https://klipy.com/gifs/throw-rocks-cartoons",
