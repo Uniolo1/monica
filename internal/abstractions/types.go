@@ -37,8 +37,8 @@ type CommandAdder func(Command) error
 type Command_argument_type int
 
 const (
-	Command_argument_type_string = iota
-	Command_argument_type_int
+	Command_argument_string = iota
+	Command_argument_int
 )
 
 type CommandArguments struct {
@@ -60,7 +60,7 @@ type Command struct {
 
 // what a command is given as its parameters
 type CommandContext struct {
-	ArgumentGetter    CommandArgumentGetter // REMINDER: Always returns 'string' regardless of argument type
-	FormatCodeOrQuote CommandCodeOrQuoteFormatter
-	Framework         string // framework being used
+	ArgumentGetter CommandArgumentGetter // REMINDER: Always returns 'string' regardless of argument type
+	FormatQuote    CommandCodeOrQuoteFormatter
+	Framework      string // framework being used
 }

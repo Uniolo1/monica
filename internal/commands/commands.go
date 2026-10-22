@@ -51,18 +51,18 @@ func pingCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func defineCommand(args *abstractions.CommandContext) (string, bool) {
-	arg := args.ArgumentGetter("word", abstractions.Command_argument_type_string)
+	arg := args.ArgumentGetter("word", abstractions.Command_argument_string)
 	if arg == "" {
 		return "No definition provided!", true
 	} else {
 		var upper_limit int
-		upper_limit_arg := args.ArgumentGetter("limit", abstractions.Command_argument_type_int)
+		upper_limit_arg := args.ArgumentGetter("limit", abstractions.Command_argument_int)
 		if upper_limit_arg == "" {
 			upper_limit = 5 // default
 		} else {
 			n, err := strconv.Atoi(upper_limit_arg)
 			if err != nil {
-				return "Invalid " + args.FormatCodeOrQuote("limit") + "!", true
+				return "Invalid " + args.FormatQuote("limit") + "!", true
 			}
 
 			// set upper_limit to n
@@ -81,7 +81,7 @@ func evaluateCommand(args *abstractions.CommandContext) (string, bool) {
 	if os.Getenv("DISABLE_CALC") != "" && os.Getenv("DISABLE_CALC") != "false" {
 		return "The calculator has been disabled!", false
 	} else {
-		arg := args.ArgumentGetter("expression", abstractions.Command_argument_type_string)
+		arg := args.ArgumentGetter("expression", abstractions.Command_argument_string)
 		if arg == "" {
 			return "No expression provided!", true
 		} else {
@@ -100,7 +100,7 @@ func fortuneCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func diceCommand(args *abstractions.CommandContext) (string, bool) {
-	arg := args.ArgumentGetter("input", abstractions.Command_argument_type_string)
+	arg := args.ArgumentGetter("input", abstractions.Command_argument_string)
 	if arg == "" {
 		arg = "5d6"
 	}
@@ -119,7 +119,7 @@ func diceCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func uwuifyCommand(args *abstractions.CommandContext) (string, bool) {
-	arg := args.ArgumentGetter("input", abstractions.Command_argument_type_string)
+	arg := args.ArgumentGetter("input", abstractions.Command_argument_string)
 	if arg == "" {
 		return "No text provided!", true
 	} else {
@@ -128,7 +128,7 @@ func uwuifyCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func confessCommand(args *abstractions.CommandContext) (string, bool) {
-	arg := args.ArgumentGetter("confession", abstractions.Command_argument_type_string)
+	arg := args.ArgumentGetter("confession", abstractions.Command_argument_string)
 	if arg == "" {
 		return "No confession provided!", true
 	} else {
@@ -142,10 +142,10 @@ func confessCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func shipCommand(args *abstractions.CommandContext) (string, bool) {
-	person_a := args.ArgumentGetter("person-a", abstractions.Command_argument_type_string)
-	person_b := args.ArgumentGetter("person-b", abstractions.Command_argument_type_string)
+	person_a := args.ArgumentGetter("person-a", abstractions.Command_argument_string)
+	person_b := args.ArgumentGetter("person-b", abstractions.Command_argument_string)
 	if person_a == "" || person_b == "" {
-		return "Missing required " + args.FormatCodeOrQuote("person-a") + " and/or " + args.FormatCodeOrQuote("person-b") + " parameter(s)!", true
+		return "Missing required " + args.FormatQuote("person-a") + " and/or " + args.FormatQuote("person-b") + " parameter(s)!", true
 	} else {
 		output := person_a[:int(len(person_a)/2)] + person_b[int(len(person_b)/2):]
 		return output, false
@@ -153,10 +153,10 @@ func shipCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func meterCommand(args *abstractions.CommandContext) (string, bool) {
-	thing := strings.ToLower(args.ArgumentGetter("thing", abstractions.Command_argument_type_string))
-	metric := strings.ToLower(args.ArgumentGetter("metric", abstractions.Command_argument_type_string))
+	thing := strings.ToLower(args.ArgumentGetter("thing", abstractions.Command_argument_string))
+	metric := strings.ToLower(args.ArgumentGetter("metric", abstractions.Command_argument_string))
 	if thing == "" || metric == "" {
-		return "Missing required " + args.FormatCodeOrQuote("thing") + " and/or " + args.FormatCodeOrQuote("metric") + " parameter(s)!", true
+		return "Missing required " + args.FormatQuote("thing") + " and/or " + args.FormatQuote("metric") + " parameter(s)!", true
 	} else {
 		// logic to get a seed - changes every day
 		now := time.Now()
@@ -172,27 +172,27 @@ func meterCommand(args *abstractions.CommandContext) (string, bool) {
 		// calculate the percent using said seed
 		percent := rand.New(rand.NewSource(seed)).Intn(101)
 
-		return fmt.Sprintf("%s's %s is at %d%%", args.FormatCodeOrQuote(thing), args.FormatCodeOrQuote(metric), percent), false
+		return fmt.Sprintf("%s's %s is at %d%%", args.FormatQuote(thing), args.FormatQuote(metric), percent), false
 	}
 }
 
 func convertTzCommand(args *abstractions.CommandContext) (string, bool) {
-	time_str := args.ArgumentGetter("time", abstractions.Command_argument_type_string)
-	from_tz := args.ArgumentGetter("from_tz", abstractions.Command_argument_type_string)
-	to_tz := args.ArgumentGetter("to_tz", abstractions.Command_argument_type_string)
+	time_str := args.ArgumentGetter("time", abstractions.Command_argument_string)
+	from_tz := args.ArgumentGetter("from_tz", abstractions.Command_argument_string)
+	to_tz := args.ArgumentGetter("to_tz", abstractions.Command_argument_string)
 
 	if time_str == "" || from_tz == "" {
-		return "Some required parameters are missing, one of: " + args.FormatCodeOrQuote("time") + ", or " + args.FormatCodeOrQuote("from_tz") + "!", true
+		return "Some required parameters are missing, one of: " + args.FormatQuote("time") + ", or " + args.FormatQuote("from_tz") + "!", true
 	}
 
 	from_loc, err := time.LoadLocation(from_tz)
 	if err != nil {
-		return "Invalid " + args.FormatCodeOrQuote("from_tz") + ": " + err.Error(), true
+		return "Invalid " + args.FormatQuote("from_tz") + ": " + err.Error(), true
 	}
 
 	to_loc, err := time.LoadLocation(to_tz)
 	if err != nil {
-		return "Invalid " + args.FormatCodeOrQuote("to_tz") + ": " + err.Error(), true
+		return "Invalid " + args.FormatQuote("to_tz") + ": " + err.Error(), true
 	}
 
 	layouts := []string{
@@ -258,12 +258,12 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Name:        "word",
 			Description: "Word to search",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}, {
 			Name:        "limit",
 			Description: "Maximum number of dictionary entries that are returned",
 			Required:    false,
-			Arg_type:    abstractions.Command_argument_type_int,
+			Arg_type:    abstractions.Command_argument_int,
 		}},
 		Handler: defineCommand,
 	})
@@ -278,7 +278,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Name:        "expression",
 			Description: "Expression to evaluate",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		Handler: evaluateCommand,
 	})
@@ -293,17 +293,17 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Name:        "time",
 			Description: "The time to convert",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}, {
 			Name:        "from_tz",
 			Description: "The timezone 'time' is currently in",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}, {
 			Name:        "to_tz",
 			Description: "The timezone you want 'time' to be in",
 			Required:    false,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		Handler: convertTzCommand,
 	})
@@ -327,7 +327,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Name:        "input",
 			Description: "How many dice and how many sides (e.g. '5d6')",
 			Required:    false,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		Handler: diceCommand,
 	})
@@ -342,7 +342,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Name:        "input",
 			Description: "Text to uwuify",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		Handler: uwuifyCommand,
 	})
@@ -358,7 +358,7 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Description: "Submitted anonymously!",
 			Required:    true,
 			Sensitive:   true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		Handler: confessCommand,
 	})
@@ -373,12 +373,12 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Name:        "person-a",
 			Description: "Person A",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}, {
 			Name:        "person-b",
 			Description: "Person B",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		Handler: shipCommand,
 	})
@@ -393,12 +393,12 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Name:        "thing",
 			Description: "Thing to measure the thing of",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}, {
 			Name:        "metric",
 			Description: "Thing to measure",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		Handler: meterCommand,
 	})

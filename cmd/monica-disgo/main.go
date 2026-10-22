@@ -77,7 +77,7 @@ func adder(command abstractions.Command) error {
 			switch argument_type {
 
 			// string
-			case abstractions.Command_argument_type_string:
+			case abstractions.Command_argument_string:
 				ret, is_found := data.OptString(input)
 				if is_found {
 					return ret
@@ -86,7 +86,7 @@ func adder(command abstractions.Command) error {
 				}
 
 			// int
-			case abstractions.Command_argument_type_int:
+			case abstractions.Command_argument_int:
 				ret, is_found := data.OptInt(input)
 				if is_found {
 					return strconv.Itoa(ret)
@@ -103,9 +103,9 @@ func adder(command abstractions.Command) error {
 
 		// supply context
 		context := abstractions.CommandContext{
-			Framework:         "disgo",
-			FormatCodeOrQuote: formatFunctionThing,
-			ArgumentGetter:    get_args,
+			Framework:      "disgo",
+			FormatQuote:    formatFunctionThing,
+			ArgumentGetter: get_args,
 		}
 
 		reply, ephemeral := command.Handler(&context)
@@ -120,7 +120,7 @@ func adder(command abstractions.Command) error {
 		switch arg.Arg_type {
 
 		// int
-		case abstractions.Command_argument_type_int:
+		case abstractions.Command_argument_int:
 			// TODO: Add int's when we add a command that uses them
 			options = append(options, discord.ApplicationCommandOptionInt{
 				Name:        arg.Name,
@@ -129,7 +129,7 @@ func adder(command abstractions.Command) error {
 			})
 
 		// string
-		case abstractions.Command_argument_type_string:
+		case abstractions.Command_argument_string:
 			fallthrough
 		default:
 			// TODO: Add int's when we add a command that uses them

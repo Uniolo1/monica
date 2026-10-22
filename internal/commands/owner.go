@@ -33,9 +33,9 @@ import (
 )
 
 func ownerGetenvCommand(args *abstractions.CommandContext) (string, bool) {
-	key := args.ArgumentGetter("key", abstractions.Command_argument_type_string)
+	key := args.ArgumentGetter("key", abstractions.Command_argument_string)
 	if key == "" {
-		return "Missing required " + args.FormatCodeOrQuote("key") + " parameter!", true
+		return "Missing required " + args.FormatQuote("key") + " parameter!", true
 	} else {
 		value := os.Getenv(key)
 		if value == "" {
@@ -47,13 +47,13 @@ func ownerGetenvCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func ownerUnsetenvCommand(args *abstractions.CommandContext) (string, bool) {
-	key := args.ArgumentGetter("key", abstractions.Command_argument_type_string)
+	key := args.ArgumentGetter("key", abstractions.Command_argument_string)
 	if key == "" {
-		return "Missing required " + args.FormatCodeOrQuote("key") + " parameter!", true
+		return "Missing required " + args.FormatQuote("key") + " parameter!", true
 	} else {
 		err := os.Unsetenv(key)
 		if err != nil {
-			return "Unable to unset " + args.FormatCodeOrQuote(key) + ", most likely not found!", true
+			return "Unable to unset " + args.FormatQuote(key) + ", most likely not found!", true
 		} else {
 			return "Ok", true
 		}
@@ -61,10 +61,10 @@ func ownerUnsetenvCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func ownerSetenvCommand(args *abstractions.CommandContext) (string, bool) {
-	key := args.ArgumentGetter("key", abstractions.Command_argument_type_string)
-	value := args.ArgumentGetter("value", abstractions.Command_argument_type_string)
+	key := args.ArgumentGetter("key", abstractions.Command_argument_string)
+	value := args.ArgumentGetter("value", abstractions.Command_argument_string)
 	if key == "" || value == "" {
-		return "Missing required " + args.FormatCodeOrQuote("key") + " and/or " + args.FormatCodeOrQuote("value") + " parameter(s)!", true
+		return "Missing required " + args.FormatQuote("key") + " and/or " + args.FormatQuote("value") + " parameter(s)!", true
 	} else {
 		err := os.Setenv(key, value)
 		if err != nil {
@@ -85,7 +85,7 @@ func addOwnerCommands(adder abstractions.CommandAdder) error {
 			Name:        "key",
 			Description: "Name of the environment variable",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		OwnerOnly: true,
 		Handler:   ownerGetenvCommand,
@@ -101,7 +101,7 @@ func addOwnerCommands(adder abstractions.CommandAdder) error {
 			Name:        "key",
 			Description: "Name of the environment variable",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		OwnerOnly: true,
 		Handler:   ownerUnsetenvCommand,
@@ -117,12 +117,12 @@ func addOwnerCommands(adder abstractions.CommandAdder) error {
 			Name:        "key",
 			Description: "Name of the environment variable",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}, {
 			Name:        "value",
 			Description: "Value to set the environment variable to",
 			Required:    true,
-			Arg_type:    abstractions.Command_argument_type_string,
+			Arg_type:    abstractions.Command_argument_string,
 		}},
 		OwnerOnly: true,
 		Handler:   ownerSetenvCommand,
