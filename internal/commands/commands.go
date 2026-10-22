@@ -142,10 +142,10 @@ func confessCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func shipCommand(args *abstractions.CommandContext) (string, bool) {
-	person_a := args.ArgumentGetter("person_a", abstractions.Command_argument_type_string)
-	person_b := args.ArgumentGetter("person_b", abstractions.Command_argument_type_string)
+	person_a := args.ArgumentGetter("person-a", abstractions.Command_argument_type_string)
+	person_b := args.ArgumentGetter("person-b", abstractions.Command_argument_type_string)
 	if person_a == "" || person_b == "" {
-		return "Missing required " + args.FormatCodeOrQuote("person_a") + " and/or " + args.FormatCodeOrQuote("person_b") + " parameter(s)!", true
+		return "Missing required " + args.FormatCodeOrQuote("person-a") + " and/or " + args.FormatCodeOrQuote("person-b") + " parameter(s)!", true
 	} else {
 		output := person_a[:int(len(person_a)/2)] + person_b[int(len(person_b)/2):]
 		return output, false
@@ -158,13 +158,13 @@ func meterCommand(args *abstractions.CommandContext) (string, bool) {
 	if thing == "" || metric == "" {
 		return "Missing required " + args.FormatCodeOrQuote("thing") + " and/or " + args.FormatCodeOrQuote("metric") + " parameter(s)!", true
 	} else {
-		// logic to get a seed - incorporate day of the month and hour
+		// logic to get a seed - changes every day
 		now := time.Now()
 		hash := sha256.Sum256([]byte(
 			thing + "\x00" +
 				metric + "\x00" +
-				strconv.Itoa(now.Day()) + "\x00" +
-				strconv.Itoa(now.Hour()),
+				strconv.Itoa(now.YearDay()) + "\x00" +
+				strconv.Itoa(now.Year()),
 		))
 
 		seed := int64(binary.BigEndian.Uint64(hash[:8]))
@@ -370,12 +370,12 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		Name:        "ship",
 		Description: "Ships 2 people",
 		Arguments: []abstractions.CommandArguments{{
-			Name:        "person_a",
+			Name:        "person-a",
 			Description: "Person A",
 			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
 		}, {
-			Name:        "person_b",
+			Name:        "person-b",
 			Description: "Person B",
 			Required:    true,
 			Arg_type:    abstractions.Command_argument_type_string,
