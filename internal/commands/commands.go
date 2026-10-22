@@ -127,6 +127,20 @@ func uwuifyCommand(args *abstractions.CommandContext) (string, bool) {
 	}
 }
 
+func confessCommand(args *abstractions.CommandContext) (string, bool) {
+	arg := args.ArgumentGetter("confession", abstractions.Command_argument_type_string)
+	if arg == "" {
+		return "No confession provided!", true
+	} else {
+		err := helpers.Confess(arg)
+		if err != nil {
+			return fmt.Sprintf("Error confessing: %s", err), true
+		} else {
+			return "Confession submitted!", true
+		}
+	}
+}
+
 func shipCommand(args *abstractions.CommandContext) (string, bool) {
 	person_a := args.ArgumentGetter("person_a", abstractions.Command_argument_type_string)
 	person_b := args.ArgumentGetter("person_b", abstractions.Command_argument_type_string)
@@ -331,6 +345,22 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Arg_type:    abstractions.Command_argument_type_string,
 		}},
 		Handler: uwuifyCommand,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "confess",
+		Description: "Submit an anonymous confession!",
+		Arguments: []abstractions.CommandArguments{{
+			Name:        "confession",
+			Description: "Submitted anonymously!",
+			Required:    true,
+			Sensitive:   true,
+			Arg_type:    abstractions.Command_argument_type_string,
+		}},
+		Handler: confessCommand,
 	})
 	if err != nil {
 		return err

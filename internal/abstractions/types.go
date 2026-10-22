@@ -45,6 +45,7 @@ type CommandArguments struct {
 	Name        string
 	Description string
 	Required    bool                  // NOTE: Due to platform-specific considerations, required parameters may not be present :3
+	Sensitive   bool                  // platform's may interpret this differently or ignore it
 	Arg_type    Command_argument_type // NOTE: converted into a string (due to platform-specific considerations), must be converted back manually!
 }
 
