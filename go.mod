@@ -9,6 +9,7 @@ require (
 	codeberg.org/jersey/lightning v0.9.6
 	github.com/disgoorg/disgo v0.19.6
 	github.com/disgoorg/snowflake/v2 v2.0.3
+	github.com/gtuk/discordwebhook v1.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/maja42/goval v1.6.0
 )

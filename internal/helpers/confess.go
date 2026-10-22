@@ -27,8 +27,25 @@ package helpers
 
 import (
 	"fmt"
+	"os"
+
+	"github.com/gtuk/discordwebhook"
 )
 
+// TODO: Add configuration options for things other then webhooks
 func Confess(input string) error {
-	return fmt.Errorf("NotImplemented")
+	var user = "Monica Confessions"
+	var content = input
+	var url = os.Getenv("CONFESSIONS_WEBHOOK_URL")
+
+	if url == "" {
+		return fmt.Errorf("unset confessions webhook url")
+	}
+
+	message := discordwebhook.Message{
+		Username: &user,
+		Content:  &content,
+	}
+
+	return discordwebhook.SendMessage(url, message)
 }
