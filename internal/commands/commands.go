@@ -406,5 +406,17 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		return err
 	}
 
-	return addConversationMessageGenerationCommands(adder)
+	// run additional setup commands below
+
+	err = addConversationMessageGenerationCommands(adder)
+	if err != nil {
+		return err
+	}
+
+	err = addOwnerCommands(adder)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

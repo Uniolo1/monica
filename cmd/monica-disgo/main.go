@@ -31,6 +31,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
 
 	"github.com/disgoorg/disgo"
@@ -54,6 +55,12 @@ func formatFunctionThing(input string) string {
 
 func adder(command abstractions.Command) error {
 	executor := func(data discord.SlashCommandInteractionData, e *handler.CommandEvent) error {
+		if command.OwnerOnly {
+			return e.CreateMessage(discord.MessageCreate{
+				Content: "Owner-only commands are not yet implemented for disgo",
+			}.WithEphemeral(true))
+		}
+
 		// implement ArgumentGetter
 		get_args := func(input string, argument_type abstractions.Command_argument_type) string {
 			switch argument_type {
@@ -124,13 +131,13 @@ func adder(command abstractions.Command) error {
 	}
 
 	newCommand := discord.SlashCommandCreate{
-		Name:        command.Name,
+		Name:        strings.ReplaceAll(command.Name, " ", "-"),
 		Description: command.Description,
 		Options:     options,
 		NSFW:        &command.NSFW,
 	}
 
-	h.SlashCommand("/"+command.Name, executor)
+	h.SlashCommand("/"+strings.ReplaceAll(command.Name, " ", "-"), executor)
 
 	slash_commands = append(slash_commands, newCommand)
 	return nil
@@ -150,14 +157,14 @@ func main() {
 		bot.WithEventListeners(h), // slash commands
 		bot.WithEventListenerFunc(func(e *events.Ready) {
 			fmt.Println("Bot is connected as", e.User.Username)
-
-			// might remove this later
-			fmt.Printf("NOTE: %d items in 'DEFAULT_ANIMEGIRL_GIFS'\n", len(commands.DEFAULT_ANIMEGIRL_GIFS))
 		}), // print username
 	)
 	if err != nil {
 		panic(err)
 	}
+
+	// for security reasons:
+	os.Unsetenv("DISCORD_BOT_TOKEN")
 
 	// add the commands
 	commands.AddCommands(adder)

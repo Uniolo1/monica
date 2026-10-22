@@ -28,6 +28,7 @@ package main
 import (
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"codeberg.org/jersey/lightning/pkg/lightning"
@@ -44,6 +45,11 @@ func formatFunctionThing(input string) string {
 
 func adder(command abstractions.Command) error {
 	executor := func(opts *lightning.CommandOptions) {
+		if command.OwnerOnly {
+			opts.Reply(&lightning.Message{Content: "Owner-only commands are not implemented for lightning!"}, false)
+			return
+		}
+
 		// implement ArgumentGetter
 		get_args := func(input string, _ abstractions.Command_argument_type) string {
 			return opts.Arguments[input]
@@ -71,7 +77,7 @@ func adder(command abstractions.Command) error {
 	}
 
 	bot.AddCommand(lightning.Command{
-		Name:        command.Name,
+		Name:        strings.ReplaceAll(command.Name, " ", "-"),
 		Description: command.Description,
 		Arguments:   arguments,
 		Executor:    executor,
