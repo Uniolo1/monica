@@ -150,6 +150,9 @@ func main() {
 		bot.WithEventListeners(h), // slash commands
 		bot.WithEventListenerFunc(func(e *events.Ready) {
 			fmt.Println("Bot is connected as", e.User.Username)
+
+			// might remove this later
+			fmt.Printf("NOTE: %d items in 'DEFAULT_ANIMEGIRL_GIFS'\n", len(commands.DEFAULT_ANIMEGIRL_GIFS))
 		}), // print username
 	)
 	if err != nil {
@@ -170,6 +173,4 @@ func main() {
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
 	<-s
-
-	os.Unsetenv("DISCORD_BOT_TOKEN")
 }
