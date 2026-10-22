@@ -157,6 +157,29 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/black-clover-noelle-4",
 	//"https://klipy.com/gifs/noelle-silva-black-clover", // not technically visible... ehh.... commenting it out
 	"https://klipy.com/gifs/black-clover-53",
+	"https://klipy.com/gifs/asuka-26",
+	"https://klipy.com/gifs/asuka-langley-84",
+	"https://klipy.com/gifs/asuka-langley-33",
+	"https://klipy.com/gifs/asuka-cry-asuka-langley",
+	"https://klipy.com/gifs/asuka-asuka-langley-13",
+	"https://klipy.com/gifs/no-24335",
+	"https://klipy.com/gifs/asuka-evangelion-3",
+	"https://klipy.com/gifs/rei-rei-ayanami-18",
+	"https://klipy.com/gifs/rei-neon-genesis-evangelion-1",
+	"https://klipy.com/gifs/neon-genesis-evangelion-rei-ayanami-1",
+	"https://klipy.com/gifs/hitagi-senjougahara-1", // good manga (Bakemonogatari), my favorite manga as of writing this
+	"https://klipy.com/gifs/tsubasa-hanekawa-neko",
+	"https://klipy.com/gifs/monogatari-series-oshino-shinobu",
+	"https://klipy.com/gifs/anime-bakemonogatari-7",
+	"https://klipy.com/gifs/monogatari-yotsugi-ononoki",
+	"https://klipy.com/gifs/yashiro-nene-hanako-kun", // good anime (and manga)
+	"https://klipy.com/gifs/tbhk-toilet-bound-hanako-kun-37",
+	"https://klipy.com/gifs/anime-happy-anime-smile-2",
+	"https://klipy.com/gifs/toilet-bound-hanako-kun-tbhk-5",
+	"https://klipy.com/gifs/nene-yashiro-after-school-hanako-kun",
+	"https://klipy.com/gifs/tbhk-toilet-bound-hanako-kun-32",
+	"https://klipy.com/gifs/tokyo-ghoul-108",
+	"https://klipy.com/gifs/mikasa-ackerman-shingeki-no-kyojin-1",
 
 	// gif's others send - The Arch Cat(tm):
 	"https://klipy.com/gifs/throw-rocks-cartoons",
@@ -178,6 +201,17 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/marina-takopis-original-sin",
 	"https://klipy.com/gifs/himouto-umaru-chan-transform",
 	"https://klipy.com/gifs/bocchi-the-rock-crying-1",
+
+	// gif's others send - IRL friends
+	"https://klipy.com/gifs/koneko-koneko-toujou-1",
+	"https://klipy.com/gifs/kopa22-anime-63",
+	"https://klipy.com/gifs/anime-planes12265-2",
+	"https://klipy.com/gifs/seitokai-yakuindomo-motto-to-love-ru",
+	"https://klipy.com/gifs/momo-momo-belia-deviluke",
+	"https://klipy.com/gifs/yuuki-mikan-mikan",
+	"https://klipy.com/gifs/to-love-ru-to-love-ru-darkness",
+	"https://klipy.com/gifs/to-love-ru-golden-darkness-1",
+	"https://klipy.com/gifs/marty1234-1",
 
 	// gif's others send - 0x4007E53, 0x7ffdfb81.:
 	"https://klipy.com/gifs/silent-witch-chinmoku-no-majo-1",
