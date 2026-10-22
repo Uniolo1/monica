@@ -290,6 +290,7 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/marina-takopis-original-sin",
 	"https://klipy.com/gifs/himouto-umaru-chan-transform",
 	"https://klipy.com/gifs/bocchi-the-rock-crying-1",
+	"https://klipy.com/gifs/mahiro-oyama-3",
 
 	// gif's others send - IRL friends
 	"https://klipy.com/gifs/koneko-koneko-toujou-1",
