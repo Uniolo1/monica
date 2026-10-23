@@ -291,13 +291,41 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/kaede-kaede-kayano-3",
 	"https://klipy.com/gifs/kaede-kaede-kayano-1",
 	"https://klipy.com/gifs/assassination-classroom-79", // actually a boy BTW
-	"https://klipy.com/gifs/bye-later-4",                // great anime movie
+	"https://klipy.com/gifs/bye-later-4",                // great anime (an anime movie BTW)
 	"https://klipy.com/gifs/shouko-nishimiya-a-silent-voice-1",
 	"https://klipy.com/gifs/a-silent-voice-shouko",
 	"https://klipy.com/gifs/shouko-a-silent-voice",
 	"https://klipy.com/gifs/a-silent-voice-anime-3",
 	"https://klipy.com/gifs/a-silent-voice-nishimiya-koenokatachi",
 	"https://klipy.com/gifs/miki-kawai-a-silent-voice",
+	"https://klipy.com/gifs/girl-anime-27",
+	"https://klipy.com/gifs/anime-tyan",
+	"https://klipy.com/gifs/hi-oomf-cute-anime-girl-vtuber",
+	"https://klipy.com/gifs/beast-tamer-kanade",
+	"https://klipy.com/gifs/baby-zlS",
+	"https://klipy.com/gifs/cosmic-princess-kaguya-pleading",
+	"https://klipy.com/gifs/azumanga-daioh-cute-anime",
+	"https://klipy.com/gifs/sewayaki-senko-san-kitsune",
+	"https://klipy.com/gifs/anime-girl-smile-cute-anime-girl",
+	"https://klipy.com/gifs/pout-red",
+	"https://klipy.com/gifs/chihaya-anon-anon-chihaya",
+	"https://klipy.com/gifs/cute-anime-girl-phone-yuri-crowsbo",
+	"https://klipy.com/gifs/kasumi-laugh-anime-laugh",
+	"https://klipy.com/gifs/anime-kanna-12",
+	"https://klipy.com/gifs/horimiya-ayasaki-remi",
+	"https://klipy.com/gifs/lycoris-recoil-lecoreco-2",
+	"https://klipy.com/gifs/momo-the-gamer-momo-vtuber-1",
+	"https://klipy.com/gifs/mira-mirajane",
+	"https://klipy.com/gifs/familiar-of-zero-zero-no-tsukaima-4",
+	"https://klipy.com/gifs/honda-tohru-tohru-1",
+	"https://klipy.com/gifs/tohsaka-rin-1",
+	"https://klipy.com/gifs/nichijou-ona2000-1",
+	"https://klipy.com/gifs/clannad-fujibayashi-kyou",
+	"https://klipy.com/gifs/anime-tsundere",
+	"https://klipy.com/gifs/spin-happy-5",
+	"https://klipy.com/gifs/haru-aomi-chitose-is-in-the-ramune-bottle-6",
+	"https://klipy.com/gifs/ao-sorakado-summer-pockets-5",
+	"https://klipy.com/gifs/taiga-toradora-16",
 
 	// gif's others send - The Arch Cat(tm):
 	"https://klipy.com/gifs/throw-rocks-cartoons",
@@ -321,7 +349,7 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/bocchi-the-rock-crying-1",
 	"https://klipy.com/gifs/mahiro-oyama-3",
 	"https://klipy.com/gifs/onimai-oniichan-wa-oshimai-13",
-	// how the tell does the arch in the cat have so many gifs?
+	// how the hell does the arch in the cat have so many gifs?
 	// isn't even making a Discord bot that requires a large amount of anime gifs smh
 
 	// gif's others send - IRL friends
