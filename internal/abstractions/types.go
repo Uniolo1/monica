@@ -26,7 +26,7 @@
 package abstractions
 
 type CommandArgumentGetter func(string, Command_argument_type) string
-type CommandCodeOrQuoteFormatter func(string) string
+type FormatQuoteFunction func(string) string
 type CommandHandler func(*CommandContext) (
 	string, // the reply to the message
 	bool, // weather the message should be ephemeral (only shown to user that sent the command)
@@ -60,7 +60,7 @@ type Command struct {
 
 // what a command is given as its parameters
 type CommandContext struct {
-	ArgumentGetter CommandArgumentGetter // REMINDER: Always returns 'string' regardless of argument type
-	FormatQuote    CommandCodeOrQuoteFormatter
+	ArgumentGetter CommandArgumentGetter // NOTE: Always returns 'string' regardless of argument type
+	FormatQuote    FormatQuoteFunction
 	Framework      string // framework being used
 }
