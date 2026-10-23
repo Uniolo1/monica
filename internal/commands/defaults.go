@@ -269,6 +269,35 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/tatsumaki-1",
 	"https://klipy.com/gifs/tatsumaki-one-punch-man-8",
 	"https://klipy.com/gifs/tatsumaki-7",
+	"https://klipy.com/gifs/sakamoto-days-osaragi",
+	"https://klipy.com/gifs/mahiro-mahiro-oyama-11",
+	"https://klipy.com/gifs/emma-the-promised-neverland",
+	"https://klipy.com/gifs/the-promised-neverland-emma-3",
+	"https://klipy.com/gifs/the-promised-neverland-emma-4",
+	"https://klipy.com/gifs/angel-beats-yui-7", // good anime!
+	"https://klipy.com/gifs/kanade-angel-beats-2",
+	"https://klipy.com/gifs/kanade-angel-beats-3",
+	"https://klipy.com/gifs/roxnook-yui-2",
+	"https://klipy.com/gifs/angel-beats-25",
+	"https://klipy.com/gifs/bungo-stray-dogs-lucy-1", // good anime!
+	"https://klipy.com/gifs/kei-cote-1",              // good anime (ignoring memes)
+	"https://klipy.com/gifs/airi-sakura-classroom-of-the-elite",
+	"https://klipy.com/gifs/classroom-of-the-elite-youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-e-13",
+	"https://klipy.com/gifs/sakayanagi-classroom-of-the-elite-1",
+	"https://klipy.com/gifs/classroom-of-the-elite-youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-e-25",
+	"https://klipy.com/gifs/kei-karuizawa-kei-classroom-of-the-elite-1",
+	"https://klipy.com/gifs/classroom-of-the-elite-youkoso-jitsuryoku-shijou-shugi-no-kyoushitsu-10",
+	"https://klipy.com/gifs/irina-irina-jelavic-1", // good anime
+	"https://klipy.com/gifs/kaede-kaede-kayano-3",
+	"https://klipy.com/gifs/kaede-kaede-kayano-1",
+	"https://klipy.com/gifs/assassination-classroom-79", // actually a boy BTW
+	"https://klipy.com/gifs/bye-later-4",                // great anime movie
+	"https://klipy.com/gifs/shouko-nishimiya-a-silent-voice-1",
+	"https://klipy.com/gifs/a-silent-voice-shouko",
+	"https://klipy.com/gifs/shouko-a-silent-voice",
+	"https://klipy.com/gifs/a-silent-voice-anime-3",
+	"https://klipy.com/gifs/a-silent-voice-nishimiya-koenokatachi",
+	"https://klipy.com/gifs/miki-kawai-a-silent-voice",
 
 	// gif's others send - The Arch Cat(tm):
 	"https://klipy.com/gifs/throw-rocks-cartoons",
@@ -291,6 +320,9 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/himouto-umaru-chan-transform",
 	"https://klipy.com/gifs/bocchi-the-rock-crying-1",
 	"https://klipy.com/gifs/mahiro-oyama-3",
+	"https://klipy.com/gifs/onimai-oniichan-wa-oshimai-13",
+	// how the tell does the arch in the cat have so many gifs?
+	// isn't even making a Discord bot that requires a large amount of anime gifs smh
 
 	// gif's others send - IRL friends
 	"https://klipy.com/gifs/koneko-koneko-toujou-1",
