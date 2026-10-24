@@ -162,6 +162,15 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 	}
 
 	endpoint = strings.TrimRight(endpoint, "/")
+
+	// defer
+	if args.Defer != nil {
+		err := args.Defer(true)
+		if err != nil {
+			return fmt.Sprintf("Error: %s", err), true
+		}
+	}
+
 	msg, err := sendAiAMessage(prompt, endpoint, key, model)
 
 	if err != nil {

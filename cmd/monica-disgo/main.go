@@ -83,6 +83,8 @@ func formatFunctionThing(input string) string {
 
 func adder(command abstractions.Command) error {
 	executor := func(data discord.SlashCommandInteractionData, e *handler.CommandEvent) error {
+		deferred := false
+
 		if command.OwnerOnly {
 			owner_id := os.Getenv("DISCORD_OWNER_ID")
 			if owner_id == "" {
@@ -106,27 +108,40 @@ func adder(command abstractions.Command) error {
 			FormatQuote:    formatFunctionThing,
 			UniqueCallerID: e.User().ID.String(),
 
+			// implement DeferFunction
+			Defer: func(ephemeral bool) error {
+				err := e.DeferCreateMessage(command.OwnerOnly)
+				if err != nil {
+					return err
+				}
+
+				deferred = true
+				return nil
+			},
+
 			// implement ArgumentGetter
 			ArgumentGetter: func(input string, argument_type abstractions.Command_argument_type) string {
 				return getArgs(input, argument_type, data)
 			},
 		}
 
-		err := e.DeferCreateMessage(command.OwnerOnly)
-		if err != nil {
-			return err
-		}
-
 		// ignore ephemeral - temporary, will be added to command definition later(tm)
-		reply, _ := command.Handler(&context)
+		reply, ephemeral := command.Handler(&context)
 
-		// edit original response:
-		_, err = e.UpdateInteractionResponse(
-			discord.MessageUpdate{
-				Content: &reply,
-			},
-		)
-		return err
+		if deferred {
+			// edit original response:
+			_, err := e.UpdateInteractionResponse(
+				discord.MessageUpdate{
+					Content: &reply,
+				},
+			)
+			return err
+		} else {
+			// create new message
+			return e.CreateMessage(discord.MessageCreate{
+				Content: reply,
+			}.WithEphemeral(ephemeral))
+		}
 	}
 
 	options := []discord.ApplicationCommandOption{}

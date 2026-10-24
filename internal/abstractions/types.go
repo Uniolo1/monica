@@ -29,8 +29,9 @@ type CommandArgumentGetter func(string, Command_argument_type) string
 type FormatQuoteFunction func(string) string
 type CommandHandler func(*CommandContext) (
 	string, // the reply to the message
-	bool, // weather the message should be ephemeral (only shown to user that sent the command)
+	bool, // weather the message should be ephemeral (only shown to user that sent the command), ignored if defer'd
 )
+type DeferFunction func(bool) error // bool weather it should be ephemeral
 type CommandAdder func(Command) error
 
 // the <sarcasm>infamously awesome</sarcasm> go enums!
@@ -62,6 +63,7 @@ type Command struct {
 type CommandContext struct {
 	ArgumentGetter CommandArgumentGetter // NOTE: Always returns 'string' regardless of argument type
 	FormatQuote    FormatQuoteFunction
-	UniqueCallerID string // a string that can be used to uniquely identify the person using the command, leave blank if platform doesn't have it
-	Framework      string // framework being used
+	Defer          DeferFunction // NOTE: caller will always check for nil
+	UniqueCallerID string        // a string that can be used to uniquely identify the person using the command, leave blank if platform doesn't have it
+	Framework      string        // framework being used
 }
