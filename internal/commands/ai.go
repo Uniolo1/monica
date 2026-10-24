@@ -26,14 +26,123 @@
 package commands
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/uniolo1/monica/internal/abstractions"
 )
 
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type ChatRequest struct {
+	Model     string    `json:"model"`
+	MaxTokens int       `json:"max_tokens"`
+	Messages  []Message `json:"messages"`
+}
+
+type ChatResponse struct {
+	Choices []struct {
+		Message Message `json:"message"`
+	} `json:"choices"`
+}
+
+func sendAiAMessage(message string, endpoint string, key string, model string) (string, error) {
+	if !strings.HasSuffix(endpoint, "/chat/completions") {
+		endpoint += "/chat/completions"
+	}
+
+	payload := ChatRequest{
+		Model:     model,
+		MaxTokens: 200,
+		Messages: []Message{
+			{
+				Role:    "user",
+				Content: message,
+			},
+		},
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return "", fmt.Errorf("marshal chat request: %w", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodPost,
+		endpoint,
+		bytes.NewReader(body),
+	)
+	if err != nil {
+		return "", fmt.Errorf("create chat request: %w", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+
+	if key != "" {
+		req.Header.Set("Authorization", "Bearer "+key)
+	}
+
+	client := &http.Client{
+		Timeout: 65 * time.Second,
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("send chat request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(io.LimitReader(resp.Body, 10<<20))
+	if err != nil {
+		return "", fmt.Errorf("read chat response: %w", err)
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return "", fmt.Errorf(
+			"API returned %s: %s",
+			resp.Status,
+			strings.TrimSpace(string(respBody)),
+		)
+	}
+
+	var result ChatResponse
+	err = json.Unmarshal(respBody, &result)
+
+	if err != nil {
+		return "", fmt.Errorf("decode response: %w", err)
+	}
+
+	// handle result where API returned no choices
+	if len(result.Choices) == 0 {
+		return "", fmt.Errorf("API returned no choices")
+	}
+
+	return result.Choices[0].Message.Content, nil
+}
+
 func aiAsk(args *abstractions.CommandContext) (string, bool) {
 	if args.UniqueCallerID == "" {
 		return "Unknown caller!", true
+	}
+
+	// only check here, not much harm in clearing AI
+	if os.Getenv("DISABLE_AI") != "" && os.Getenv("DISABLE_AI") != "false" {
+		return "AI features have been disabled!", false
 	}
 
 	prompt := args.ArgumentGetter("prompt", abstractions.Command_argument_string)
@@ -43,19 +152,26 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 
 	key := os.Getenv("AI_KEY")
 	model := os.Getenv("AI_MODEL")
-	endpoint := os.Getenv("AI_ENDPOINT")
+	endpoint := os.Getenv("AI_BASEURL")
 
 	if key == "" || model == "" || endpoint == "" {
-		return "AI not configured, missing one of: " +
-				args.FormatQuote("AI_KEY") + ", " +
-				args.FormatQuote("AI_MODEL") + ", " +
-				args.FormatQuote("AI_ENDPOINT"),
+		return "AI not configured, missing either " +
+				args.FormatQuote("AI_MODEL") + ", or " +
+				args.FormatQuote("AI_BASEURL"),
 			true
 	}
 
-	return "NotImplemented", false
+	endpoint = strings.TrimRight(endpoint, "/")
+	msg, err := sendAiAMessage(prompt, endpoint, key, model)
+
+	if err != nil {
+		return err.Error(), true
+	}
+
+	return msg, false
 }
 
+// TODO: Add history
 func aiReset(args *abstractions.CommandContext) (string, bool) {
 	if args.UniqueCallerID == "" {
 		return "Unknown caller!", true

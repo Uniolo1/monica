@@ -62,6 +62,6 @@ type Command struct {
 type CommandContext struct {
 	ArgumentGetter CommandArgumentGetter // NOTE: Always returns 'string' regardless of argument type
 	FormatQuote    FormatQuoteFunction
-	UniqueCallerID string
+	UniqueCallerID string // a string that can be used to uniquely identify the person using the command, leave blank if platform doesn't have it
 	Framework      string // framework being used
 }

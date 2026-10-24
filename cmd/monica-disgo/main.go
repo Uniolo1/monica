@@ -112,11 +112,21 @@ func adder(command abstractions.Command) error {
 			},
 		}
 
-		reply, ephemeral := command.Handler(&context)
+		err := e.DeferCreateMessage(command.OwnerOnly)
+		if err != nil {
+			return err
+		}
 
-		return e.CreateMessage(discord.MessageCreate{
-			Content: reply,
-		}.WithEphemeral(ephemeral))
+		// ignore ephemeral - temporary, will be added to command definition later(tm)
+		reply, _ := command.Handler(&context)
+
+		// edit original response:
+		_, err = e.UpdateInteractionResponse(
+			discord.MessageUpdate{
+				Content: &reply,
+			},
+		)
+		return err
 	}
 
 	options := []discord.ApplicationCommandOption{}
