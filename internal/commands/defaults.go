@@ -366,4 +366,5 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	// gif's others send - others:
 	"https://klipy.com/gifs/silent-witch-chinmoku-no-majo-1",
 	"https://klipy.com/gifs/everett-monica-silent-witch-18",
+	"https://klipy.com/gifs/throw-rocks-cartoons", // this gif is used very commonly in Neon Genesis Linux
 }
