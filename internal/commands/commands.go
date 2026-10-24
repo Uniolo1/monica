@@ -413,6 +413,11 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		return err
 	}
 
+	err = addAiCommands(adder)
+	if err != nil {
+		return err
+	}
+
 	err = addOwnerCommands(adder)
 	if err != nil {
 		return err

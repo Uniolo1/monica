@@ -102,8 +102,9 @@ func adder(command abstractions.Command) error {
 
 		// supply context
 		context := abstractions.CommandContext{
-			Framework:   "disgo",
-			FormatQuote: formatFunctionThing,
+			Framework:      "disgo",
+			FormatQuote:    formatFunctionThing,
+			UniqueCallerID: e.User().ID.String(),
 
 			// implement ArgumentGetter
 			ArgumentGetter: func(input string, argument_type abstractions.Command_argument_type) string {

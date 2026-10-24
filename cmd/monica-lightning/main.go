@@ -60,6 +60,7 @@ func adder(command abstractions.Command) error {
 			Framework:      "lightning",
 			FormatQuote:    formatFunctionThing,
 			ArgumentGetter: get_args,
+			UniqueCallerID: opts.Author.ID,
 		}
 
 		reply, _ := command.Handler(&context)
