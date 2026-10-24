@@ -49,6 +49,34 @@ import (
 var h *handler.Mux = nil
 var slash_commands []discord.ApplicationCommandCreate
 
+// small little helper to get an argument
+func getArgs(input string, argument_type abstractions.Command_argument_type, data discord.SlashCommandInteractionData) string {
+	switch argument_type {
+
+	// string
+	case abstractions.Command_argument_string:
+		ret, is_found := data.OptString(input)
+		if is_found {
+			return ret
+		} else {
+			return ""
+		}
+
+	// int
+	case abstractions.Command_argument_int:
+		ret, is_found := data.OptInt(input)
+		if is_found {
+			return strconv.Itoa(ret)
+		} else {
+			return ""
+		}
+
+	// default
+	default:
+		panic("Argument type not yet supported by disgo!")
+	}
+}
+
 func formatFunctionThing(input string) string {
 	return "`" + input + "`"
 }
@@ -72,40 +100,15 @@ func adder(command abstractions.Command) error {
 			// the user caller is the owner
 		}
 
-		// implement ArgumentGetter
-		get_args := func(input string, argument_type abstractions.Command_argument_type) string {
-			switch argument_type {
-
-			// string
-			case abstractions.Command_argument_string:
-				ret, is_found := data.OptString(input)
-				if is_found {
-					return ret
-				} else {
-					return ""
-				}
-
-			// int
-			case abstractions.Command_argument_int:
-				ret, is_found := data.OptInt(input)
-				if is_found {
-					return strconv.Itoa(ret)
-				} else {
-					return ""
-				}
-
-			// default
-			default:
-				panic("Argument type not yet supported by disgo!")
-			}
-
-		}
-
 		// supply context
 		context := abstractions.CommandContext{
-			Framework:      "disgo",
-			FormatQuote:    formatFunctionThing,
-			ArgumentGetter: get_args,
+			Framework:   "disgo",
+			FormatQuote: formatFunctionThing,
+
+			// implement ArgumentGetter
+			ArgumentGetter: func(input string, argument_type abstractions.Command_argument_type) string {
+				return getArgs(input, argument_type, data)
+			},
 		}
 
 		reply, ephemeral := command.Handler(&context)
