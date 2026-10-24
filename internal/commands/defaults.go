@@ -356,7 +356,6 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/koneko-koneko-toujou-1",
 	"https://klipy.com/gifs/kopa22-anime-63",
 	"https://klipy.com/gifs/anime-planes12265-2",
-	"https://klipy.com/gifs/seitokai-yakuindomo-motto-to-love-ru",
 	"https://klipy.com/gifs/momo-momo-belia-deviluke",
 	"https://klipy.com/gifs/yuuki-mikan-mikan",
 	"https://klipy.com/gifs/to-love-ru-to-love-ru-darkness",
@@ -366,5 +365,6 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	// gif's others send - others:
 	"https://klipy.com/gifs/silent-witch-chinmoku-no-majo-1",
 	"https://klipy.com/gifs/everett-monica-silent-witch-18",
+	"https://klipy.com/gifs/silent-witch-norton",
 	"https://klipy.com/gifs/throw-rocks-cartoons", // this gif is used very commonly in Neon Genesis Linux
 }
