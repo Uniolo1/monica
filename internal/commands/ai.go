@@ -108,12 +108,12 @@ func getAiPrompt(zone string) string {
 		return userPrompt
 	}
 
-	systemPrompt := os.Getenv("AI_PROMPT")
-	if systemPrompt == "" {
-		systemPrompt = DEFAULT_SYSTEM_PROMPT
+	defaultPrompt := os.Getenv("AI_DEFAULT_PROMPT")
+	if defaultPrompt == "" {
+		defaultPrompt = DEFAULT_DEFAULT_AI_PROMPT
 	}
 
-	return systemPrompt
+	return defaultPrompt
 }
 
 func sendAiAMessage(message string, endpoint string, key string, model string, zone string) (string, error) {
