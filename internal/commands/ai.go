@@ -34,6 +34,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/uniolo1/monica/internal/abstractions"
@@ -59,13 +60,20 @@ type ChatResponse struct {
 const maxHistoryMessages = 20
 
 var aiHistory = make(map[string][]Message)
+var aiHistoryMu sync.Mutex
 
 // making helpers so I can add thread-safety stuff later
 func getAiHistory(zone string) []Message {
+	aiHistoryMu.Lock()
+	defer aiHistoryMu.Unlock()
+
 	return aiHistory[zone]
 }
 
 func appendAiHistory(zone string, messages ...Message) {
+	aiHistoryMu.Lock()
+	defer aiHistoryMu.Unlock()
+
 	aiHistory[zone] = append(aiHistory[zone], messages...)
 
 	// logic so it does not get too big
@@ -82,6 +90,9 @@ func appendAiHistory(zone string, messages ...Message) {
 
 // again, making helpers so I can add thread-safety stuff later
 func clearAiHistory(zone string) {
+	aiHistoryMu.Lock()
+	defer aiHistoryMu.Unlock()
+
 	delete(aiHistory, zone)
 }
 
