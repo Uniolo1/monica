@@ -60,6 +60,9 @@ type ChatResponse struct {
 const maxHistoryMessages = 20
 
 var aiHistory = make(map[string][]Message)
+var aiPrompts = make(map[string]string)
+
+var aiPromptsMu sync.Mutex
 var aiHistoryMu sync.Mutex
 
 // making helpers so I can add thread-safety stuff later
@@ -96,15 +99,29 @@ func clearAiHistory(zone string) {
 	delete(aiHistory, zone)
 }
 
-func sendAiAMessage(message string, endpoint string, key string, model string, historyZone string) (string, error) {
+func getAiPrompt(zone string) string {
+	aiPromptsMu.Lock()
+	defer aiPromptsMu.Unlock()
+
+	userPrompt, found := aiPrompts[zone]
+	if found {
+		return userPrompt
+	}
+
+	systemPrompt := os.Getenv("AI_PROMPT")
+	if systemPrompt == "" {
+		systemPrompt = DEFAULT_SYSTEM_PROMPT
+	}
+
+	return systemPrompt
+}
+
+func sendAiAMessage(message string, endpoint string, key string, model string, zone string) (string, error) {
 	if !strings.HasSuffix(endpoint, "/chat/completions") {
 		endpoint += "/chat/completions"
 	}
 
-	var systemPrompt string = os.Getenv("AI_PROMPT")
-	if systemPrompt == "" {
-		systemPrompt = DEFAULT_SYSTEM_PROMPT
-	}
+	var systemPrompt string = getAiPrompt(zone)
 
 	// add first message with systemPrompt (TODO: make customizable by user)
 	messages := []Message{
@@ -114,7 +131,7 @@ func sendAiAMessage(message string, endpoint string, key string, model string, h
 		},
 	}
 
-	messages = append(messages, getAiHistory(historyZone)...)
+	messages = append(messages, getAiHistory(zone)...)
 	messages = append(messages, Message{
 		Role:    "user",
 		Content: message,
@@ -188,7 +205,7 @@ func sendAiAMessage(message string, endpoint string, key string, model string, h
 
 	reply := result.Choices[0].Message.Content
 	appendAiHistory(
-		historyZone,
+		zone,
 		Message{Role: "user", Content: message},
 		Message{Role: "assistant", Content: reply},
 	)
@@ -196,15 +213,15 @@ func sendAiAMessage(message string, endpoint string, key string, model string, h
 }
 
 func aiAsk(args *abstractions.CommandContext) (string, bool) {
-	var historyZone string
+	var zone string
 	if args.UniqueChannelID != "" {
-		historyZone = args.UniqueChannelID
+		zone = args.UniqueChannelID
 	} else if args.UniqueCallerID != "" {
-		historyZone = args.UniqueCallerID
+		zone = args.UniqueCallerID
 	} else {
 		return "Unknown caller!", true
 	}
-	_ = historyZone
+	_ = zone
 
 	// only check here, not much harm in clearing AI
 	if os.Getenv("DISABLE_AI") != "" && os.Getenv("DISABLE_AI") != "false" {
@@ -237,27 +254,64 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 		}
 	}
 
-	msg, err := sendAiAMessage(prompt, endpoint, key, model, historyZone)
+	msg, err := sendAiAMessage(prompt, endpoint, key, model, zone)
 
 	if err != nil {
 		return err.Error(), true
+	} else if msg == "" {
+		return "AI returned empty message!", true
 	}
 
 	return msg, false
 }
 
 func aiReset(args *abstractions.CommandContext) (string, bool) {
-	var historyZone string
+	var zone string
 	if args.UniqueChannelID != "" {
-		historyZone = args.UniqueChannelID
+		zone = args.UniqueChannelID
 	} else if args.UniqueCallerID != "" {
-		historyZone = args.UniqueCallerID
+		zone = args.UniqueCallerID
 	} else {
 		return "Unknown caller!", true
 	}
 
-	clearAiHistory(historyZone)
-	return "History cleared for the " + args.FormatQuote(historyZone) + " zone!", false
+	clearAiHistory(zone)
+	return "History cleared for the " + args.FormatQuote(zone) + " zone!", false
+}
+
+func aiSetPrompt(args *abstractions.CommandContext) (string, bool) {
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown caller!", true
+	}
+
+	prompt := args.ArgumentGetter("prompt", abstractions.Command_argument_string)
+	if prompt == "" {
+		return "Missing required " + args.FormatQuote("prompt") + " argument!", true
+	}
+
+	aiPromptsMu.Lock()
+	defer aiPromptsMu.Unlock()
+
+	aiPrompts[zone] = prompt
+	return "Prompt set for the " + args.FormatQuote(zone) + " zone! It is recommended to clear history.", false
+}
+
+func aiGetPrompt(args *abstractions.CommandContext) (string, bool) {
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown caller!", true
+	}
+
+	return getAiPrompt(zone), false
 }
 
 func addAiCommands(adder abstractions.CommandAdder) error {
@@ -283,6 +337,31 @@ func addAiCommands(adder abstractions.CommandAdder) error {
 		Description: "Reset the AIs history",
 		Arguments:   []abstractions.CommandArguments{},
 		Handler:     aiReset,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "ai prompt set",
+		Description: "Give the AI a user-prompt",
+		Arguments: []abstractions.CommandArguments{{
+			Name:        "prompt",
+			Description: "The user-prompt for the AI",
+			Required:    true,
+			Arg_type:    abstractions.Command_argument_string,
+		}},
+		Handler: aiSetPrompt,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "ai prompt get",
+		Description: "Get the current prompt for the AI",
+		Arguments:   []abstractions.CommandArguments{},
+		Handler:     aiGetPrompt,
 	})
 	if err != nil {
 		return err
