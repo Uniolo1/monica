@@ -61,10 +61,19 @@ func sendAiAMessage(message string, endpoint string, key string, model string) (
 		endpoint += "/chat/completions"
 	}
 
+	var systemPrompt string = os.Getenv("AI_PROMPT")
+	if systemPrompt == "" {
+		systemPrompt = DEFAULT_SYSTEM_PROMPT
+	}
+
 	payload := ChatRequest{
 		Model:     model,
-		MaxTokens: 200,
+		MaxTokens: 350,
 		Messages: []Message{
+			{
+				Role:    "system",
+				Content: systemPrompt,
+			},
 			{
 				Role:    "user",
 				Content: message,

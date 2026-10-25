@@ -25,6 +25,8 @@
 
 package commands
 
+const DEFAULT_SYSTEM_PROMPT string = "You are MonicaAI, a helpful AI assistant!"
+
 var DEFAULT_INSULTS = []string{
 	"You oxygen thief!",
 	"I hope both sides of your pillow are hot!",
