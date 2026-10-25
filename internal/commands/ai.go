@@ -246,7 +246,6 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 	return msg, false
 }
 
-// TODO: Add history
 func aiReset(args *abstractions.CommandContext) (string, bool) {
 	var historyZone string
 	if args.UniqueChannelID != "" {
