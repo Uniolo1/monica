@@ -57,10 +57,11 @@ func adder(command abstractions.Command) error {
 
 		// supply context
 		context := abstractions.CommandContext{
-			Framework:      "lightning",
-			FormatQuote:    formatFunctionThing,
-			ArgumentGetter: get_args,
-			UniqueCallerID: opts.Author.ID,
+			Framework:       "lightning",
+			FormatQuote:     formatFunctionThing,
+			ArgumentGetter:  get_args,
+			UniqueCallerID:  opts.Author.ID,
+			UniqueChannelID: opts.ChannelID,
 		}
 
 		reply, _ := command.Handler(&context)

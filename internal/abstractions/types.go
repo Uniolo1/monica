@@ -61,9 +61,10 @@ type Command struct {
 
 // what a command is given as its parameters
 type CommandContext struct {
-	ArgumentGetter CommandArgumentGetter // NOTE: Always returns 'string' regardless of argument type
-	FormatQuote    FormatQuoteFunction
-	Defer          DeferFunction // NOTE: caller will always check for nil
-	UniqueCallerID string        // a string that can be used to uniquely identify the person using the command, leave blank if platform doesn't have it
-	Framework      string        // framework being used
+	ArgumentGetter  CommandArgumentGetter // NOTE: Always returns 'string' regardless of argument type
+	FormatQuote     FormatQuoteFunction
+	Defer           DeferFunction // NOTE: caller will always check for nil
+	UniqueCallerID  string        // a string that can be used to uniquely identify the person using the command, leave blank if platform doesn't have it
+	UniqueChannelID string        // same as UniqueCallerID but refers to where the command was called
+	Framework       string        // framework being used
 }

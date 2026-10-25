@@ -56,7 +56,36 @@ type ChatResponse struct {
 	} `json:"choices"`
 }
 
-func sendAiAMessage(message string, endpoint string, key string, model string) (string, error) {
+const maxHistoryMessages = 20
+
+var aiHistory = make(map[string][]Message)
+
+// making helpers so I can add thread-safety stuff later
+func getAiHistory(zone string) []Message {
+	return aiHistory[zone]
+}
+
+func appendAiHistory(zone string, messages ...Message) {
+	aiHistory[zone] = append(aiHistory[zone], messages...)
+
+	// logic so it does not get too big
+	if len(aiHistory[zone]) > maxHistoryMessages {
+		aiHistory[zone] = append(
+			// empty array:
+			[]Message(nil),
+
+			// keep the most recent messages
+			aiHistory[zone][len(aiHistory[zone])-maxHistoryMessages:]...,
+		)
+	}
+}
+
+// again, making helpers so I can add thread-safety stuff later
+func clearAiHistory(zone string) {
+	delete(aiHistory, zone)
+}
+
+func sendAiAMessage(message string, endpoint string, key string, model string, historyZone string) (string, error) {
 	if !strings.HasSuffix(endpoint, "/chat/completions") {
 		endpoint += "/chat/completions"
 	}
@@ -66,19 +95,24 @@ func sendAiAMessage(message string, endpoint string, key string, model string) (
 		systemPrompt = DEFAULT_SYSTEM_PROMPT
 	}
 
+	// add first message with systemPrompt (TODO: make customizable by user)
+	messages := []Message{
+		{
+			Role:    "system",
+			Content: systemPrompt,
+		},
+	}
+
+	messages = append(messages, getAiHistory(historyZone)...)
+	messages = append(messages, Message{
+		Role:    "user",
+		Content: message,
+	})
+
 	payload := ChatRequest{
 		Model:     model,
 		MaxTokens: 350,
-		Messages: []Message{
-			{
-				Role:    "system",
-				Content: systemPrompt,
-			},
-			{
-				Role:    "user",
-				Content: message,
-			},
-		},
+		Messages:  messages,
 	}
 
 	body, err := json.Marshal(payload)
@@ -141,13 +175,25 @@ func sendAiAMessage(message string, endpoint string, key string, model string) (
 		return "", fmt.Errorf("API returned no choices")
 	}
 
-	return result.Choices[0].Message.Content, nil
+	reply := result.Choices[0].Message.Content
+	appendAiHistory(
+		historyZone,
+		Message{Role: "user", Content: message},
+		Message{Role: "assistant", Content: reply},
+	)
+	return reply, nil
 }
 
 func aiAsk(args *abstractions.CommandContext) (string, bool) {
-	if args.UniqueCallerID == "" {
+	var historyZone string
+	if args.UniqueChannelID != "" {
+		historyZone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		historyZone = args.UniqueCallerID
+	} else {
 		return "Unknown caller!", true
 	}
+	_ = historyZone
 
 	// only check here, not much harm in clearing AI
 	if os.Getenv("DISABLE_AI") != "" && os.Getenv("DISABLE_AI") != "false" {
@@ -180,7 +226,7 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 		}
 	}
 
-	msg, err := sendAiAMessage(prompt, endpoint, key, model)
+	msg, err := sendAiAMessage(prompt, endpoint, key, model, historyZone)
 
 	if err != nil {
 		return err.Error(), true
@@ -191,11 +237,17 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 
 // TODO: Add history
 func aiReset(args *abstractions.CommandContext) (string, bool) {
-	if args.UniqueCallerID == "" {
+	var historyZone string
+	if args.UniqueChannelID != "" {
+		historyZone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		historyZone = args.UniqueCallerID
+	} else {
 		return "Unknown caller!", true
 	}
 
-	return "NotImplemented", false
+	clearAiHistory(historyZone)
+	return "History cleared for the " + args.FormatQuote(historyZone) + " zone!", false
 }
 
 func addAiCommands(adder abstractions.CommandAdder) error {
