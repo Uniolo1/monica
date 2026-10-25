@@ -330,7 +330,6 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/taiga-toradora-16",
 
 	// gif's others send - The Arch Cat(tm):
-	"https://klipy.com/gifs/throw-rocks-cartoons",
 	"https://klipy.com/gifs/yama-no-susume-yukimura-aoi",
 	"https://klipy.com/gifs/yippie-yay-3",
 	"https://klipy.com/gifs/rikka-takanashi-love-chunibyo-other-delusions",
@@ -351,6 +350,7 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/bocchi-the-rock-crying-1",
 	"https://klipy.com/gifs/mahiro-oyama-3",
 	"https://klipy.com/gifs/onimai-oniichan-wa-oshimai-13",
+	"https://klipy.com/gifs/onimai-oniichan-wa-oshimai-65",
 	// how the hell does the arch in the cat have so many gifs?
 	// isn't even making a Discord bot that requires a large amount of anime gifs smh
 
