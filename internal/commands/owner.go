@@ -130,6 +130,7 @@ func addOwnerCommands(adder abstractions.CommandAdder) error {
 			Name:        "value",
 			Description: "Value to set the environment variable to",
 			Required:    true,
+			Sensitive:   true,
 			Arg_type:    abstractions.Command_argument_string,
 		}},
 		OwnerOnly: true,

@@ -66,12 +66,14 @@ func GetDefinition(query string, upper_limit int) string {
 	apiURL := "https://api.datamuse.com/words?sp=" +
 		url.QueryEscape(query) + "&md=d"
 
+	// if GET request fails
 	resp, err := client.Get(apiURL)
 	if err != nil {
 		return fmt.Sprintf("ERROR: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
+	// if endpoint gives error
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Sprintf("Got HTTP status code '%d' when looking up definition!", resp.StatusCode)
 	}
@@ -80,10 +82,12 @@ func GetDefinition(query string, upper_limit int) string {
 		Defs []string `json:"defs"`
 	}
 
+	// load json
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return fmt.Sprintf("ERROR: %s", err.Error())
 	}
 
+	// handle case where there is no definitions
 	if len(data) == 0 || len(data[0].Defs) == 0 {
 		return "No definition was found!"
 	}

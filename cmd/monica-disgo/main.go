@@ -89,7 +89,7 @@ func adder(command abstractions.Command) error {
 			owner_id := os.Getenv("DISCORD_OWNER_ID")
 			if owner_id == "" {
 				return e.CreateMessage(discord.MessageCreate{
-					Content: "`DISCORD_OWNER_ID` is unset!",
+					Content: "Only the owner can use this command and `DISCORD_OWNER_ID` is unset!",
 				}.WithEphemeral(true))
 			}
 
@@ -133,7 +133,7 @@ func adder(command abstractions.Command) error {
 			},
 		}
 
-		// ignore ephemeral - temporary, will be added to command definition later(tm)
+		// NOTE: ephemeral is ignored if we deferred earlier
 		reply, ephemeral := command.Handler(&context)
 
 		if deferred {

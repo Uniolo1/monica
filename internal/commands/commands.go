@@ -47,6 +47,7 @@ func aboutCommand(args *abstractions.CommandContext) (string, bool) {
 }
 
 func pingCommand(args *abstractions.CommandContext) (string, bool) {
+	// debug command - the first added!
 	return "pong!", false
 }
 
@@ -56,6 +57,7 @@ func defineCommand(args *abstractions.CommandContext) (string, bool) {
 		return "No definition provided!", true
 	} else {
 		var upper_limit int
+
 		upper_limit_arg := args.ArgumentGetter("limit", abstractions.Command_argument_int)
 		if upper_limit_arg == "" {
 			upper_limit = 5 // default
@@ -70,7 +72,7 @@ func defineCommand(args *abstractions.CommandContext) (string, bool) {
 		}
 
 		if upper_limit <= 0 {
-			return "Upper limit of dictionary items must be a minimum of 1!", true
+			return "Upper limit of dictionary items must be no less then 1!", true
 		}
 
 		return helpers.FormatTabs(helpers.GetDefinition(arg, upper_limit)), false
@@ -110,9 +112,15 @@ func diceCommand(args *abstractions.CommandContext) (string, bool) {
 		return fmt.Sprintf("Error: %s", err), true
 	}
 
+	// logic to check for args.NoUnicode
+	diceIcon := "🎲"
+	if args.NoUnicode {
+		diceIcon = ""
+	}
+
 	var output string = fmt.Sprintf("%v:", result)
 	for _, i := range rolls {
-		output += fmt.Sprintf(" 🎲%v", i)
+		output += fmt.Sprintf(" %s%v", diceIcon, i)
 	}
 
 	return output, false
@@ -158,7 +166,7 @@ func meterCommand(args *abstractions.CommandContext) (string, bool) {
 	if thing == "" || metric == "" {
 		return "Missing required " + args.FormatQuote("thing") + " and/or " + args.FormatQuote("metric") + " parameter(s)!", true
 	} else {
-		// logic to get a seed - changes every day
+		// logic to get a seed - the seed generated changes every day
 		now := time.Now()
 		hash := sha256.Sum256([]byte(
 			thing + "\x00" +

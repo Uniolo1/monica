@@ -39,6 +39,7 @@ func RollDice(input string) (uint, []uint, error) {
 		return r == 'd' || r == 'D'
 	})
 
+	// check if the user inputted a valid dice format
 	if len(parts) != 2 {
 		return 0, nil, fmt.Errorf("invalid dice format %q: expected NdS", input)
 	}

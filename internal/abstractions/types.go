@@ -29,7 +29,7 @@ type CommandArgumentGetter func(string, Command_argument_type) string
 type FormatQuoteFunction func(string) string
 type CommandHandler func(*CommandContext) (
 	string, // the reply to the message
-	bool, // weather the message should be ephemeral (only shown to user that sent the command), ignored if defer'd
+	bool, // weather the message should be ephemeral (only shown to user that sent the command), potentially ignored if defer'd
 )
 type DeferFunction func(bool) error // bool weather it should be ephemeral
 type CommandAdder func(Command) error
@@ -53,7 +53,7 @@ type CommandArguments struct {
 type Command struct {
 	Name        string // NOTE: may have spaces in it, convert spaces to '-' or '_' as needed
 	Description string
-	NSFW        bool // who knows might add one in the future, you never know
+	NSFW        bool // who knows might add one in the future, you never know (probably not)
 	OwnerOnly   bool // Platforms that don't implement this MUST not run any command with this flag
 	Arguments   []CommandArguments
 	Handler     CommandHandler
@@ -67,4 +67,5 @@ type CommandContext struct {
 	UniqueCallerID  string        // a string that can be used to uniquely identify the person using the command, leave blank if platform doesn't have it
 	UniqueChannelID string        // same as UniqueCallerID but refers to where the command was called
 	Framework       string        // framework being used
+	NoUnicode       bool          // platforms where using Unicode *might* cause issues
 }
