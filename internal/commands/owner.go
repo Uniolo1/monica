@@ -75,6 +75,14 @@ func ownerSetenvCommand(args *abstractions.CommandContext) (string, bool) {
 	}
 }
 
+func ownerClearaiCommand(args *abstractions.CommandContext) (string, bool) {
+	aiHistoryMu.Lock()
+	defer aiHistoryMu.Unlock()
+	clear(aiHistory)
+
+	return "All AI zones cleared!", false
+}
+
 func addOwnerCommands(adder abstractions.CommandAdder) error {
 	var err error
 
@@ -126,6 +134,17 @@ func addOwnerCommands(adder abstractions.CommandAdder) error {
 		}},
 		OwnerOnly: true,
 		Handler:   ownerSetenvCommand,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "owner clearai",
+		Description: "Owner-only command to clear everyone's AI history!",
+		Arguments:   []abstractions.CommandArguments{},
+		OwnerOnly:   true,
+		Handler:     ownerClearaiCommand,
 	})
 	if err != nil {
 		return err
