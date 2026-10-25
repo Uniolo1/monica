@@ -59,8 +59,11 @@ type ChatResponse struct {
 
 const maxHistoryMessages = 20
 
-var aiHistory = make(map[string][]Message)
-var aiPrompts = make(map[string]string)
+// NOTE: these are cleared at restart
+var (
+	aiHistory = make(map[string][]Message)
+	aiPrompts = make(map[string]string)
+)
 
 var aiPromptsMu sync.Mutex
 var aiHistoryMu sync.Mutex
@@ -117,13 +120,14 @@ func getAiPrompt(zone string) string {
 }
 
 func sendAiAMessage(message string, endpoint string, key string, model string, zone string) (string, error) {
+	const timeout time.Duration = 15 * time.Second // 15 seconds timeout
+
+	endpoint = strings.TrimRight(endpoint, "/")
 	if !strings.HasSuffix(endpoint, "/chat/completions") {
 		endpoint += "/chat/completions"
 	}
 
 	var systemPrompt string = getAiPrompt(zone)
-
-	// add first message with systemPrompt (TODO: make customizable by user)
 	messages := []Message{
 		{
 			Role:    "system",
@@ -145,10 +149,10 @@ func sendAiAMessage(message string, endpoint string, key string, model string, z
 
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return "", fmt.Errorf("marshal chat request: %w", err)
+		return "", fmt.Errorf("json marshal: %w", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(
@@ -158,7 +162,7 @@ func sendAiAMessage(message string, endpoint string, key string, model string, z
 		bytes.NewReader(body),
 	)
 	if err != nil {
-		return "", fmt.Errorf("create chat request: %w", err)
+		return "", fmt.Errorf("create HTTP request: %w", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -169,20 +173,21 @@ func sendAiAMessage(message string, endpoint string, key string, model string, z
 	}
 
 	client := &http.Client{
-		Timeout: 65 * time.Second,
+		Timeout: timeout - 1,
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("send chat request: %w", err)
+		return "", fmt.Errorf("sending request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	respBody, err := io.ReadAll(io.LimitReader(resp.Body, 10<<20))
 	if err != nil {
-		return "", fmt.Errorf("read chat response: %w", err)
+		return "", fmt.Errorf("reading response: %w", err)
 	}
 
+	// handle case where HTTP response indicates error
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return "", fmt.Errorf(
 			"API returned %s: %s",
@@ -191,14 +196,13 @@ func sendAiAMessage(message string, endpoint string, key string, model string, z
 		)
 	}
 
-	var result ChatResponse
+	var result ChatResponse // json.Unmarshal returns via a pointer
 	err = json.Unmarshal(respBody, &result)
-
 	if err != nil {
-		return "", fmt.Errorf("decode response: %w", err)
+		return "", fmt.Errorf("decoding response: %w", err)
 	}
 
-	// handle result where API returned no choices
+	// handle case where API returned no choices
 	if len(result.Choices) == 0 {
 		return "", fmt.Errorf("API returned no choices")
 	}
@@ -244,8 +248,6 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 			true
 	}
 
-	endpoint = strings.TrimRight(endpoint, "/")
-
 	// defer
 	if args.Defer != nil {
 		err := args.Defer(true)
@@ -259,6 +261,7 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 	if err != nil {
 		return err.Error(), true
 	} else if msg == "" {
+		// probably should be handled in sendAiAMessage... ehh...
 		return "AI returned empty message!", true
 	}
 
