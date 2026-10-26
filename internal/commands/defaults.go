@@ -351,6 +351,7 @@ var DEFAULT_ANIMEGIRL_GIFS = []string{
 	"https://klipy.com/gifs/mahiro-oyama-3",
 	"https://klipy.com/gifs/onimai-oniichan-wa-oshimai-13",
 	"https://klipy.com/gifs/onimai-oniichan-wa-oshimai-65",
+	"https://klipy.com/gifs/onimai-mahiro-oyama",
 	// how the hell does the arch in the cat have so many gifs?
 	// isn't even making a Discord bot that requires a large amount of anime gifs smh
 
