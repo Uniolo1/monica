@@ -35,6 +35,7 @@ import (
 func RollDice(input string) (uint, []uint, error) {
 	input = strings.TrimSpace(input)
 
+	// parse the string
 	parts := strings.FieldsFunc(input, func(r rune) bool {
 		return r == 'd' || r == 'D'
 	})

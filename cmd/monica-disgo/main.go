@@ -199,8 +199,8 @@ func adder(command abstractions.Command) error {
 	}
 
 	h.SlashCommand("/"+strings.ReplaceAll(command.Name, " ", "-"), executor)
-
 	slash_commands = append(slash_commands, newCommand)
+
 	return nil
 }
 
