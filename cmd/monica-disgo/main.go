@@ -183,6 +183,19 @@ func adder(command abstractions.Command) error {
 		Description: command.Description,
 		Options:     options,
 		NSFW:        &command.NSFW,
+
+		// the following fields are necessary for the bot to work in group DMs for whatever reason
+
+		IntegrationTypes: []discord.ApplicationIntegrationType{
+			discord.ApplicationIntegrationTypeGuildInstall,
+			discord.ApplicationIntegrationTypeUserInstall,
+		},
+
+		Contexts: []discord.InteractionContextType{
+			discord.InteractionContextTypeGuild,
+			discord.InteractionContextTypeBotDM,
+			discord.InteractionContextTypePrivateChannel,
+		},
 	}
 
 	h.SlashCommand("/"+strings.ReplaceAll(command.Name, " ", "-"), executor)
