@@ -30,6 +30,7 @@ const DEFAULT_DEFAULT_AI_PROMPT string = "You are MonicaAI, a helpful AI assista
 var DEFAULT_INSULTS = []string{
 	"You oxygen thief!",
 	"I hope both sides of your pillow are hot!", // cranchan
+	"you have two braincells and both of them are fighting for third place", // sosman
 
 	// quotes from "zushi.grw0"
 	"have a good time suffering",
