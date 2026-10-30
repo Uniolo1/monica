@@ -39,7 +39,11 @@ go build -o monica-lightning ./cmd/monica-lightning
 Why not? They are `.env` files loaded from `/etc/monica.env`, `~/.config/monica/monica.env`, and `./.env` in that order so you can configure it like you would any other tool (just with a different syntax of course)!
 
 #### What commands are available?
-Currently, the available commands are: `about`, `ping`, `define`, `calc`, `converttz`, `fortune`, `rtd`, `uwuify`, `ship`, `meter`, `insult`, `compliment`, `animegirl`, and `flirt`.
+Currently, the available core commands are: `about`, `ping`, `define`, `calc`, `converttz`, `fortune`, `rtd`, `uwuify`, `confess`, `ship`, `meter`, `insult`, `compliment`, `flirt`, and `animegirl`.
+
+There additional commands for AI such as `ai chat`, `ai reset`, `ai prompt set`, and `ai prompt get`.
+
+The owner of the bot (as configured with environment variables) is also able to use `owner getenv`, `owner unsetenv`, `owner setenv`, and `owner clearai`.
 
 #### Why is it called Monica?
 Whilst thinking of what to name it, I noticed a lot of my bots were named after Anime characters, and there is one person in a server I am in who is **obsessed** with Monica Norton from [The Silent Witch](https://wikipedia.org/wiki/Secrets_of_the_Silent_Witch), so I named it Monica!
