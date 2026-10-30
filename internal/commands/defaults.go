@@ -29,7 +29,12 @@ const DEFAULT_DEFAULT_AI_PROMPT string = "You are MonicaAI, a helpful AI assista
 
 var DEFAULT_INSULTS = []string{
 	"You oxygen thief!",
-	"I hope both sides of your pillow are hot!",
+	"I hope both sides of your pillow are hot!", // cranchan
+
+	// quotes from "zushi.grw0"
+	"have a good time suffering",
+	"get less lazier",
+	"you clanker skinwalking as a human", // modified ()"that" => "you")
 
 	// found these from: https://bestlifeonline.com/best-insults/
 	"You’re the reason God created the middle finger.",
