@@ -43,6 +43,8 @@ func formatFunctionThing(input string) string {
 	return "'" + input + "'"
 }
 
+func formatBlock(input string) string { return input }
+
 func adder(command abstractions.Command) error {
 	executor := func(opts *lightning.CommandOptions) {
 		if command.OwnerOnly {
@@ -59,6 +61,7 @@ func adder(command abstractions.Command) error {
 		context := abstractions.CommandContext{
 			Framework:       "lightning",
 			FormatQuote:     formatFunctionThing,
+			FormatBlock:     formatBlock,
 			ArgumentGetter:  get_args,
 			UniqueCallerID:  opts.Author.ID,
 			UniqueChannelID: opts.ChannelID,

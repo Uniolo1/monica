@@ -421,6 +421,11 @@ func AddCommands(adder abstractions.CommandAdder) error {
 		return err
 	}
 
+	err = addTagCommands(adder)
+	if err != nil {
+		return err
+	}
+
 	err = addAiCommands(adder)
 	if err != nil {
 		return err

@@ -81,6 +81,10 @@ func formatFunctionThing(input string) string {
 	return "`" + input + "`"
 }
 
+func FormatBlockFunctionThing(input string) string {
+	return "```\n" + input + "\n```"
+}
+
 func adder(command abstractions.Command) error {
 	executor := func(data discord.SlashCommandInteractionData, e *handler.CommandEvent) error {
 		deferred := false
@@ -113,6 +117,7 @@ func adder(command abstractions.Command) error {
 		context := abstractions.CommandContext{
 			Framework:       "disgo",
 			FormatQuote:     formatFunctionThing,
+			FormatBlock:     FormatBlockFunctionThing,
 			UniqueCallerID:  e.User().ID.String(),
 			UniqueChannelID: channelID,
 

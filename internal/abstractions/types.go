@@ -27,6 +27,7 @@ package abstractions
 
 type CommandArgumentGetter func(string, Command_argument_type) string
 type FormatQuoteFunction func(string) string
+type FormatBlockFunction FormatQuoteFunction // really the same
 type CommandHandler func(*CommandContext) (
 	string, // the reply to the message
 	bool, // weather the message should be ephemeral (only shown to user that sent the command), potentially ignored if defer'd
@@ -63,6 +64,7 @@ type Command struct {
 type CommandContext struct {
 	ArgumentGetter  CommandArgumentGetter // NOTE: Always returns 'string' regardless of argument type
 	FormatQuote     FormatQuoteFunction
+	FormatBlock     FormatBlockFunction
 	Defer           DeferFunction // NOTE: caller will always check for nil
 	UniqueCallerID  string        // a string that can be used to uniquely identify the person using the command, leave blank if platform doesn't have it
 	UniqueChannelID string        // same as UniqueCallerID but refers to where the command was called

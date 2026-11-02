@@ -28,6 +28,7 @@ package commands
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/uniolo1/monica/internal/abstractions"
 )
@@ -81,6 +82,24 @@ func ownerClearaiCommand(args *abstractions.CommandContext) (string, bool) {
 	clear(aiHistory)
 
 	return "All AI zones cleared!", false
+}
+
+func ownerRmtagCommand(args *abstractions.CommandContext) (string, bool) {
+	name := strings.ToLower(args.ArgumentGetter("name", abstractions.Command_argument_string))
+	if name == "" {
+		return "Missing required parameter: " + args.FormatQuote("name"), true
+	}
+
+	tagsMutex.Lock()
+	defer tagsMutex.Unlock()
+
+	_, exists := tags[name]
+	if !exists {
+		return args.FormatQuote(name) + " does not exist!", true
+	} else {
+		delete(tags, name)
+		return "Removed tag " + args.FormatQuote(name) + "!", false
+	}
 }
 
 func addOwnerCommands(adder abstractions.CommandAdder) error {
@@ -146,6 +165,22 @@ func addOwnerCommands(adder abstractions.CommandAdder) error {
 		Arguments:   []abstractions.CommandArguments{},
 		OwnerOnly:   true,
 		Handler:     ownerClearaiCommand,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "owner rmtag",
+		Description: "Owner-only command to delete a tag",
+		Arguments: []abstractions.CommandArguments{{
+			Name:        "name",
+			Description: "Name of the tag",
+			Required:    true,
+			Arg_type:    abstractions.Command_argument_string,
+		}},
+		OwnerOnly: true,
+		Handler:   ownerRmtagCommand,
 	})
 	if err != nil {
 		return err
