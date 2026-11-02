@@ -120,6 +120,7 @@ func adder(command abstractions.Command) error {
 			FormatBlock:     FormatBlockFunctionThing,
 			UniqueCallerID:  e.User().ID.String(),
 			UniqueChannelID: channelID,
+			NSFW:            command.NSFW,
 
 			// implement DeferFunction
 			Defer: func(ephemeral bool) error {

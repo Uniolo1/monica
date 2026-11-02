@@ -65,6 +65,7 @@ func adder(command abstractions.Command) error {
 			ArgumentGetter:  get_args,
 			UniqueCallerID:  opts.Author.ID,
 			UniqueChannelID: opts.ChannelID,
+			NSFW:            command.NSFW,
 		}
 
 		reply, _ := command.Handler(&context)
