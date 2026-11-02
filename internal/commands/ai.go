@@ -225,7 +225,6 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 	} else {
 		return "Unknown caller!", true
 	}
-	_ = zone
 
 	// only check here, not much harm in clearing AI
 	if os.Getenv("DISABLE_AI") != "" && os.Getenv("DISABLE_AI") != "false" {

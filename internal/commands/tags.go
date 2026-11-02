@@ -40,8 +40,37 @@ type Tag struct {
 	Lua      bool   `json:"is_lua"`   // weather or not its a lua tag
 }
 
-var tags map[string]Tag = make(map[string]Tag)
-var tagsMutex sync.Mutex
+// dictionary of dictionary of tags
+var tags map[string]map[string]Tag = make(map[string]map[string]Tag)
+
+var tagsMutex map[string]*sync.Mutex = make(map[string]*sync.Mutex)
+var tagsMutexMutex sync.Mutex
+var globalTagsMutex sync.Mutex
+
+func getZoneMutex(zone string) *sync.Mutex {
+	tagsMutexMutex.Lock()
+	defer tagsMutexMutex.Unlock()
+
+	mutex, exists := tagsMutex[zone]
+	if !exists {
+		mutex = &sync.Mutex{}
+		tagsMutex[zone] = mutex
+	}
+
+	return mutex
+}
+
+// little wrapper I made to ensure that each zone has a map[string]
+// now that I think about it, should probably merge with getZoneMutex... meh, I made this second anyways
+func ensureTagZone(zone string) {
+	globalTagsMutex.Lock()
+	defer globalTagsMutex.Unlock()
+
+	_, exists := tags[zone]
+	if !exists {
+		tags[zone] = make(map[string]Tag)
+	}
+}
 
 func removeTag(args *abstractions.CommandContext) (string, bool) {
 	name := strings.ToLower(args.ArgumentGetter("name", abstractions.Command_argument_string))
@@ -49,10 +78,22 @@ func removeTag(args *abstractions.CommandContext) (string, bool) {
 		return "Missing required parameter: " + args.FormatQuote("name"), true
 	}
 
-	tagsMutex.Lock()
-	defer tagsMutex.Unlock()
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown caller!", true
+	}
 
-	tag, exists := tags[name]
+	zoneMutex := getZoneMutex(zone)
+	zoneMutex.Lock()
+	defer zoneMutex.Unlock()
+
+	ensureTagZone(zone)
+
+	tag, exists := tags[zone][name]
 	if !exists {
 		return args.FormatQuote(name) + " does not exist!", true
 	}
@@ -75,12 +116,23 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 		return "Missing required parameter: " + args.FormatQuote("contents"), true
 	}
 
-	tagsMutex.Lock()
-	defer tagsMutex.Unlock()
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown caller!", true
+	}
 
+	zoneMutex := getZoneMutex(zone)
+	zoneMutex.Lock()
+	defer zoneMutex.Unlock()
+
+	ensureTagZone(zone)
 	var uses uint = 0
 
-	tag, exists := tags[name]
+	tag, exists := tags[zone][name]
 	if exists {
 		uses = tag.Uses
 		if args.UniqueCallerID != tag.Owner {
@@ -88,7 +140,7 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 		}
 	}
 
-	tags[name] = Tag{
+	tags[zone][name] = Tag{
 		Contents: contents,
 		Owner:    args.UniqueCallerID,
 		Uses:     uses,
@@ -108,10 +160,22 @@ func getTagInfo(args *abstractions.CommandContext) (string, bool) {
 		return "Missing required parameter: " + args.FormatQuote("name"), true
 	}
 
-	tagsMutex.Lock()
-	defer tagsMutex.Unlock()
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown caller!", true
+	}
 
-	tag, exists := tags[name]
+	zoneMutex := getZoneMutex(zone)
+	zoneMutex.Lock()
+	defer zoneMutex.Unlock()
+
+	ensureTagZone(zone)
+
+	tag, exists := tags[zone][name]
 	if !exists {
 		return args.FormatQuote(name) + " does not exist!", true
 	}
@@ -130,10 +194,20 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 		return "Missing required parameter: " + args.FormatQuote("name"), true
 	}
 
-	tagsMutex.Lock()
-	defer tagsMutex.Unlock()
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown caller!", true
+	}
 
-	tag, exists := tags[name]
+	zoneMutex := tagsMutex[zone]
+	zoneMutex.Lock()
+	defer zoneMutex.Unlock()
+
+	tag, exists := tags[zone][name]
 
 	if !exists {
 		return args.FormatQuote(name) + " does not exist!", true
@@ -143,7 +217,7 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 
 	// increment the uses
 	tag.Uses++
-	tags[name] = tag
+	tags[zone][name] = tag
 
 	return tag.Contents, false
 }

@@ -90,8 +90,20 @@ func ownerRmtagCommand(args *abstractions.CommandContext) (string, bool) {
 		return "Missing required parameter: " + args.FormatQuote("name"), true
 	}
 
-	tagsMutex.Lock()
-	defer tagsMutex.Unlock()
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown caller!", true
+	}
+
+	zoneMutex := tagsMutex[zone]
+	zoneMutex.Lock()
+	defer zoneMutex.Unlock()
+
+	ensureTagZone(zone)
 
 	_, exists := tags[name]
 	if !exists {
