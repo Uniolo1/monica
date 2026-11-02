@@ -54,7 +54,6 @@ type CommandArguments struct {
 type Command struct {
 	Name        string // NOTE: may have spaces in it, convert spaces to '-' or '_' as needed
 	Description string
-	NSFW        bool // who knows might add one in the future, you never know (probably not)
 	OwnerOnly   bool // Platforms that don't implement this MUST not run any command with this flag
 	Arguments   []CommandArguments
 	Handler     CommandHandler
@@ -70,5 +69,5 @@ type CommandContext struct {
 	UniqueChannelID string        // same as UniqueCallerID but refers to where the command was called
 	Framework       string        // framework being used
 	NoUnicode       bool          // platforms where using Unicode *might* cause issues
-	NSFW            bool          // see comment in 'tags.go' (if platform does not support detecting NSFW channels, set to Command.NSFW)
+	NSFW            bool          // see comment in 'tags.go' (if platform does not support detecting NSFW channels, please assume 'false')
 }

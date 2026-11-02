@@ -120,7 +120,7 @@ func adder(command abstractions.Command) error {
 			FormatBlock:     FormatBlockFunctionThing,
 			UniqueCallerID:  e.User().ID.String(),
 			UniqueChannelID: channelID,
-			NSFW:            command.NSFW,
+			NSFW:            false,
 
 			// implement DeferFunction
 			Defer: func(ephemeral bool) error {
@@ -188,7 +188,6 @@ func adder(command abstractions.Command) error {
 		Name:        strings.ReplaceAll(command.Name, " ", "-"),
 		Description: command.Description,
 		Options:     options,
-		NSFW:        &command.NSFW,
 
 		// the following fields are necessary for the bot to work in group DMs for whatever reason
 
