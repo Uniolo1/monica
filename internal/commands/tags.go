@@ -45,8 +45,8 @@ type Tag struct {
 var tags map[string]map[string]Tag = make(map[string]map[string]Tag)
 
 var tagsMutex map[string]*sync.Mutex = make(map[string]*sync.Mutex)
-var tagsMutexMutex sync.Mutex
-var globalTagsMutex sync.Mutex
+var tagsMutexMutex sync.Mutex  // these do practically the same thing
+var globalTagsMutex sync.Mutex // these do practically the same thing
 
 func getZoneMutex(zone string) *sync.Mutex {
 	tagsMutexMutex.Lock()
@@ -79,6 +79,7 @@ func removeTag(args *abstractions.CommandContext) (string, bool) {
 		return "Missing required parameter: " + args.FormatQuote("name"), true
 	}
 
+	// get 'zone' field
 	var zone string
 	if args.UniqueChannelID != "" {
 		zone = args.UniqueChannelID
@@ -88,11 +89,11 @@ func removeTag(args *abstractions.CommandContext) (string, bool) {
 		return "Unknown caller!", true
 	}
 
+	// mutex shenanigans
 	zoneMutex := getZoneMutex(zone)
 	zoneMutex.Lock()
 	defer zoneMutex.Unlock()
-
-	ensureTagZone(zone)
+	ensureTagZone(zone) // ensure tags[zone] exists!
 
 	tag, exists := tags[zone][name]
 	if !exists {
@@ -126,11 +127,12 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 		return "Unknown caller!", true
 	}
 
+	// mutex shenanigans
 	zoneMutex := getZoneMutex(zone)
 	zoneMutex.Lock()
 	defer zoneMutex.Unlock()
 
-	ensureTagZone(zone)
+	ensureTagZone(zone) // ensure tags[zone] exists!
 	var uses uint = 0
 
 	tag, exists := tags[zone][name]
@@ -170,11 +172,11 @@ func getTagInfo(args *abstractions.CommandContext) (string, bool) {
 		return "Unknown caller!", true
 	}
 
+	// mutex shenanigans
 	zoneMutex := getZoneMutex(zone)
 	zoneMutex.Lock()
 	defer zoneMutex.Unlock()
-
-	ensureTagZone(zone)
+	ensureTagZone(zone) // ensure tags[zone] exists!
 
 	tag, exists := tags[zone][name]
 	if !exists {
@@ -204,9 +206,11 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 		return "Unknown caller!", true
 	}
 
-	zoneMutex := tagsMutex[zone]
+	// mutex shenanigans
+	zoneMutex := getZoneMutex(zone)
 	zoneMutex.Lock()
 	defer zoneMutex.Unlock()
+	ensureTagZone(zone) // ensure tags[zone] exists!
 
 	tag, exists := tags[zone][name]
 
