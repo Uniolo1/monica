@@ -164,7 +164,8 @@ func evalTag(contents string, arguments string, UniqueCallerID string, UniqueCha
 	L.SetGlobal("arguments", lua.LString(arguments))
 	L.SetGlobal("caller", lua.LString(UniqueCallerID))
 	L.SetGlobal("channel", lua.LString(UniqueChannelID))
-	L.SetGlobal("monica", lua.LTrue) // allows scripts to detect if they are being ran in Monica
+	L.SetGlobal("monica", lua.LTrue)                         // allows scripts to detect if they are being ran in Monica
+	L.SetGlobal("timestamp", lua.LNumber(time.Now().Unix())) // mainly here to allow for seeding randomness
 
 	// timeout
 	ctx, cancel := context.WithTimeout(
