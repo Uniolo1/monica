@@ -70,5 +70,4 @@ type CommandContext struct {
 	UniqueChannelID string        // same as UniqueCallerID but refers to where the command was called
 	Framework       string        // framework being used
 	NoUnicode       bool          // platforms where using Unicode *might* cause issues
-	NSFW            bool          // see comment in 'tags.go' (if platform does not support detecting NSFW channels, please assume 'false')
 }

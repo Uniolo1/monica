@@ -48,7 +48,6 @@ type Tag struct {
 	Owner    string `json:"owner"`    // owner of the tag
 	Uses     uint   `json:"uses"`     // how many times it has been used
 	Lua      bool   `json:"is_lua"`   // weather or not its a lua tag
-	NSFW     bool   `json:"is_nsfw"`  // I need better friends...
 }
 
 // dictionary of dictionary of tags
@@ -336,8 +335,6 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 
 	if !exists {
 		return args.FormatQuote(name) + " does not exist!", true
-	} else if tag.NSFW && !args.NSFW {
-		return "Cannot use tag marked as NSFW here!", true
 	}
 
 	if tag.Lua {
