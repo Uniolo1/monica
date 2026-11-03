@@ -31,13 +31,21 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"time"
 )
 
-// wrapper that respects 'ALLOW_HTTP_GET'
+var maxUrlLen int = 128
+var maxResponseSize int64 = 4 * 1024 // 4KB
+
+// wrapper that respects 'ALLOW_HTTP_GET' and 'HTTP_OVER_TOR'
 func Get(requestUrl string) (int, string) {
 	if os.Getenv("ALLOW_HTTP") != "true" && os.Getenv("ALLOW_HTTP") != "True" {
 		return 0, "HTTP is disabled!"
+	}
+
+	if len(requestUrl) > maxUrlLen {
+		return 0, "URL is too big, maximum length is " + strconv.FormatInt(int64(maxUrlLen), 10)
 	}
 
 	// the proxy
@@ -59,7 +67,7 @@ func Get(requestUrl string) (int, string) {
 
 	client := &http.Client{
 		Transport: &transport,
-		Timeout:   30 * time.Second,
+		Timeout:   15 * time.Second,
 	}
 
 	// send GET request
@@ -70,7 +78,9 @@ func Get(requestUrl string) (int, string) {
 	defer resp.Body.Close()
 
 	// read request
-	body, err := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(
+		io.LimitReader(resp.Body, maxResponseSize+1),
+	)
 	if err != nil {
 		return resp.StatusCode, fmt.Sprintf("Response read failed: %v", err)
 	}
