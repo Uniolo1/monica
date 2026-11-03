@@ -155,9 +155,21 @@ func evalTag(contents string, arguments string, UniqueCallerID string, UniqueCha
 		return 0
 	}))
 
+	// exit function
 	L.SetGlobal("exit", L.NewFunction(func(L *lua.LState) int {
 		L.RaiseError("__LUA_EXIT__")
 		return 0
+	}))
+
+	// http GET function!
+	L.SetGlobal("httpGET", L.NewFunction(func(L *lua.LState) int {
+		requestURL := L.CheckString(1)
+		statusCode, responseBody := helpers.Get(requestURL)
+
+		L.Push(lua.LNumber(statusCode))
+		L.Push(lua.LString(responseBody))
+
+		return 2
 	}))
 
 	// setup lua environment
