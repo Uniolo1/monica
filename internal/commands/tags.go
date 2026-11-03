@@ -322,15 +322,13 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 		tags[zone][name] = tag
 	} // mutex is unlocked here (lua code may take *some* time to execute)
 
-	if tag.Lua {
-		if os.Getenv("DISABLE_LUA") != "" && os.Getenv("DISABLE_LUA") != "false" {
-			return "Lua tags have been disabled!", false
-		}
+	if tag.Lua && (os.Getenv("DISABLE_LUA") != "" && os.Getenv("DISABLE_LUA") != "false") {
+		return "Lua tags have been disabled!", false
+	}
 
-		err := args.Defer(false)
-		if err != nil {
-			return fmt.Sprintf("Error deferring: %s", err), true
-		}
+	err := args.Defer(false)
+	if err != nil {
+		return fmt.Sprintf("Error deferring: %s", err), true
 	}
 
 	arguments := args.ArgumentGetter("arguments", abstractions.Command_argument_string)
