@@ -99,11 +99,9 @@ func ownerRmtagCommand(args *abstractions.CommandContext) (string, bool) {
 		return "Unknown caller!", true
 	}
 
-	zoneMutex := tagsMutex[zone]
-	zoneMutex.Lock()
-	defer zoneMutex.Unlock()
-
-	ensureTagZone(zone)
+	tagMutex.Lock()
+	defer tagMutex.Unlock()
+	ensureTagZone(zone) // ensure tags[zone] exists!
 
 	_, exists := tags[name]
 	if !exists {

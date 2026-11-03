@@ -53,127 +53,19 @@ type Tag struct {
 // dictionary of dictionary of tags
 var tags map[string]map[string]Tag = make(map[string]map[string]Tag)
 
-var tagsMutex map[string]*sync.Mutex = make(map[string]*sync.Mutex)
-var tagsMutexMutex sync.Mutex  // these do practically the same thing
-var globalTagsMutex sync.Mutex // these do practically the same thing
-
+var tagMutex sync.Mutex
 var maxTagSize int = 1000
 
-func getZoneMutex(zone string) *sync.Mutex {
-	tagsMutexMutex.Lock()
-	defer tagsMutexMutex.Unlock()
-
-	mutex, exists := tagsMutex[zone]
-	if !exists {
-		mutex = &sync.Mutex{}
-		tagsMutex[zone] = mutex
-	}
-
-	return mutex
-}
-
 // little wrapper I made to ensure that each zone has a map[string]
-// now that I think about it, should probably merge with getZoneMutex... meh, I made this second anyways
+// NOTE: does not get mutex, caller has to do that!
 func ensureTagZone(zone string) {
-	globalTagsMutex.Lock()
-	defer globalTagsMutex.Unlock()
-
 	_, exists := tags[zone]
 	if !exists {
 		tags[zone] = make(map[string]Tag)
 	}
 }
 
-func removeTag(args *abstractions.CommandContext) (string, bool) {
-	name := strings.ToLower(args.ArgumentGetter("name", abstractions.Command_argument_string))
-	if name == "" {
-		return "Missing required parameter: " + args.FormatQuote("name"), true
-	}
-
-	// get 'zone' field
-	var zone string
-	if args.UniqueChannelID != "" {
-		zone = args.UniqueChannelID
-	} else if args.UniqueCallerID != "" {
-		zone = args.UniqueCallerID
-	} else {
-		return "Unknown caller!", true
-	}
-
-	// mutex shenanigans
-	zoneMutex := getZoneMutex(zone)
-	zoneMutex.Lock()
-	defer zoneMutex.Unlock()
-	ensureTagZone(zone) // ensure tags[zone] exists!
-
-	tag, exists := tags[zone][name]
-	if !exists {
-		return args.FormatQuote(name) + " does not exist!", true
-	}
-
-	if tag.Owner != args.UniqueCallerID {
-		return "Cannot remove tag you do not own!", true
-	}
-
-	delete(tags, name)
-	return "Removed tag " + args.FormatQuote(name) + "!", false
-}
-
-func modifyTag(args *abstractions.CommandContext) (string, bool) {
-	name := strings.ToLower(args.ArgumentGetter("name", abstractions.Command_argument_string))
-	contents := args.ArgumentGetter("contents", abstractions.Command_argument_string)
-
-	if name == "" {
-		return "Missing required parameter: " + args.FormatQuote("name"), true
-	} else if contents == "" {
-		return "Missing required parameter: " + args.FormatQuote("contents"), true
-	}
-
-	if len(contents) > maxTagSize {
-		return fmt.Sprintf("Tag is %d bytes long, longer then the limit of %d bytes!", len(contents), maxTagSize), true
-	}
-
-	lua := helpers.StringToBool(args.ArgumentGetter("lua", abstractions.Command_argument_bool), false)
-
-	var zone string
-	if args.UniqueChannelID != "" {
-		zone = args.UniqueChannelID
-	} else if args.UniqueCallerID != "" {
-		zone = args.UniqueCallerID
-	} else {
-		return "Unknown caller!", true
-	}
-
-	// mutex shenanigans
-	zoneMutex := getZoneMutex(zone)
-	zoneMutex.Lock()
-	defer zoneMutex.Unlock()
-
-	ensureTagZone(zone) // ensure tags[zone] exists!
-	var uses uint = 0
-
-	tag, exists := tags[zone][name]
-	if exists {
-		uses = tag.Uses
-		if args.UniqueCallerID != tag.Owner {
-			return "Only the owner can modify a tag!", true
-		}
-	}
-
-	tags[zone][name] = Tag{
-		Contents: contents,
-		Owner:    args.UniqueCallerID,
-		Uses:     uses,
-		Lua:      lua,
-	}
-
-	if exists {
-		return args.FormatQuote(name) + " modified!", false
-	} else {
-		return args.FormatQuote(name) + " created!", false
-	}
-}
-
+// helper used in 'tag info'
 func formatDoesOrDoesNot(input bool) string {
 	if input {
 		return "does"
@@ -182,6 +74,7 @@ func formatDoesOrDoesNot(input bool) string {
 	}
 }
 
+// helper for evalTag
 func openSafeLibs(L *lua.LState) {
 	libs := []struct {
 		name string
@@ -236,7 +129,7 @@ func evalTag(contents string, arguments string, usesLua bool) string {
 			}
 
 			remaining := maxOutputSize - output.Len()
-			value := L.Get(i).String()
+			value := L.ToStringMeta(L.Get(i)).String()
 
 			if len(value) > remaining {
 				output.WriteString(value[:remaining])
@@ -277,6 +170,93 @@ func evalTag(contents string, arguments string, usesLua bool) string {
 	}
 }
 
+func removeTag(args *abstractions.CommandContext) (string, bool) {
+	name := strings.ToLower(args.ArgumentGetter("name", abstractions.Command_argument_string))
+	if name == "" {
+		return "Missing required parameter: " + args.FormatQuote("name"), true
+	}
+
+	// get 'zone' field
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown caller!", true
+	}
+
+	tagMutex.Lock()
+	defer tagMutex.Unlock()
+	ensureTagZone(zone) // ensure tags[zone] exists!
+
+	tag, exists := tags[zone][name]
+	if !exists {
+		return args.FormatQuote(name) + " does not exist!", true
+	}
+
+	if tag.Owner != args.UniqueCallerID {
+		return "Cannot remove tag you do not own!", true
+	}
+
+	delete(tags, name)
+	return "Removed tag " + args.FormatQuote(name) + "!", false
+}
+
+func modifyTag(args *abstractions.CommandContext) (string, bool) {
+	name := strings.ToLower(args.ArgumentGetter("name", abstractions.Command_argument_string))
+	contents := args.ArgumentGetter("contents", abstractions.Command_argument_string)
+
+	if name == "" {
+		return "Missing required parameter: " + args.FormatQuote("name"), true
+	} else if contents == "" {
+		return "Missing required parameter: " + args.FormatQuote("contents"), true
+	}
+
+	if len(contents) > maxTagSize {
+		return fmt.Sprintf("Tag is %d bytes long, longer then the limit of %d bytes!", len(contents), maxTagSize), true
+	}
+
+	lua := helpers.StringToBool(args.ArgumentGetter("lua", abstractions.Command_argument_bool), false)
+
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown caller!", true
+	}
+
+	tagMutex.Lock()
+	defer tagMutex.Unlock()
+	ensureTagZone(zone) // ensure tags[zone] exists!
+
+	ensureTagZone(zone) // ensure tags[zone] exists!
+	var uses uint = 0
+
+	tag, exists := tags[zone][name]
+	if exists {
+		uses = tag.Uses
+		if args.UniqueCallerID != tag.Owner {
+			return "Only the owner can modify a tag!", true
+		}
+	}
+
+	tags[zone][name] = Tag{
+		Contents: contents,
+		Owner:    args.UniqueCallerID,
+		Uses:     uses,
+		Lua:      lua,
+	}
+
+	if exists {
+		return args.FormatQuote(name) + " modified!", false
+	} else {
+		return args.FormatQuote(name) + " created!", false
+	}
+}
+
 func getTagInfo(args *abstractions.CommandContext) (string, bool) {
 	name := strings.ToLower(args.ArgumentGetter("name", abstractions.Command_argument_string))
 	if name == "" {
@@ -292,10 +272,8 @@ func getTagInfo(args *abstractions.CommandContext) (string, bool) {
 		return "Unknown caller!", true
 	}
 
-	// mutex shenanigans
-	zoneMutex := getZoneMutex(zone)
-	zoneMutex.Lock()
-	defer zoneMutex.Unlock()
+	tagMutex.Lock()
+	defer tagMutex.Unlock()
 	ensureTagZone(zone) // ensure tags[zone] exists!
 
 	tag, exists := tags[zone][name]
@@ -325,17 +303,24 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 		return "Unknown caller!", true
 	}
 
-	// mutex shenanigans
-	zoneMutex := getZoneMutex(zone)
-	zoneMutex.Lock()
-	defer zoneMutex.Unlock()
-	ensureTagZone(zone) // ensure tags[zone] exists!
+	var tag Tag
 
-	tag, exists := tags[zone][name]
+	{ // inline scope here due to mutex
+		tagMutex.Lock()
+		defer tagMutex.Unlock()
+		ensureTagZone(zone) // ensure tags[zone] exists!
 
-	if !exists {
-		return args.FormatQuote(name) + " does not exist!", true
-	}
+		var exists bool // declare it here to fix an issue
+		tag, exists = tags[zone][name]
+
+		if !exists {
+			return args.FormatQuote(name) + " does not exist!", true
+		}
+
+		// increment the uses
+		tag.Uses++
+		tags[zone][name] = tag
+	} // mutex is unlocked here (lua code may take *some* time to execute)
 
 	if tag.Lua {
 		if os.Getenv("DISABLE_LUA") != "" && os.Getenv("DISABLE_LUA") != "false" {
@@ -348,12 +333,16 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 		}
 	}
 
-	// increment the uses
-	tag.Uses++
-	tags[zone][name] = tag
-
 	arguments := args.ArgumentGetter("arguments", abstractions.Command_argument_string)
-	return evalTag(tag.Contents, arguments, tag.Lua), false
+	reply := evalTag(tag.Contents, arguments, tag.Lua)
+
+	if reply == "" {
+		// for debugging: kept cuz why not
+		return args.FormatQuote("evalTag") + " returned an empty string, this should NEVER HAPPEN, report this!\n" +
+			args.FormatBlock(fmt.Sprintf("doLua: %v\nArgs: \"%s\"", tag.Lua, arguments)), true
+	}
+
+	return reply, false
 }
 
 func addTagCommands(adder abstractions.CommandAdder) error {
