@@ -255,6 +255,20 @@ func convertTzCommand(args *abstractions.CommandContext) (string, bool) {
 		return "Time is in an unrecognized format!", true
 	}
 
+	if parsedTime.Year() == 0 {
+		now := time.Now().In(from_loc)
+		parsedTime = time.Date(
+			now.Year(),
+			parsedTime.Month(),
+			parsedTime.Day(),
+			parsedTime.Hour(),
+			parsedTime.Minute(),
+			parsedTime.Second(),
+			parsedTime.Nanosecond(),
+			fromLoc,
+		)
+	}
+
 	result := parsedTime.In(to_loc).Format(layout)
 
 	if to_tz == "" {
