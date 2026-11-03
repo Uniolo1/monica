@@ -97,6 +97,9 @@ func openSafeLibs(L *lua.LState) {
 // I will note I did make heavy use of AI here to make sure I don't have a security flaw
 func evalTag(contents string, arguments string, usesLua bool) string {
 	if !usesLua {
+		if strings.TrimSpace(contents) == "" {
+			return "Tag (not using Lua) is blank!"
+		}
 		return contents
 	}
 
@@ -169,7 +172,7 @@ func evalTag(contents string, arguments string, usesLua bool) string {
 	}
 
 	ret := output.String()
-	if ret == "" {
+	if strings.TrimSpace(ret) == "" {
 		return "Tag (using Lua) did not output anything!"
 	} else {
 		return ret
@@ -392,15 +395,7 @@ func randomTag(args *abstractions.CommandContext) (string, bool) {
 	} // mutex is unlocked here (lua code may take *some* time to execute)
 
 	arguments := args.ArgumentGetter("arguments", abstractions.Command_argument_string)
-	reply := evalTag(tag.Contents, arguments, tag.Lua)
-
-	if reply == "" {
-		// for debugging: kept cuz why not
-		return args.FormatQuote("evalTag") + " returned an empty string, this should NEVER HAPPEN, report this!\n" +
-			args.FormatBlock(fmt.Sprintf("doLua: %v\nArgs: \"%s\"", tag.Lua, arguments)), true
-	}
-
-	return "Showing tag: " + args.FormatQuote(name) + "\n" + reply, false
+	return "Showing tag: " + args.FormatQuote(name) + "\n" + evalTag(tag.Contents, arguments, tag.Lua), false
 }
 
 func addTagCommands(adder abstractions.CommandAdder) error {
