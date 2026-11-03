@@ -135,6 +135,33 @@ func uwuifyCommand(args *abstractions.CommandContext) (string, bool) {
 	}
 }
 
+func getCommand(args *abstractions.CommandContext) (string, bool) {
+	url := args.ArgumentGetter("url", abstractions.Command_argument_string)
+	if url == "" {
+		return "No URL provided!", true
+	} else {
+		err := args.Defer(false)
+		if err != nil {
+			return fmt.Sprintf("Error defering: %v", err), true
+		}
+
+		status, content := helpers.Get(url)
+		if status != 200 {
+			statusString := strconv.FormatInt(int64(status), 10)
+
+			// little thing to make sure the content is not blank
+			contentString := ""
+			if content != "" {
+				contentString = "\n" + args.FormatBlock(content)
+			}
+
+			return "Got HTTP status code: " + args.FormatQuote(statusString) + contentString, true
+		} else {
+			return args.FormatBlock(content), false
+		}
+	}
+}
+
 func confessCommand(args *abstractions.CommandContext) (string, bool) {
 	arg := args.ArgumentGetter("confession", abstractions.Command_argument_string)
 	if arg == "" {
@@ -353,6 +380,21 @@ func AddCommands(adder abstractions.CommandAdder) error {
 			Arg_type:    abstractions.Command_argument_string,
 		}},
 		Handler: uwuifyCommand,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "get",
+		Description: "Makes an HTTP get request",
+		Arguments: []abstractions.CommandArguments{{
+			Name:        "url",
+			Description: "The URL",
+			Required:    true,
+			Arg_type:    abstractions.Command_argument_string,
+		}},
+		Handler: getCommand,
 	})
 	if err != nil {
 		return err
