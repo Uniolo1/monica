@@ -235,8 +235,6 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 		return fmt.Sprintf("Tag is %d bytes long, longer then the limit of %d bytes!", len(contents), maxTagSize), true
 	}
 
-	lua := helpers.StringToBool(args.ArgumentGetter("lua", abstractions.Command_argument_bool), false)
-
 	var zone string
 	if args.UniqueChannelID != "" {
 		zone = args.UniqueChannelID
@@ -250,17 +248,20 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 	defer tagMutex.Unlock()
 	ensureTagZone(zone) // ensure tags[zone] exists!
 
-	ensureTagZone(zone) // ensure tags[zone] exists!
+	// if the tag already exists, these are preserved
 	var uses uint = 0
+	var lua bool = false
 
 	tag, exists := tags[zone][name]
 	if exists {
 		uses = tag.Uses
+		lua = tag.Lua
 		if args.UniqueCallerID != tag.Owner {
 			return "Only the owner can modify a tag!", true
 		}
 	}
 
+	lua = helpers.StringToBool(args.ArgumentGetter("lua", abstractions.Command_argument_bool), lua)
 	tags[zone][name] = Tag{
 		Contents: contents,
 		Owner:    args.UniqueCallerID,

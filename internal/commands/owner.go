@@ -96,7 +96,7 @@ func ownerRmtagCommand(args *abstractions.CommandContext) (string, bool) {
 	} else if args.UniqueCallerID != "" {
 		zone = args.UniqueCallerID
 	} else {
-		return "Unknown caller!", true
+		return "Unknown zone!", true
 	}
 
 	tagMutex.Lock()
