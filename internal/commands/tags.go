@@ -58,6 +58,8 @@ var tagsMutex map[string]*sync.Mutex = make(map[string]*sync.Mutex)
 var tagsMutexMutex sync.Mutex  // these do practically the same thing
 var globalTagsMutex sync.Mutex // these do practically the same thing
 
+var maxTagSize int = 1000
+
 func getZoneMutex(zone string) *sync.Mutex {
 	tagsMutexMutex.Lock()
 	defer tagsMutexMutex.Unlock()
@@ -128,6 +130,10 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 		return "Missing required parameter: " + args.FormatQuote("contents"), true
 	}
 
+	if len(contents) > maxTagSize {
+		return fmt.Sprintf("Tag is %d bytes long, longer then the limit of %d bytes!", len(contents), maxTagSize), true
+	}
+
 	lua := helpers.StringToBool(args.ArgumentGetter("lua", abstractions.Command_argument_bool), false)
 
 	var zone string
@@ -185,7 +191,7 @@ func openSafeLibs(L *lua.LState) {
 		{lua.TabLibName, lua.OpenTable},
 		{lua.StringLibName, lua.OpenString},
 		{lua.MathLibName, lua.OpenMath},
-		{lua.CoroutineLibName, lua.OpenCoroutine},
+		//{lua.CoroutineLibName, lua.OpenCoroutine}, // doubt many scripts will need this...
 	}
 
 	for _, lib := range libs {
@@ -254,7 +260,7 @@ func evalTag(contents string, arguments string, usesLua bool) string {
 	// timeout
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
-		5*time.Second,
+		4*time.Second,
 	)
 	defer cancel()
 	L.SetContext(ctx)
