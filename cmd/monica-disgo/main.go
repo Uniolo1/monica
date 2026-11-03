@@ -246,4 +246,7 @@ func main() {
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
 	<-s
+
+	// ENSURE THIS IS CALLED!
+	commands.SaveTags()
 }

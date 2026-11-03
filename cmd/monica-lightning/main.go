@@ -155,4 +155,5 @@ func main() {
 
 	// '\n' is necessary so '^C' appears on it's own line
 	println("\nStopped!")
+	commands.SaveTags()
 }

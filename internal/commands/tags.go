@@ -26,6 +26,9 @@
 package commands
 
 import (
+	"encoding/json"
+	"log/slog"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -302,5 +305,41 @@ func addTagCommands(adder abstractions.CommandAdder) error {
 		return err
 	}
 
-	return nil
+	return persistTags()
+}
+
+// it is imperative this function be called when 'cmd' exits!
+func SaveTags() error {
+	tagFile := os.Getenv("TAGS_FILE")
+	if tagFile == "" {
+		return nil
+	}
+
+	data, err := json.MarshalIndent(tags, "", "    ")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(tagFile, data, 0644)
+}
+
+// logic to make tags persist
+func persistTags() error {
+	tagFile := os.Getenv("TAGS_FILE")
+
+	if tagFile == "" {
+		slog.Warn("'TAGS_FILE' is unset, TAGS WILL NOT PERSIST!")
+		return nil
+	}
+
+	data, err := os.ReadFile(tagFile)
+	if err != nil {
+		if os.IsNotExist(err) {
+			slog.Warn("'TAGS_FILE' does not exist, starting new!")
+			return nil
+		}
+		return err
+	}
+
+	return json.Unmarshal(data, &tags)
 }
