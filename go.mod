@@ -12,6 +12,7 @@ require (
 	github.com/gtuk/discordwebhook v1.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/maja42/goval v1.6.0
+	github.com/yuin/gopher-lua v1.1.2
 )
 
 require (

@@ -26,12 +26,18 @@
 package commands
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
+
+	lua "github.com/yuin/gopher-lua"
 
 	"github.com/uniolo1/monica/internal/abstractions"
 	"github.com/uniolo1/monica/internal/helpers"
@@ -171,8 +177,99 @@ func formatDoesOrDoesNot(input bool) string {
 	}
 }
 
-func evalTag(contents string, lua bool) string {
-	return contents
+func openSafeLibs(L *lua.LState) {
+	libs := []struct {
+		name string
+		fn   lua.LGFunction
+	}{
+		{lua.TabLibName, lua.OpenTable},
+		{lua.StringLibName, lua.OpenString},
+		{lua.MathLibName, lua.OpenMath},
+		{lua.CoroutineLibName, lua.OpenCoroutine},
+	}
+
+	for _, lib := range libs {
+		L.Push(L.NewFunction(lib.fn))
+		L.Push(lua.LString(lib.name))
+		L.Call(1, 0)
+	}
+}
+
+// I will note I did make heavy use of AI here to make sure I don't have a security flaw
+func evalTag(contents string, arguments string, usesLua bool) string {
+	if !usesLua {
+		return contents
+	}
+
+	L := lua.NewState(lua.Options{
+		SkipOpenLibs: true,
+
+		// limit resource usage
+		MinimizeStackMemory: true,
+		CallStackSize:       128,
+		RegistrySize:        2048,
+		RegistryMaxSize:     4096,
+		RegistryGrowStep:    32,
+	})
+	defer L.Close()
+	openSafeLibs(L)
+
+	var output bytes.Buffer // output
+
+	// maximum stuff that can be printed
+	const maxOutputSize = 64 * 1024
+
+	// override print function
+	L.SetGlobal("print", L.NewFunction(func(L *lua.LState) int {
+		for i := 1; i <= L.GetTop(); i++ {
+			if output.Len() >= maxOutputSize {
+				break
+			}
+
+			if i > 1 {
+				output.WriteString("\t")
+			}
+
+			remaining := maxOutputSize - output.Len()
+			value := L.Get(i).String()
+
+			if len(value) > remaining {
+				output.WriteString(value[:remaining])
+				break
+			}
+
+			output.WriteString(value)
+		}
+
+		if output.Len() < maxOutputSize {
+			output.WriteString("\n")
+		}
+
+		return 0
+	}))
+
+	// setup lua environment
+	L.SetGlobal("arguments", lua.LString(arguments))
+
+	// timeout
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		5*time.Second,
+	)
+	defer cancel()
+	L.SetContext(ctx)
+
+	err := L.DoString(contents)
+	if err != nil {
+		return fmt.Sprintf("%v", err)
+	}
+
+	ret := output.String()
+	if ret == "" {
+		return "Tag (using Lua) did not output anything!"
+	} else {
+		return ret
+	}
 }
 
 func getTagInfo(args *abstractions.CommandContext) (string, bool) {
@@ -233,17 +330,27 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 
 	if !exists {
 		return args.FormatQuote(name) + " does not exist!", true
-	} else if tag.Lua {
-		return "Lua support is not yet implemented!", true
 	} else if tag.NSFW && !args.NSFW {
 		return "Cannot use tag marked as NSFW here!", true
+	}
+
+	if tag.Lua {
+		if os.Getenv("DISABLE_LUA") != "" && os.Getenv("DISABLE_LUA") != "false" {
+			return "Lua tags have been disabled!", false
+		}
+
+		err := args.Defer(false)
+		if err != nil {
+			return fmt.Sprintf("Error deferring: %s", err), true
+		}
 	}
 
 	// increment the uses
 	tag.Uses++
 	tags[zone][name] = tag
 
-	return evalTag(tag.Contents, tag.Lua), false
+	arguments := args.ArgumentGetter("arguments", abstractions.Command_argument_string)
+	return evalTag(tag.Contents, arguments, tag.Lua), false
 }
 
 func addTagCommands(adder abstractions.CommandAdder) error {
