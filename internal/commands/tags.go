@@ -155,6 +155,11 @@ func evalTag(contents string, arguments string, UniqueCallerID string, UniqueCha
 		return 0
 	}))
 
+	L.SetGlobal("exit", L.NewFunction(func(L *lua.LState) int {
+		L.RaiseError("__LUA_EXIT__")
+		return 0
+	}))
+
 	// setup lua environment
 	L.SetGlobal("arguments", lua.LString(arguments))
 	L.SetGlobal("caller", lua.LString(UniqueCallerID))
@@ -170,7 +175,7 @@ func evalTag(contents string, arguments string, UniqueCallerID string, UniqueCha
 	L.SetContext(ctx)
 
 	err := L.DoString(contents)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "__LUA_EXIT__") {
 		return fmt.Sprintf("%v", err)
 	}
 
