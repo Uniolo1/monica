@@ -359,15 +359,7 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 	}
 
 	arguments := args.ArgumentGetter("arguments", abstractions.Command_argument_string)
-	reply := evalTag(tag.Contents, arguments, args.UniqueCallerID, args.UniqueChannelID, tag.Lua)
-
-	if reply == "" {
-		// for debugging: kept cuz why not
-		return args.FormatQuote("evalTag") + " returned an empty string, this should NEVER HAPPEN, report this!\n" +
-			args.FormatBlock(fmt.Sprintf("doLua: %v\nArgs: \"%s\"", tag.Lua, arguments)), true
-	}
-
-	return reply, false
+	return evalTag(tag.Contents, arguments, args.UniqueCallerID, args.UniqueChannelID, tag.Lua), false
 }
 
 func randomKey[V any](m map[string]V) string {
