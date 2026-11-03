@@ -155,14 +155,20 @@ func adder(command abstractions.Command) error {
 			_, err := e.UpdateInteractionResponse(
 				discord.MessageUpdate{
 					Content: &reply,
-				},
+				}.WithAllowedMentions(&discord.AllowedMentions{
+					Parse:       []discord.AllowedMentionType{},
+					RepliedUser: false,
+				}),
 			)
 			return err
 		} else {
 			// create new message
 			return e.CreateMessage(discord.MessageCreate{
 				Content: reply,
-			}.WithEphemeral(ephemeral))
+			}.WithEphemeral(ephemeral).WithAllowedMentions(&discord.AllowedMentions{
+				Parse:       []discord.AllowedMentionType{},
+				RepliedUser: false,
+			}))
 		}
 	}
 
