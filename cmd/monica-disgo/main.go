@@ -106,11 +106,11 @@ func adder(command abstractions.Command) error {
 			// the user caller is the owner
 		}
 
-		channelID := ""
+		guildIDString := ""
 		guildID := data.GuildID() // for some reason this is always nil in my testing, will have to fix later...
 
 		if guildID != nil {
-			channelID = guildID.String() + "/" + e.Channel().ID().String()
+			guildIDString = guildID.String()
 		}
 
 		// supply context
@@ -119,7 +119,7 @@ func adder(command abstractions.Command) error {
 			FormatQuote:     formatFunctionThing,
 			FormatBlock:     FormatBlockFunctionThing,
 			UniqueCallerID:  e.User().ID.String(),
-			UniqueChannelID: channelID,
+			UniqueChannelID: guildIDString,
 			NSFW:            false,
 
 			// implement DeferFunction
