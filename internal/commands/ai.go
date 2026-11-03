@@ -223,7 +223,7 @@ func aiAsk(args *abstractions.CommandContext) (string, bool) {
 	} else if args.UniqueCallerID != "" {
 		zone = args.UniqueCallerID
 	} else {
-		return "Unknown caller!", true
+		return "Unknown zone!", true
 	}
 
 	// only check here, not much harm in clearing AI
@@ -274,7 +274,7 @@ func aiReset(args *abstractions.CommandContext) (string, bool) {
 	} else if args.UniqueCallerID != "" {
 		zone = args.UniqueCallerID
 	} else {
-		return "Unknown caller!", true
+		return "Unknown zone!", true
 	}
 
 	clearAiHistory(zone)
@@ -288,7 +288,7 @@ func aiSetPrompt(args *abstractions.CommandContext) (string, bool) {
 	} else if args.UniqueCallerID != "" {
 		zone = args.UniqueCallerID
 	} else {
-		return "Unknown caller!", true
+		return "Unknown zone!", true
 	}
 
 	prompt := args.ArgumentGetter("prompt", abstractions.Command_argument_string)
@@ -310,7 +310,7 @@ func aiGetPrompt(args *abstractions.CommandContext) (string, bool) {
 	} else if args.UniqueCallerID != "" {
 		zone = args.UniqueCallerID
 	} else {
-		return "Unknown caller!", true
+		return "Unknown zone!", true
 	}
 
 	return getAiPrompt(zone), false

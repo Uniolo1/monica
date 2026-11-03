@@ -183,7 +183,7 @@ func removeTag(args *abstractions.CommandContext) (string, bool) {
 	} else if args.UniqueCallerID != "" {
 		zone = args.UniqueCallerID
 	} else {
-		return "Unknown caller!", true
+		return "Unknown zone!", true
 	}
 
 	tagMutex.Lock()
@@ -225,7 +225,7 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 	} else if args.UniqueCallerID != "" {
 		zone = args.UniqueCallerID
 	} else {
-		return "Unknown caller!", true
+		return "Unknown zone!", true
 	}
 
 	tagMutex.Lock()
@@ -269,7 +269,7 @@ func getTagInfo(args *abstractions.CommandContext) (string, bool) {
 	} else if args.UniqueCallerID != "" {
 		zone = args.UniqueCallerID
 	} else {
-		return "Unknown caller!", true
+		return "Unknown zone!", true
 	}
 
 	tagMutex.Lock()
@@ -300,7 +300,7 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 	} else if args.UniqueCallerID != "" {
 		zone = args.UniqueCallerID
 	} else {
-		return "Unknown caller!", true
+		return "Unknown zone!", true
 	}
 
 	var tag Tag
