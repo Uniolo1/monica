@@ -31,6 +31,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"math/rand/v2"
 	"os"
 	"strconv"
 	"strings"
@@ -83,7 +84,7 @@ func openSafeLibs(L *lua.LState) {
 		{lua.TabLibName, lua.OpenTable},
 		{lua.StringLibName, lua.OpenString},
 		{lua.MathLibName, lua.OpenMath},
-		//{lua.CoroutineLibName, lua.OpenCoroutine}, // doubt many scripts will need this...
+		{lua.CoroutineLibName, lua.OpenCoroutine}, // doubt many scripts will need this...
 	}
 
 	for _, lib := range libs {
@@ -97,6 +98,11 @@ func openSafeLibs(L *lua.LState) {
 func evalTag(contents string, arguments string, usesLua bool) string {
 	if !usesLua {
 		return contents
+	}
+
+	// handle 'DISABLE_LUA'
+	if os.Getenv("DISABLE_LUA") != "" && os.Getenv("DISABLE_LUA") != "false" {
+		return "Lua tags have been disabled!"
 	}
 
 	L := lua.NewState(lua.Options{
@@ -322,10 +328,6 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 		tags[zone][name] = tag
 	} // mutex is unlocked here (lua code may take *some* time to execute)
 
-	if tag.Lua && (os.Getenv("DISABLE_LUA") != "" && os.Getenv("DISABLE_LUA") != "false") {
-		return "Lua tags have been disabled!", false
-	}
-
 	err := args.Defer(false)
 	if err != nil {
 		return fmt.Sprintf("Error deferring: %s", err), true
@@ -341,6 +343,64 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 	}
 
 	return reply, false
+}
+
+func randomKey[V any](m map[string]V) string {
+	keys := make([]string, 0, len(m))
+
+	for k := range m {
+		keys = append(keys, k)
+	}
+
+	if len(keys) == 0 {
+		return ""
+	}
+
+	return keys[rand.IntN(len(keys))]
+}
+
+func randomTag(args *abstractions.CommandContext) (string, bool) {
+	var zone string
+	if args.UniqueChannelID != "" {
+		zone = args.UniqueChannelID
+	} else if args.UniqueCallerID != "" {
+		zone = args.UniqueCallerID
+	} else {
+		return "Unknown zone!", true
+	}
+
+	var name string
+	var tag Tag
+
+	{ // inline scope here due to mutex
+		tagMutex.Lock()
+		defer tagMutex.Unlock()
+		ensureTagZone(zone) // ensure tags[zone] exists!
+
+		name = randomKey(tags[zone])
+
+		var exists bool // declare it here to fix an issue
+		tag, exists = tags[zone][name]
+
+		if !exists {
+			return args.FormatQuote(name) + " does not exist!", true
+		}
+
+		// increment the uses
+		tag.Uses++
+		tags[zone][name] = tag
+	} // mutex is unlocked here (lua code may take *some* time to execute)
+
+	arguments := args.ArgumentGetter("arguments", abstractions.Command_argument_string)
+	reply := evalTag(tag.Contents, arguments, tag.Lua)
+
+	if reply == "" {
+		// for debugging: kept cuz why not
+		return args.FormatQuote("evalTag") + " returned an empty string, this should NEVER HAPPEN, report this!\n" +
+			args.FormatBlock(fmt.Sprintf("doLua: %v\nArgs: \"%s\"", tag.Lua, arguments)), true
+	}
+
+	return "Showing tag: " + args.FormatQuote(name) + "\n" + reply, false
 }
 
 func addTagCommands(adder abstractions.CommandAdder) error {
@@ -416,6 +476,21 @@ func addTagCommands(adder abstractions.CommandAdder) error {
 			Arg_type:    abstractions.Command_argument_string,
 		}},
 		Handler: useTag,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = adder(abstractions.Command{
+		Name:        "tag random",
+		Description: "Run a random tag",
+		Arguments: []abstractions.CommandArguments{{
+			Name:        "arguments",
+			Description: "Arguments of the tag",
+			Required:    false,
+			Arg_type:    abstractions.Command_argument_string,
+		}},
+		Handler: randomTag,
 	})
 	if err != nil {
 		return err
