@@ -41,6 +41,7 @@ type Command_argument_type int
 const (
 	Command_argument_string = iota
 	Command_argument_int
+	Command_argument_bool
 )
 
 type CommandArguments struct {

@@ -71,6 +71,15 @@ func getArgs(input string, argument_type abstractions.Command_argument_type, dat
 			return ""
 		}
 
+	// bool
+	case abstractions.Command_argument_bool:
+		ret, is_found := data.OptBool(input)
+		if is_found {
+			return strconv.FormatBool(ret)
+		} else {
+			return ""
+		}
+
 	// default
 	default:
 		panic("Argument type not yet supported by disgo!")
@@ -171,11 +180,18 @@ func adder(command abstractions.Command) error {
 				Required:    arg.Required,
 			})
 
+		// bool
+		case abstractions.Command_argument_bool:
+			options = append(options, discord.ApplicationCommandOptionBool{
+				Name:        arg.Name,
+				Description: arg.Description,
+				Required:    arg.Required,
+			})
+
 		// string
 		case abstractions.Command_argument_string:
 			fallthrough
 		default:
-			// TODO: Add int's when we add a command that uses them
 			options = append(options, discord.ApplicationCommandOptionString{
 				Name:        arg.Name,
 				Description: arg.Description,

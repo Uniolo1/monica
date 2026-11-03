@@ -34,6 +34,7 @@ import (
 	"sync"
 
 	"github.com/uniolo1/monica/internal/abstractions"
+	"github.com/uniolo1/monica/internal/helpers"
 )
 
 type Tag struct {
@@ -121,6 +122,8 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 		return "Missing required parameter: " + args.FormatQuote("contents"), true
 	}
 
+	lua := helpers.StringToBool(args.ArgumentGetter("lua", abstractions.Command_argument_bool), false)
+
 	var zone string
 	if args.UniqueChannelID != "" {
 		zone = args.UniqueChannelID
@@ -150,7 +153,7 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 		Contents: contents,
 		Owner:    args.UniqueCallerID,
 		Uses:     uses,
-		Lua:      false,
+		Lua:      lua,
 	}
 
 	if exists {
@@ -158,6 +161,18 @@ func modifyTag(args *abstractions.CommandContext) (string, bool) {
 	} else {
 		return args.FormatQuote(name) + " created!", false
 	}
+}
+
+func formatDoesOrDoesNot(input bool) string {
+	if input {
+		return "does"
+	} else {
+		return "does not"
+	}
+}
+
+func evalTag(contents string, lua bool) string {
+	return contents
 }
 
 func getTagInfo(args *abstractions.CommandContext) (string, bool) {
@@ -187,8 +202,7 @@ func getTagInfo(args *abstractions.CommandContext) (string, bool) {
 	}
 
 	// format it!
-	return "Tag " + args.FormatQuote(name) +
-			" is owned by " + args.FormatQuote(tag.Owner) +
+	return "Tag " + args.FormatQuote(name) + " " + formatDoesOrDoesNot(tag.Lua) + " use Lua, it is owned by " + args.FormatQuote(tag.Owner) +
 			", and has been used " + args.FormatQuote(strconv.FormatUint(uint64(tag.Uses), 10)) + " times!" +
 			"\n" + args.FormatBlock(tag.Contents),
 		false
@@ -229,7 +243,7 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 	tag.Uses++
 	tags[zone][name] = tag
 
-	return tag.Contents, false
+	return evalTag(tag.Contents, tag.Lua), false
 }
 
 func addTagCommands(adder abstractions.CommandAdder) error {
@@ -248,6 +262,11 @@ func addTagCommands(adder abstractions.CommandAdder) error {
 			Description: "Contents of the tag",
 			Required:    true,
 			Arg_type:    abstractions.Command_argument_string,
+		}, {
+			Name:        "lua",
+			Description: "Weather or not to use Lua when evaluating",
+			Required:    false,
+			Arg_type:    abstractions.Command_argument_bool,
 		}},
 		Handler: modifyTag,
 	})
