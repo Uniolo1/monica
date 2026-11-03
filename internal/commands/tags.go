@@ -315,7 +315,7 @@ func SaveTags() error {
 		return nil
 	}
 
-	data, err := json.MarshalIndent(tags, "", "    ")
+	data, err := json.MarshalIndent(tags, "", "\t")
 	if err != nil {
 		return err
 	}
