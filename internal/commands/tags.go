@@ -95,7 +95,7 @@ func openSafeLibs(L *lua.LState) {
 }
 
 // I will note I did make heavy use of AI here to make sure I don't have a security flaw
-func evalTag(contents string, arguments string, usesLua bool) string {
+func evalTag(contents string, arguments string, UniqueCallerID string, UniqueChannelID string, usesLua bool) string {
 	if !usesLua {
 		if strings.TrimSpace(contents) == "" {
 			return "Tag (not using Lua) is blank!"
@@ -157,6 +157,9 @@ func evalTag(contents string, arguments string, usesLua bool) string {
 
 	// setup lua environment
 	L.SetGlobal("arguments", lua.LString(arguments))
+	L.SetGlobal("caller", lua.LString(UniqueCallerID))
+	L.SetGlobal("channel", lua.LString(UniqueChannelID))
+	L.SetGlobal("monica", lua.LTrue) // allows scripts to detect if they are being ran in Monica
 
 	// timeout
 	ctx, cancel := context.WithTimeout(
@@ -337,7 +340,7 @@ func useTag(args *abstractions.CommandContext) (string, bool) {
 	}
 
 	arguments := args.ArgumentGetter("arguments", abstractions.Command_argument_string)
-	reply := evalTag(tag.Contents, arguments, tag.Lua)
+	reply := evalTag(tag.Contents, arguments, args.UniqueCallerID, args.UniqueChannelID, tag.Lua)
 
 	if reply == "" {
 		// for debugging: kept cuz why not
@@ -395,7 +398,7 @@ func randomTag(args *abstractions.CommandContext) (string, bool) {
 	} // mutex is unlocked here (lua code may take *some* time to execute)
 
 	arguments := args.ArgumentGetter("arguments", abstractions.Command_argument_string)
-	return "Showing tag: " + args.FormatQuote(name) + "\n" + evalTag(tag.Contents, arguments, tag.Lua), false
+	return "Showing tag: " + args.FormatQuote(name) + "\n" + evalTag(tag.Contents, arguments, args.UniqueCallerID, args.UniqueChannelID, tag.Lua), false
 }
 
 func addTagCommands(adder abstractions.CommandAdder) error {
